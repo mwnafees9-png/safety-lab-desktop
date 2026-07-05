@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Lab Aero ROI Calculator — Time &amp; Cost Saved across the ARP 4761A Lifecycle</title>
+<meta name="description" content="A bottom-up ROI model built from every ARP 4761A deliverable (AFHA, PASA, SFHA, PSSA, SSA, ASA, ZSA/PRA/CMA, FMEA), iteration-aware and weighted per system. See the full calculation, not a hand-waved percentage. Plug in your numbers.">
+<link rel="canonical" href="https://safetylabaero.com/roi">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Safety Lab Aero">
+<meta property="og:title" content="Safety Lab Aero ROI Calculator — what integrated safety analysis is worth">
+<meta property="og:description" content="Bottom-up from every ARP 4761A phase, iteration-aware, weighted per system. The calculation is shown in full. Plug in your numbers.">
+<meta property="og:url" content="https://safetylabaero.com/roi">
+<meta property="og:image" content="https://safetylabaero.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Safety Lab Aero ROI Calculator">
+<meta name="twitter:description" content="Bottom-up ARP 4761A lifecycle ROI — the full calculation, not a hand-waved %. Plug in your numbers.">
+<meta name="twitter:image" content="https://safetylabaero.com/og.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Phase 62.6 — flight recorder identity: paper + ink, brand blue deepened. */
+    --navy:#0A1F44; --blue:#0A63CC; --purple:#af52de; --ink:#16181D; --mut:#565B66;
+    --bg:#F7F4EC; --card:#ffffff; --line:#CFC9B8; --good:#1F7A33;
+    --grad:linear-gradient(135deg,#007aff,#af52de);
+    --font:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  }
+  *{box-sizing:border-box; border-radius:0 !important;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55;}
+  body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;background:var(--grad);z-index:2000;pointer-events:none;}
+  .home-link{font-size:13px;color:var(--blue);text-decoration:none;margin-left:auto;}
+  .home-link:hover{text-decoration:underline;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 22px 48px;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .mark{width:34px;height:34px;border-radius:9px;background:var(--grad);display:flex;align-items:center;justify-content:center;}
+  .mark svg{width:19px;height:19px}
+  .brand{font-weight:700;font-size:19px;color:var(--navy)}
+  h1{font-size:27px;letter-spacing:-.02em;margin:14px 0 4px;color:var(--navy)}
+  .lede{color:var(--mut);font-size:15px;margin:0 0 22px;max-width:720px}
+  .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+  .calc{display:grid;grid-template-columns:1fr 1fr;gap:18px;background:var(--card);border:1px solid var(--line);
+        border-radius:16px;padding:22px;box-shadow:0 8px 30px rgba(10,31,68,.06);}
+  @media(max-width:680px){.calc{grid-template-columns:1fr}}
+  .inputs h3,.results h3{margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+  .row{margin-bottom:14px}
+  .row label{display:block;font-size:13px;color:var(--ink);margin-bottom:4px;font-weight:500}
+  .row input[type=number]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px;color:var(--ink)}
+  .row input[type=range]{width:100%}
+  .hint{font-size:11.5px;color:var(--mut);margin-top:2px}
+  .rangeval{float:right;color:var(--blue);font-weight:600}
+  .results{background:linear-gradient(180deg,#f3f7ff,#fbf7ff);border-radius:12px;padding:18px}
+  .res{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
+  .res:last-child{border-bottom:none}
+  .res .v{font-weight:600;font-variant-numeric:tabular-nums}
+  .res.big{padding-top:14px}
+  .res.big .k{font-size:15px;font-weight:700;color:var(--navy)}
+  .res.big .v{font-size:23px;color:var(--good)}
+  .roi{margin-top:10px;text-align:center;background:var(--grad);color:#fff;border-radius:10px;padding:12px}
+  .roi b{font-size:26px;display:block;line-height:1.1}
+  .roi span{font-size:12px;opacity:.92}
+
+  h2{font-size:18px;color:var(--navy);margin:30px 0 6px}
+  .method{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:10px}
+  .method p.sub{margin:0 0 12px;font-size:13.5px;color:var(--mut)}
+  table.bd{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.bd th,table.bd td{padding:7px 9px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  table.bd th{background:#eef2f9;color:var(--navy);font-size:11px;text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+  table.bd td:first-child,table.bd th:first-child{text-align:left}
+  table.bd td:nth-child(2),table.bd th:nth-child(2){text-align:center;color:var(--mut)}
+  table.bd tr.sub td{background:#f3f7ff;font-weight:700;color:var(--navy);border-top:2px solid var(--line)}
+  .chain{margin:14px 0 0;border-top:1px solid var(--line);padding-top:12px}
+  .chain .step{display:flex;gap:10px;font-size:13px;margin-bottom:7px}
+  .chain .step b{color:var(--navy);min-width:172px;display:inline-block}
+  .chain code{background:#eef2f9;border-radius:5px;padding:1px 6px;font-size:.92em;color:#0a3d8f}
+  .cons{margin-top:12px;font-size:12.5px;color:var(--mut);background:#f7faf7;border-left:3px solid var(--good);padding:9px 12px;border-radius:6px}
+
+  .stack{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  @media(max-width:680px){.stack{grid-template-columns:1fr}}
+  .driver{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .driver h4{margin:0 0 4px;font-size:14px;color:var(--navy)}
+  .driver p{margin:0;font-size:13px;color:var(--mut)}
+  .close{margin-top:26px;background:var(--navy);color:#fff;border-radius:14px;padding:22px 24px}
+  .close h2{color:#fff;margin:0 0 8px}
+  .close p{margin:0 0 14px;font-size:14px;color:#cdd6e8;max-width:720px}
+  .btn{display:inline-block;background:var(--grad);color:#fff;text-decoration:none;font-weight:600;padding:11px 20px;border-radius:9px;font-size:14px}
+  .foot{margin-top:22px;font-size:11.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px}
+  code{background:#eef2f9;border-radius:5px;padding:1px 5px;font-size:.9em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="/" style="display:flex;align-items:center;gap:12px;text-decoration:none;" aria-label="Safety Lab Aero home">
+      <span class="mark"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="32,16 48,48 16,48" fill="#fff"/></svg></span>
+      <span class="brand">Safety Lab Aero</span>
+    </a>
+    <a class="home-link" href="/">← Back to safetylabaero.com</a>
+  </header>
+
+  <h1>What an integrated safety workspace is <span class="grad">actually worth</span></h1>
+  <p class="lede">Not a hand-waved percentage. This model is built bottom-up from every ARP 4761A deliverable — AFHA, PASA, SFHA, PSSA, SSA, ASA, the common-cause analyses (ZSA / PRA / CMA) and FMEA — scaled by how many systems you run and how much your design churns toward freeze. The full calculation is shown below the result.</p>
+
+  <div class="calc">
+    <div class="inputs">
+      <h3>Your program</h3>
+      <div class="row"><label>Number of systems</label><input id="systems" type="number" value="5" min="1" step="1"></div>
+      <div class="row"><label>Average system complexity <span class="rangeval" id="cxv">1.0× · typical</span><input id="cx" type="range" min="0.3" max="2" step="0.1" value="1"></label>
+        <div class="hint">1.0 = a reference system; sub-1 for small systems (e.g. lighting), &gt;1 for complex (e.g. flight control).</div></div>
+      <div class="row"><label>Design churn → iteration factor <span class="rangeval" id="iterv">×3.0 · moderate</span><input id="iter" type="range" min="2" max="6" step="0.5" value="3"></label>
+        <div class="hint">Full effort ÷ first-draft. Captures the revision / re-analysis cycles to design freeze — the bulk of real cost.</div></div>
+      <div class="row"><label>Fully-loaded engineer rate ($/hr)</label><input id="rate" type="number" value="110" step="5"><div class="hint">≈ $229K/yr loaded. US aerospace-engineer avg ~$114K base + ~1.4× overhead.</div></div>
+      <div class="row"><label>Safety Lab Aero — annual subscription ($)</label><input id="sub" type="number" value="60000" step="5000"></div>
+    </div>
+    <div class="results">
+      <h3>Program impact</h3>
+      <div class="res"><span class="k">Full-program baseline effort</span><span class="v" id="oBase">—</span></div>
+      <div class="res"><span class="k">Blended reduction</span><span class="v" id="oBlend">—</span></div>
+      <div class="res"><span class="k">Engineer-hours saved</span><span class="v" id="oHrs">—</span></div>
+      <div class="res"><span class="k">≈ Person-years saved</span><span class="v" id="oPy">—</span></div>
+      <div class="res"><span class="k">Engineering-effort savings</span><span class="v" id="oEffort">—</span></div>
+      <div class="res"><span class="k">Rework avoided (3 late findings)</span><span class="v" id="oRework">—</span></div>
+      <div class="res big"><span class="k">Total value per program</span><span class="v" id="oTotal">—</span></div>
+      <div class="roi"><b id="oRoi">—</b><span>program value vs. one year of subscription</span></div>
+    </div>
+  </div>
+
+  <h2>How it's calculated</h2>
+  <div class="method">
+    <p class="sub">The savings are built up from every ARP 4761A phase at your inputs — aircraft-level and CCA costed once, system-level phases scaled by systems × complexity, all multiplied by the iteration factor. This breakdown updates live:</p>
+    <table class="bd">
+      <thead><tr><th>ARP 4761A phase</th><th>Scope</th><th>First-draft hrs</th><th>Baseline hrs</th><th>Reduction</th><th>Hours saved</th></tr></thead>
+      <tbody id="bdBody"></tbody>
+    </table>
+    <div class="chain">
+      <div class="step"><b>System-units</b><span>= systems × average complexity (so small systems count for less).</span></div>
+      <div class="step"><b>Baseline hrs / phase</b><span>= <code>first-draft hrs × units × iteration factor</code> &nbsp;(units = 1 for once-per-aircraft &amp; CCA phases).</span></div>
+      <div class="step"><b>Hours saved / phase</b><span>= <code>baseline hrs × reduction %</code>.</span></div>
+      <div class="step"><b>Effort savings</b><span>= <code>Σ hours saved × loaded rate</code>; person-years = hours ÷ 2,080.</span></div>
+      <div class="step"><b>Rework avoided</b><span>= late findings caught at authoring × hours each × rate (10–30× cheaper than at cert review).</span></div>
+      <div class="step"><b>Total value</b><span>= <code>effort savings + rework avoided</code>.</span></div>
+    </div>
+    <div class="cons"><b>Deliberately conservative:</b> the same reduction is applied to the full iteration-inflated baseline, even though re-iteration is cheaper still (instant re-quantification + golden-thread auto-propagation). Quantification phases (PASA / PSSA / SSA / ASA) carry the highest reductions because the deterministic engine does the cut sets, exact P(top) and DAL allocation — work a draft-only tool can't do at all.</div>
+  </div>
+
+  <h2>Where the savings come from</h2>
+  <div class="stack">
+    <div class="driver"><h4>The iteration loop, not just first drafts</h4><p>Safety assessment is iterative — every design change re-touches FHA, fault trees, CCA and traceability. The golden thread re-propagates and the engine re-quantifies instantly, so the expensive part gets cheap.</p></div>
+    <div class="driver"><h4>One connected model</h4><p>Functions, hazards, fault trees, FMEA, common-cause, requirements and verification share one data model — nothing is re-entered and nothing drifts.</p></div>
+    <div class="driver"><h4>Deterministic quantification</h4><p>Minimal cut sets, BDD-exact P(top) and DAL allocation are computed, not drafted — the phases (PASA/PSSA/SSA/ASA) where manual effort and error risk are highest.</p></div>
+    <div class="driver"><h4>Automatic traceability</h4><p>The trace web — function → FHA → fault tree → requirement → verification — is built and maintained for you, so change-impact is near-instant.</p></div>
+    <div class="driver"><h4>Fewer errors, less rework</h4><p>A defect caught in-tool costs minutes; the same one caught in cert review costs weeks (the 1 : 10 : 100 rule).</p></div>
+    <div class="driver"><h4>Cert-ready output</h4><p>Signature-ready FHA/PSSA/SSA and a DO-330 dossier in editable Word and PDF — assembled from the model, not hand-built.</p></div>
+  </div>
+
+  <div class="close">
+    <h2>Prove it on your program</h2>
+    <p>A 90-day paid pilot on your real analysis, measuring the hours recovered against this model. Replace every input with your own numbers — the calculation is open for you to check, line by line.</p>
+    <a class="btn" href="https://safetylabaero.com">Start a pilot →</a>
+  </div>
+
+  <p class="foot">Illustrative model — figures depend on your system count, complexity, design churn, loaded rates and program. Defaults are intentionally conservative; per-phase first-draft hours and reductions follow the published Safety Lab Aero ROI model. Replace every input with your own numbers. Not a guarantee of results. © 2026 Safety Lab Aero, Inc. · safetylabaero.com · waqas.nafees@safetylabaero.com</p>
+</div>
+
+<script>
+  var PHASES=[
+    {n:"AFHA — Aircraft Functional Hazard Assessment",sys:false,fd:240,red:0.55},
+    {n:"PASA — Preliminary Aircraft Safety Assessment",sys:false,fd:320,red:0.65},
+    {n:"ASA — Aircraft Safety Assessment",sys:false,fd:280,red:0.60},
+    {n:"SFHA — System Functional Hazard Assessment",sys:true,fd:160,red:0.55},
+    {n:"PSSA — Preliminary System Safety Assessment",sys:true,fd:320,red:0.65},
+    {n:"SSA — System Safety Assessment",sys:true,fd:280,red:0.60},
+    {n:"FMEA / FMES",sys:true,fd:240,red:0.45},
+    {n:"ZSA — Zonal Safety Analysis",sys:false,fd:280,red:0.45},
+    {n:"PRA — Particular Risks Analysis",sys:false,fd:240,red:0.45},
+    {n:"CMA — Common Mode Analysis",sys:false,fd:240,red:0.50},
+    {n:"Traceability & change-impact (golden thread)",sys:false,fd:320,red:0.80},
+    {n:"Report & DO-330 dossier assembly + review",sys:false,fd:320,red:0.65}
+  ];
+  var REWORK_FINDINGS=3, REWORK_HRS=200, HPY=2080;
+  function num(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?0:v; }
+  function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+  function money(n){ return '$'+fmt(n); }
+  function model(){
+    var systems=num('systems'), cx=num('cx'), iter=num('iter'), rate=num('rate'), sub=num('sub');
+    var units=systems*cx, baseTot=0, savedTot=0, rows=[];
+    PHASES.forEach(function(p){
+      var u=p.sys?units:1, base=p.fd*u*iter, saved=base*p.red;
+      baseTot+=base; savedTot+=saved;
+      rows.push({n:p.n,sys:p.sys,fd:p.fd,base:base,red:p.red,saved:saved});
+    });
+    var blended=baseTot?savedTot/baseTot:0, effort=savedTot*rate,
+        reworkHrs=REWORK_FINDINGS*REWORK_HRS, rework=reworkHrs*rate,
+        total=effort+rework, py=(savedTot+reworkHrs)/HPY, roi=sub>0?total/sub:0;
+    return {units:units,baseTot:baseTot,savedTot:savedTot,blended:blended,effort:effort,
+            rework:rework,total:total,py:py,roi:roi,rows:rows};
+  }
+  function cxLabel(v){ return v<0.7?'simple':(v>1.3?'complex':'typical'); }
+  function iterLabel(v){ return v<2.5?'low':(v>4?'high':'moderate'); }
+  function calc(){
+    document.getElementById('cxv').textContent = num('cx').toFixed(1)+'× · '+cxLabel(num('cx'));
+    document.getElementById('iterv').textContent = '×'+num('iter').toFixed(1)+' · '+iterLabel(num('iter'))+' churn';
+    var m=model();
+    document.getElementById('oBase').textContent  = fmt(m.baseTot)+' hrs';
+    document.getElementById('oBlend').textContent = Math.round(m.blended*100)+'%';
+    document.getElementById('oHrs').textContent   = fmt(m.savedTot)+' hrs';
+    document.getElementById('oPy').textContent    = m.py.toFixed(1)+' yrs';
+    document.getElementById('oEffort').textContent= money(m.effort);
+    document.getElementById('oRework').textContent= money(m.rework);
+    document.getElementById('oTotal').textContent = money(m.total);
+    document.getElementById('oRoi').textContent   = (m.roi>0?m.roi.toFixed(1):'—')+'×';
+    var html='';
+    m.rows.forEach(function(r){
+      html+='<tr><td>'+r.n+'</td><td>'+(r.sys?'× systems':'once')+'</td><td>'+fmt(r.fd)+'</td><td>'+fmt(r.base)+'</td><td>'+Math.round(r.red*100)+'%</td><td>'+fmt(r.saved)+'</td></tr>';
+    });
+    html+='<tr class="sub"><td>Subtotal — engineering effort</td><td>'+m.units.toFixed(1)+' sys-units</td><td></td><td>'+fmt(m.baseTot)+'</td><td>'+Math.round(m.blended*100)+'%</td><td>'+fmt(m.savedTot)+'</td></tr>';
+    document.getElementById('bdBody').innerHTML=html;
+  }
+  document.querySelectorAll('input').forEach(function(el){ el.addEventListener('input', calc); });
+  calc();
+</script>
+</body>
+</html>

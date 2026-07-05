@@ -1,0 +1,11 @@
+version: 0.4.0
+files:
+  - url: Safety Lab Aero-0.4.0-arm64-mac.zip
+    sha512: Y9/xD38eGnVvcv1i8ANPwx8g9+FiMuNufOozqLfT5CYWokhr/d9nRLa3ucdeH33ogpCbafDLK7Riw8nHsucbYA==
+    size: 93594684
+  - url: Safety Lab Aero-0.4.0-arm64.dmg
+    sha512: RnwqbxR8sr/webpFWxIkUsuIOWi1SY21dilaFttPcJZYuedONi3fKiouLVsisOZY0F4dNxJEGNZgEhcjl1m2iw==
+    size: 96934450
+path: Safety Lab Aero-0.4.0-arm64-mac.zip
+sha512: Y9/xD38eGnVvcv1i8ANPwx8g9+FiMuNufOozqLfT5CYWokhr/d9nRLa3ucdeH33ogpCbafDLK7Riw8nHsucbYA==
+releaseDate: '2026-06-25T01:03:38.222Z'

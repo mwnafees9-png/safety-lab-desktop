@@ -1,0 +1,38 @@
+# Safety Lab Aero — safetylabaero.com
+# Allow all reputable bots; point them at the sitemap.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# Specific allowance for Googlebot
+User-agent: Googlebot
+Allow: /
+
+# Specific allowance for Bingbot
+User-agent: Bingbot
+Allow: /
+
+# Block known scraping bots
+User-agent: SemrushBot
+Disallow: /
+User-agent: AhrefsBot
+Disallow: /
+User-agent: MJ12bot
+Disallow: /
+User-agent: DotBot
+Disallow: /
+
+# AI crawlers — allow public-facing pages, block app content
+# Adjust based on whether you want Safety Lab Aero content used as LLM training data
+User-agent: GPTBot
+Disallow: /app/
+User-agent: ClaudeBot
+Disallow: /app/
+User-agent: CCBot
+Disallow: /app/
+User-agent: anthropic-ai
+Disallow: /app/
+
+Sitemap: https://safetylabaero.com/sitemap.xml

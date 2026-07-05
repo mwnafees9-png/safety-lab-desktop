@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F7F4EC" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F7F4EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#F7F4EC">
+<meta name="description" content="Safety Lab Aero is an integrated aerospace safety analysis workspace. AFHA, PSSA, SSA, fault tree analysis, and DO-178C/DO-254 compliance in one tool — built for engineers, certified by math.">
+<meta name="keywords" content="ARP 4761A, ARP 4754B, AC 25.1309, fault tree analysis, FTA software, DO-178C, DO-254, DAL allocation, aerospace certification, safety analysis, AAM, eVTOL safety, SC-VTOL">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Safety Lab Aero">
+<meta property="og:title" content="Safety Lab Aero — Aerospace safety analysis, integrated">
+<meta property="og:description" content="One workspace for AFHA, PSSA, SSA, FTA, and DO-178C/DO-254 traceability. Built by an aerospace engineer for aerospace engineers.">
+<meta property="og:url" content="https://safetylabaero.com">
+<meta property="og:image" content="https://safetylabaero.com/og.png">
+<meta property="og:image:secure_url" content="https://safetylabaero.com/og.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Safety Lab Aero — integrated aerospace safety analysis workspace">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Safety Lab Aero — Aerospace safety analysis, integrated">
+<meta name="twitter:description" content="One workspace for AFHA, PSSA, SSA, FTA, and DO-178C/DO-254 traceability. Built by an aerospace engineer for aerospace engineers.">
+<meta name="twitter:image" content="https://safetylabaero.com/og.png">
+<title>Safety Lab Aero — Aerospace safety analysis, integrated</title>
+<link rel="canonical" href="https://safetylabaero.com/">
+<!-- Phase 62 — Flight recorder identity: IBM Plex Sans + Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://safetylabaero.com/#software",
+      "name": "Safety Lab Aero",
+      "applicationCategory": "EngineeringApplication",
+      "applicationSubCategory": "Aerospace safety analysis",
+      "operatingSystem": "Web",
+      "url": "https://safetylabaero.com/",
+      "image": "https://safetylabaero.com/og.png",
+      "description": "Safety Lab Aero is an integrated aerospace safety analysis workspace. It carries a program from functional hazard assessment to a certification-ready evidence package on the ARP 4761A / 4754B process — AFHA, fault tree analysis, FMEA, common-cause analysis, requirements and verification in one connected model, with DO-178C / DO-254 / DO-330 support.",
+      "featureList": [
+        "Functional Hazard Assessment (AFHA / SFHA)",
+        "Fault Tree Analysis with rigorous top-event quantification",
+        "FMEA (functional and piece-part)",
+        "Common-cause and zonal safety analysis (CMA / PRA / ZSA)",
+        "Automated, traceable safety requirements",
+        "DAL allocation under ARP 4754B",
+        "DO-330 tool-qualification dossier"
+      ],
+      "keywords": "ARP 4761A software, ARP 4754B, fault tree analysis software, FMEA software, common cause analysis, system safety assessment, DO-178C, DO-254, DAL allocation, eVTOL safety, SC-VTOL",
+      "offers": {
+        "@type": "Offer",
+        "category": "SaaS",
+        "availability": "https://schema.org/PreOrder"
+      },
+      "publisher": { "@id": "https://safetylabaero.com/#org" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://safetylabaero.com/#org",
+      "name": "Muhammad Waqas Nafees",
+      "alternateName": "Safety Lab Aero",
+      "url": "https://safetylabaero.com/",
+      "logo": "https://safetylabaero.com/og.png",
+      "email": "waqas.nafees@safetylabaero.com",
+      "founder": { "@type": "Person", "name": "Waqas Nafees" },
+      "description": "Builder of Safety Lab Aero, an integrated aerospace and system safety analysis workspace for ARP 4761A / 4754B certification programs."
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================================
+   Safety Lab Aero — landing page
+   Single-file static page. Theme-aware. Brand-matched to the app.
+   Palette pulled from safety_lab_brand.py — keep these in sync.
+   ============================================================================ */
+
+:root {
+    color-scheme: dark;
+
+    --brand-blue:   #007aff;
+    --brand-purple: #af52de;
+    --ink-navy:     #0A1F44;
+    --ink-body:     #181B22;
+    --ink-muted:    #555B6B;
+
+    /* Default = dark theme. Light theme available via prefers-color-scheme: light below. */
+    --bg:           #0b0d12;
+    --bg-soft:      #11141b;
+    --bg-card:      #161a23;
+    --border-hair:  #1f2532;
+    --border:       #2a3142;
+
+    --text:         #e2e6f0;
+    --text-strong:  #f3f5fa;
+    --text-muted:   #9aa3b8;
+
+    /* Phase 62.6 — fully square */
+    --r-sm: 0;
+    --r-md: 0;
+    --r-lg: 0;
+    --r-xl: 0;
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.20), 0 1px 3px rgba(0, 0, 0, 0.28);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 8px 32px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.30), 0 24px 64px rgba(0, 0, 0, 0.40);
+
+    /* Phase 62 — flight recorder identity: IBM Plex, engineering-heritage type */
+    --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    --font-mono: 'IBM Plex Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    --grad: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-purple) 100%);
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        color-scheme: light;
+
+        --bg:          #ffffff;
+        --bg-soft:     #f7f8fb;
+        --bg-card:     #ffffff;
+        --border-hair: #e3e6ee;
+        --border:      #d4d8e3;
+
+        --text:        var(--ink-body);
+        --text-strong: var(--ink-navy);
+        --text-muted:  var(--ink-muted);
+
+        --shadow-sm: 0 1px 2px rgba(10, 31, 68, 0.04), 0 1px 3px rgba(10, 31, 68, 0.06);
+        --shadow-md: 0 4px 12px rgba(10, 31, 68, 0.06), 0 8px 32px rgba(10, 31, 68, 0.08);
+        --shadow-lg: 0 12px 32px rgba(10, 31, 68, 0.10), 0 24px 64px rgba(10, 31, 68, 0.12);
+    }
+}
+
+/* ─── Base */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+a { color: var(--brand-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--s-5);
+}
+
+/* ─── Brand mark */
+.brand-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--grad);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.brand-mark svg { width: 18px; height: 18px; }
+.brand-mark.lg { width: 56px; height: 56px; border-radius: 14px; }
+.brand-mark.lg svg { width: 32px; height: 32px; }
+
+/* ─── Navigation */
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11, 13, 18, 0.85);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--border-hair);
+}
+@media (prefers-color-scheme: light) {
+    .nav { background: rgba(255, 255, 255, 0.85); }
+}
+
+/* Phase 57 — landing page is LIGHT MODE ONLY. This unconditional override comes after the
+   dark :root defaults + the prefers-color-scheme blocks, so it wins for every visitor
+   regardless of their OS dark/light setting. */
+:root {
+    color-scheme: light;
+    /* Phase 62 — paper + ink (flight recorder identity). Gradient stays as the
+       brand spine + hero + logo; working accent is the deepened brand blue. */
+    --bg:          #F7F4EC;
+    --bg-soft:     #F1EDE2;
+    --bg-card:     #FFFFFF;
+    --border-hair: #E4DFD1;
+    --border:      #CFC9B8;
+    --text:        #16181D;
+    --text-strong: #0A1F44;
+    --text-muted:  #565B66;
+    --accent:      #0A63CC;
+    --shadow-sm: 0 1px 2px rgba(16, 18, 22, 0.05), 0 1px 3px rgba(16, 18, 22, 0.06);
+    --shadow-md: 0 4px 12px rgba(16, 18, 22, 0.06), 0 8px 32px rgba(16, 18, 22, 0.08);
+    --shadow-lg: 0 12px 32px rgba(16, 18, 22, 0.09), 0 24px 64px rgba(16, 18, 22, 0.11);
+}
+.nav { background: rgba(247, 244, 236, 0.88) !important; }
+/* Phase 62.6 — zero radii site-wide; inline-styled circles stay round. */
+body *, body *::before, body *::after { border-radius: 0 !important; }
+[style*="border-radius: 50%"], [style*="border-radius:50%"] { border-radius: 50% !important; }
+/* Phase 62 — brand spine: the gradient's one structural appearance. */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--grad);
+    z-index: 2000;
+    pointer-events: none;
+}
+a { color: var(--accent); }
+.nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--s-3) var(--s-5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+}
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-strong);
+}
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+}
+.nav-links a {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;   /* one line, always — no two-line pills, no wrapped labels */
+}
+.nav-links a:hover { color: var(--text-strong); }
+/* "More" dropdown — CSS-only (hover + keyboard focus), no JS */
+.nav-more { position: relative; }
+.nav-more-btn {
+    background: none; border: none; cursor: pointer; font: inherit;
+    color: var(--text-muted); font-size: 14px; font-weight: 500; white-space: nowrap;
+    padding: 8px 2px; display: inline-flex; align-items: center; gap: 4px;
+}
+.nav-more-btn:hover { color: var(--text-strong); }
+.nav-more-menu {
+    display: none; position: absolute; top: 100%; right: 0; min-width: 160px;
+    background: var(--surface, #fff); border: 1px solid rgba(26,28,34,0.14);
+    border-radius: var(--r-md); box-shadow: var(--shadow-md); padding: 6px; z-index: 50;
+}
+.nav-more:hover .nav-more-menu,
+.nav-more:focus-within .nav-more-menu { display: block; }
+.nav-more-menu a { display: block; padding: 8px 12px; border-radius: 6px; }
+.nav-more-menu a:hover { background: rgba(26,28,34,0.05); }
+.nav-cta {
+    background: var(--grad);
+    color: #fff !important;
+    padding: 8px 16px;
+    border-radius: var(--r-md);
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none !important;
+}
+
+/* ─── Hero */
+.hero {
+    padding: var(--s-8) 0 var(--s-7);
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0, 122, 255, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(175, 82, 222, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+.hero-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+.hero-eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brand-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--s-4);
+    padding: 4px 12px;
+    border: 1px solid rgba(0, 122, 255, 0.25);
+    border-radius: 999px;
+    background: rgba(0, 122, 255, 0.06);
+}
+.hero h1 {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-strong);
+    margin: 0 0 var(--s-4);
+}
+.hero h1 .grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.hero-sub {
+    font-size: clamp(17px, 2vw, 20px);
+    color: var(--text-muted);
+    line-height: 1.55;
+    max-width: 680px;
+    margin: 0 auto var(--s-6);
+}
+.hero-ctas {
+    display: flex;
+    gap: var(--s-3);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: var(--s-5);
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    padding: 12px 22px;
+    border-radius: var(--r-md);
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    font-family: var(--font-sans);
+}
+.btn-primary {
+    background: var(--grad);
+    color: #fff;
+    box-shadow: var(--shadow-md);
+}
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+    text-decoration: none;
+}
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-strong);
+    border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+    background: var(--bg-soft);
+    text-decoration: none;
+}
+.hero-trust {
+    margin-top: var(--s-6);
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.hero-trust strong { color: var(--text); font-weight: 600; }
+
+/* ─── Section base */
+section {
+    padding: var(--s-8) 0;
+    border-top: 1px solid var(--border-hair);
+}
+.section-eyebrow {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--brand-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--s-3);
+}
+.section-title {
+    font-size: clamp(28px, 3.5vw, 40px);
+    font-weight: 700;
+    color: var(--text-strong);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--s-4);
+}
+/* The safety-spine heading is a long 6-step formula; size it to sit on one line
+   within the content column on desktop, and balance any wrap on smaller screens
+   so "workspace." never orphans onto its own line. */
+.process-preview .section-title {
+    font-size: clamp(22px, 2.8vw, 32px);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+.section-sub {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 900px;
+    margin: 0 0 var(--s-6);
+    line-height: 1.55;
+    text-wrap: pretty;
+}
+
+/* ─── Features grid (How it works) */
+.features {
+    background: var(--bg-soft);
+}
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--s-5);
+}
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-hair);
+    border-radius: var(--r-lg);
+    padding: var(--s-5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--grad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--s-4);
+    color: #fff;
+    font-size: 20px;
+}
+.feature-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-strong);
+    margin: 0 0 var(--s-2);
+    letter-spacing: -0.01em;
+}
+.feature-card p {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
+/* ─── Process strip preview */
+.process-preview {
+    background: var(--bg);
+}
+.process-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--s-2);
+    padding: var(--s-4);
+    background: var(--bg-soft);
+    border: 1px solid var(--border-hair);
+    border-radius: var(--r-lg);
+    overflow-x: auto;
+}
+.process-card-prev {
+    background: var(--bg-card);
+    border: 1px solid var(--border-hair);
+    border-radius: var(--r-md);
+    padding: var(--s-3);
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.process-card-prev .lbl {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-strong);
+    margin-bottom: 2px;
+}
+@media (max-width: 720px) {
+    .process-strip { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ─── Pricing */
+.pricing { background: var(--bg-soft); }
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--s-4);
+    margin-top: var(--s-6);
+}
+.tier-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-hair);
+    border-radius: var(--r-lg);
+    padding: var(--s-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    position: relative;
+}
+.tier-card.featured {
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 1px var(--brand-blue), var(--shadow-md);
+}
+.tier-card.featured::before {
+    content: 'Most popular';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--grad);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+.tier-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.tier-price {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-strong);
+    letter-spacing: -0.02em;
+}
+.tier-price small {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+.tier-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    min-height: 40px;
+}
+.tier-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+}
+.tier-features li {
+    font-size: 13.5px;
+    color: var(--text);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+.tier-features li::before {
+    content: '✓';
+    color: var(--brand-blue);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+.tier-btn {
+    margin-top: auto;
+    padding: 10px 16px;
+    border-radius: var(--r-md);
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-strong);
+    transition: background 0.15s ease;
+}
+.tier-card.featured .tier-btn {
+    background: var(--grad);
+    color: #fff;
+    border-color: transparent;
+}
+.tier-btn:hover { background: var(--bg-soft); text-decoration: none; }
+.tier-card.featured .tier-btn:hover { opacity: 0.92; }
+.pricing-note {
+    margin-top: var(--s-5);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* ─── About / Founder */
+.about { background: var(--bg); }
+.about-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--s-6);
+    align-items: start;
+}
+@media (max-width: 720px) {
+    .about-grid { grid-template-columns: 1fr; }
+}
+.founder-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--border-hair);
+    border-radius: var(--r-lg);
+    padding: var(--s-5);
+    text-align: center;
+}
+.founder-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--grad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 auto var(--s-3);
+    letter-spacing: -0.02em;
+}
+.founder-name { font-size: 16px; font-weight: 600; color: var(--text-strong); margin: 0 0 2px; }
+.founder-role { font-size: 13px; color: var(--text-muted); margin: 0; }
+.about-body p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0 0 var(--s-4);
+}
+.about-body p strong { color: var(--text-strong); font-weight: 600; }
+
+/* ─── CTA strip */
+.cta-strip {
+    background: var(--grad);
+    color: #fff;
+    text-align: center;
+    border-top: none;
+}
+.cta-strip h2 {
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 700;
+    margin: 0 0 var(--s-3);
+    color: #fff;
+    letter-spacing: -0.015em;
+}
+.cta-strip p {
+    font-size: 16px;
+    margin: 0 0 var(--s-5);
+    opacity: 0.92;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.cta-strip .btn {
+    background: #fff;
+    color: var(--brand-blue);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+.cta-strip .btn:hover { transform: translateY(-1px); }
+
+/* ─── Footer */
+footer {
+    background: var(--bg-soft);
+    border-top: 1px solid var(--border-hair);
+    padding: var(--s-6) 0 var(--s-5);
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.foot-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--s-5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+}
+.foot-brand { display: flex; align-items: center; gap: var(--s-3); color: var(--text); font-weight: 600; }
+.foot-links { display: flex; gap: var(--s-4); flex-wrap: wrap; }
+.foot-links a { color: var(--text-muted); }
+.foot-links a:hover { color: var(--text-strong); }
+.foot-copy { margin-top: var(--s-3); font-size: 12px; text-align: center; opacity: 0.7; }
+
+/* ─── utility */
+.center { text-align: center; }
+
+/* ─── Mobile optimization (Phase 57) — declutter the nav, tighten spacing,
+   stack CTAs, and size type down so the page reads cleanly on a phone. */
+@media (max-width: 720px) {
+    .container { padding: 0 var(--s-4); }
+    .nav-inner { padding: var(--s-3) var(--s-4); gap: var(--s-3); }
+    .nav-links { gap: var(--s-3); }
+    /* Drop the in-page anchor links on phones; keep the brand + the primary CTA. */
+    .nav-links a:not(.nav-cta) { display: none; }
+    .nav-more { display: none; }
+    section { padding: var(--s-6) 0; }
+    .hero { padding: var(--s-6) 0 var(--s-5); }
+    .hero-sub { font-size: 16px; }
+    .process-strip { gap: var(--s-2); }
+    .about-grid { gap: var(--s-4); }
+}
+@media (max-width: 480px) {
+    .hero h1 { font-size: clamp(27px, 8.5vw, 38px); }
+    .hero-ctas { flex-direction: column; align-items: stretch; gap: var(--s-2); }
+    .hero-ctas .btn { width: 100%; justify-content: center; }
+    .section-title { font-size: clamp(21px, 6vw, 30px); }
+    .process-strip { grid-template-columns: repeat(2, 1fr); }
+    .tier-price { font-size: 28px; }
+}
+
+/* ── Golden thread interactive graphic ───────────────────────────────── */
+.gt-hint { display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); margin-top:var(--s-4); }
+.gt-hint-dot { width:8px; height:8px; border-radius:50%; background:var(--brand-blue); box-shadow:0 0 0 4px rgba(0,122,255,0.18); }
+#gt-svg .gt-nd { cursor:pointer; transition:opacity .12s; }
+#gt-svg .gt-nd:hover { stroke:#ffffff; stroke-width:1.6; }
+#gt-svg rect.gt-fn { stroke:rgba(255,255,255,0.55); stroke-width:1; }
+#gt-svg rect.gt-fn:hover { stroke:#ffffff; stroke-width:2; }
+#gt-svg .gt-lbl { cursor:pointer; }
+.gt-modal { position:fixed; inset:0; background:rgba(4,8,16,0.68); display:none; align-items:center; justify-content:center; z-index:2000; padding:20px; }
+.gt-modal.show { display:flex; }
+.gt-modal-panel { position:relative; background:#0f1726; border:1px solid #22324e; border-radius:16px; max-width:780px; width:100%; max-height:86vh; overflow:auto; padding:24px 26px; box-shadow:0 24px 64px rgba(0,0,0,0.5); }
+.gt-modal-x { position:absolute; top:14px; right:18px; font-size:24px; line-height:1; color:var(--text-muted); background:none; border:none; cursor:pointer; }
+.gt-modal-x:hover { color:var(--text-strong); }
+.gt-m-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding-right:30px; }
+.gt-m-pill { font-size:11px; font-weight:600; color:#fff; padding:3px 11px; border-radius:999px; }
+.gt-m-name { font-size:18px; font-weight:600; color:#f3f5fa; }
+.gt-m-id { font-family:var(--font-mono); font-size:12px; color:#9aa3b8; }
+.gt-m-sub { font-size:12px; color:#7e879b; margin:5px 0 2px; }
+.gt-m-sec { margin-top:14px; }
+.gt-m-sectitle { font-size:12px; font-weight:600; color:#aab3c8; margin-bottom:8px; }
+.gt-m-chips { display:flex; flex-wrap:wrap; gap:7px; }
+.gt-m-chip { display:inline-flex; align-items:center; gap:7px; font-size:12.5px; padding:5px 11px; border-radius:8px; border:1px solid #243049; background:#161f31; color:#dfe5f0; }
+.gt-m-dot { width:9px; height:9px; border-radius:2px; flex:none; }
+.gt-m-cid { font-family:var(--font-mono); color:#9aa3b8; }
+.gt-m-meta { color:#737d92; font-size:11px; margin-left:3px; }
+.gt-m-cta { display:inline-block; margin-top:18px; background:var(--grad); color:#fff; font-weight:600; font-size:13px; padding:10px 18px; border-radius:8px; text-decoration:none; }
+
+/* ─── Testimonials / social proof (sits after the golden thread) */
+.tst-section{ background:var(--bg-soft); padding:var(--s-8) 0; border-top:1px solid var(--border-hair); border-bottom:1px solid var(--border-hair); }
+.tst-lead{ font-size:clamp(26px,3.2vw,38px); font-weight:700; color:var(--text-strong); line-height:1.18; letter-spacing:-.015em; margin:0 0 var(--s-2); max-width:900px; }
+.tst-lead-by{ font-size:15px; color:var(--text-muted); font-weight:500; margin:0 0 var(--s-5); }
+.tst-pills{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:var(--s-6); }
+.tst-pill{ display:inline-flex; align-items:center; gap:10px; background:rgba(0,122,255,.06); border:1px solid rgba(0,122,255,.18); border-radius:999px; padding:8px 16px 8px 12px; }
+.tst-pill.alt{ background:rgba(175,82,222,.06); border-color:rgba(175,82,222,.20); }
+.tst-pill.love{ background:rgba(214,83,126,.06); border-color:rgba(214,83,126,.20); }
+.tst-pill-badge{ width:24px; height:24px; border-radius:50%; background:var(--grad); display:inline-flex; align-items:center; justify-content:center; flex:none; }
+.tst-pill-badge svg{ width:14px; height:14px; }
+.tst-pill-txt{ font-size:14px; font-weight:600; color:var(--text-strong); }
+.tst-pill-txt em{ font-style:normal; color:var(--text-muted); font-weight:500; }
+.tst-quote{ margin:0 0 var(--s-7); padding:var(--s-6) var(--s-6) var(--s-6) var(--s-7); background:var(--bg-card); border:1px solid var(--border-hair); border-radius:var(--r-xl); position:relative; overflow:hidden; box-shadow:var(--shadow-md); }
+.tst-quote::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--grad); }
+.tst-qmark{ font-size:60px; line-height:.6; font-weight:800; background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; display:block; height:34px; }
+.tst-quote blockquote{ margin:6px 0 var(--s-5); font-size:clamp(19px,2.2vw,24px); line-height:1.45; color:var(--text-strong); font-weight:500; letter-spacing:-.01em; max-width:880px; }
+.tst-byline{ display:flex; align-items:center; gap:12px; }
+.tst-avatar{ width:40px; height:40px; border-radius:50%; background:var(--grad); display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; flex:none; }
+.tst-who{ font-weight:600; color:var(--text-strong); font-size:15px; }
+.tst-tag{ display:inline-block; margin-left:8px; font-size:11px; font-weight:600; color:#0a7d3c; background:rgba(16,160,72,.10); border:1px solid rgba(16,160,72,.22); border-radius:999px; padding:2px 9px; vertical-align:middle; letter-spacing:.02em; }
+.tst-themelabel{ font-size:13px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; margin:0 0 var(--s-4); }
+.tst-themes{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s-4); }
+.tst-card{ background:var(--bg-card); border:1px solid var(--border-hair); border-radius:var(--r-lg); padding:var(--s-5); }
+.tst-card-ic{ width:38px; height:38px; border-radius:10px; background:rgba(0,122,255,.08); display:inline-flex; align-items:center; justify-content:center; margin-bottom:14px; }
+.tst-card-ic svg{ width:20px; height:20px; stroke:var(--brand-blue); }
+.tst-card h3{ margin:0 0 6px; font-size:16px; font-weight:700; color:var(--text-strong); letter-spacing:-.01em; }
+.tst-card p{ margin:0; font-size:14px; color:var(--text-muted); line-height:1.5; }
+@media (max-width:820px){ .tst-themes{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Navigation
+     ═══════════════════════════════════════════════════════════════════════ -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-brand" aria-label="Safety Lab Aero home">
+            <span class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="32,16 48,48 16,48" fill="#fff"/></svg>
+            </span>
+            Safety Lab Aero
+        </a>
+        <div class="nav-links">
+            <a href="#how">How it works</a>
+            <a href="#mbsa">MBSA</a>
+            <a href="#connect">Integrations</a>
+            <a href="#you">The Story</a>
+            <a href="#pricing">Pricing</a>
+            <div class="nav-more">
+                <button class="nav-more-btn" aria-haspopup="true" aria-expanded="false">More <span aria-hidden="true">▾</span></button>
+                <div class="nav-more-menu" role="menu">
+                    <a href="#ram" role="menuitem">R&amp;M suite</a>
+                    <a href="/tools" role="menuitem">Tools</a>
+                    <a href="/templates" role="menuitem">Templates</a>
+                    <a href="/resources" role="menuitem">Resources</a>
+                    <a href="/roi" role="menuitem">ROI</a>
+                    <a href="#about" role="menuitem">About</a>
+                </div>
+            </div>
+            <a href="/app" class="nav-cta">Sign in</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Hero
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="hero" style="border-top: none;">
+    <div class="container hero-inner">
+        <h1>Aerospace safety analysis,<br><span class="grad-text">integrated.</span></h1>
+        <p class="hero-sub">
+            One workspace for AFHA, PSSA, SSA, fault tree analysis, and DO-178C/DO-254 traceability. Built by an aerospace engineer for the people who actually have to certify aircraft.
+        </p>
+        <div class="hero-ctas">
+            <a href="/app" class="btn btn-primary">Start free trial</a>
+            <a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-mac-arm64.dmg" class="btn btn-secondary">⬇ Download for Mac</a>
+            <a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-win-x64.exe" class="btn btn-secondary">⬇ Download for Windows</a>
+            <a href="#how" class="btn btn-secondary">See how it works</a>
+        </div>
+        <p style="font-size:12px; opacity:.65; margin-top:8px;">Mac download is Apple&nbsp;Silicon · <a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-mac-x64.dmg" style="color:inherit; text-decoration:underline;">Intel Mac version</a> · desktop apps auto-update</p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     ARP 4761A process preview
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="process-preview">
+    <div class="container">
+        <span class="section-eyebrow">The full safety spine</span>
+        <h2 class="section-title">AFHA → PASA → SFHA → PSSA → SSA → ASA, in one workspace.</h2>
+        <p class="section-sub">
+            The complete ARP 4761A spine lives together, with every artifact connected to every other one. State stays consistent across the workflow without manual reconciliation between documents.
+        </p>
+        <div class="process-strip" role="list" aria-label="ARP 4761A process phases">
+            <div class="process-card-prev" role="listitem"><span class="lbl">AFHA</span>Aircraft FHA</div>
+            <div class="process-card-prev" role="listitem"><span class="lbl">PASA</span>Prelim. AC Safety</div>
+            <div class="process-card-prev" role="listitem"><span class="lbl">SFHA</span>System FHAs</div>
+            <div class="process-card-prev" role="listitem"><span class="lbl">PSSA</span>Prelim. System Safety</div>
+            <div class="process-card-prev" role="listitem"><span class="lbl">SSA</span>System Safety Assess.</div>
+            <div class="process-card-prev" role="listitem"><span class="lbl">ASA</span>Aircraft Safety Assess.</div>
+        </div>
+        <p class="section-sub" style="margin-top: var(--s-5);">
+            Plus Common Cause Analysis (PRA, ZSA, CMA) as a parallel track, the way ARP 4761A actually describes it.
+        </p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     The golden thread (interactive)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="golden-thread" id="golden-thread">
+    <div class="container">
+        <span class="section-eyebrow">The golden thread</span>
+        <h2 class="section-title">&ldquo;Integrated&rdquo; isn&rsquo;t a layout. It&rsquo;s one connected thread.</h2>
+        <p class="section-sub">
+            The promise at the top of this page is a single model, not a bundle of tools. Every aircraft function flows down to a system, a failure condition, a fault tree, the common-cause analyses &mdash; PRA, ZSA, CMA &mdash; that test its independence, the safety requirement that controls it, and the verification that closes it. That unbroken line is the golden thread, and it&rsquo;s what &ldquo;integrated&rdquo; actually buys you: move the design and the whole thread moves with it, because there is only one source of truth to drift from.
+        </p>
+        <div class="gt-hint"><span class="gt-hint-dot"></span> Click a function in the left column to open its live trace.</div>
+        <div class="gt-graphic" style="margin-top: var(--s-3); background: #0c1a33; border: 1px solid #20304e; border-radius: var(--r-lg); padding: 22px 20px; overflow-x: auto; box-shadow: var(--shadow-md);">
+            <svg id="gt-svg" viewBox="0 0 1180 500" xmlns="http://www.w3.org/2000/svg" width="100%" role="img" aria-label="Interactive golden thread. Click a function to open its trace." style="display:block;min-width:780px;height:auto;font-family:'Inter',sans-serif;"><text x="14.0" y="22" fill="#3E8FE6" font-size="12.5" font-weight="600">Function</text><text x="205.7" y="22" fill="#25C08E" font-size="12.5" font-weight="600">System</text><text x="397.3" y="22" fill="#9D95F2" font-size="12.5" font-weight="600">Failure condition</text><text x="589.0" y="22" fill="#ED7B43" font-size="12.5" font-weight="600">Fault tree</text><text x="780.7" y="22" fill="#E0A93E" font-size="12.5" font-weight="600">Common cause</text><text x="972.3" y="22" fill="#EA6E9C" font-size="12.5" font-weight="600">Requirement</text><text x="1164.0" y="22" fill="#84C23F" font-size="12.5" font-weight="600">V&V evidence</text><g fill="none"><path d="M26.0,74.8C115.8,74.8 115.8,74.8 205.7,74.8" stroke="#3E8FE6" stroke-width="69.7" stroke-opacity="0.4"/><path d="M26.0,134.3C115.8,134.3 115.8,273.2 205.7,273.2" stroke="#3E8FE6" stroke-width="49.2" stroke-opacity="0.4"/><path d="M26.0,226.2C115.8,226.2 115.8,197.6 205.7,197.6" stroke="#3E8FE6" stroke-width="69.7" stroke-opacity="0.4"/><path d="M26.0,285.6C115.8,285.6 115.8,322.4 205.7,322.4" stroke="#3E8FE6" stroke-width="49.2" stroke-opacity="0.4"/><path d="M26.0,377.5C115.8,377.5 115.8,443.0 205.7,443.0" stroke="#3E8FE6" stroke-width="69.7" stroke-opacity="0.4"/><path d="M26.0,436.9C115.8,436.9 115.8,371.6 205.7,371.6" stroke="#3E8FE6" stroke-width="49.2" stroke-opacity="0.4"/><path d="M217.7,67.7C307.5,67.7 307.5,67.7 397.3,67.7" stroke="#25C08E" stroke-width="55.4" stroke-opacity="0.4"/><path d="M217.7,123.0C307.5,123.0 307.5,430.9 397.3,430.9" stroke="#25C08E" stroke-width="55.4" stroke-opacity="0.4"/><path d="M217.7,199.6C307.5,199.6 307.5,167.7 397.3,167.7" stroke="#25C08E" stroke-width="73.8" stroke-opacity="0.4"/><path d="M217.7,287.9C307.5,287.9 307.5,351.8 397.3,351.8" stroke="#25C08E" stroke-width="78.8" stroke-opacity="0.4"/><path d="M217.7,445.1C307.5,445.1 307.5,258.5 397.3,258.5" stroke="#25C08E" stroke-width="73.8" stroke-opacity="0.4"/><path d="M409.3,79.4C499.2,79.4 499.2,79.4 589.0,79.4" stroke="#9D95F2" stroke-width="78.8" stroke-opacity="0.4"/><path d="M409.3,440.1C499.2,440.1 499.2,187.4 589.0,187.4" stroke="#9D95F2" stroke-width="73.9" stroke-opacity="0.4"/><path d="M409.3,167.7C499.2,167.7 499.2,273.3 589.0,273.3" stroke="#9D95F2" stroke-width="73.9" stroke-opacity="0.4"/><path d="M409.3,351.8C499.2,351.8 499.2,361.6 589.0,361.6" stroke="#9D95F2" stroke-width="78.8" stroke-opacity="0.4"/><path d="M409.3,246.2C499.2,246.2 499.2,457.4 589.0,457.4" stroke="#9D95F2" stroke-width="49.3" stroke-opacity="0.4"/><path d="M601.0,56.4C690.8,56.4 690.8,150.6 780.7,150.6" stroke="#ED7B43" stroke-width="32.8" stroke-opacity="0.4"/><path d="M601.0,88.3C690.8,88.3 690.8,329.5 780.7,329.5" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,117.4C690.8,117.4 690.8,53.7 780.7,53.7" stroke="#ED7B43" stroke-width="27.4" stroke-opacity="0.4"/><path d="M601.0,165.9C690.8,165.9 690.8,360.4 780.7,360.4" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,195.0C690.8,195.0 690.8,81.1 780.7,81.1" stroke="#ED7B43" stroke-width="27.4" stroke-opacity="0.4"/><path d="M601.0,254.8C690.8,254.8 690.8,459.4 780.7,459.4" stroke="#ED7B43" stroke-width="36.9" stroke-opacity="0.4"/><path d="M601.0,288.7C690.8,288.7 690.8,255.9 780.7,255.9" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,338.7C690.8,338.7 690.8,203.8 780.7,203.8" stroke="#ED7B43" stroke-width="32.8" stroke-opacity="0.4"/><path d="M601.0,370.5C690.8,370.5 690.8,286.7 780.7,286.7" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,399.6C690.8,399.6 690.8,108.5 780.7,108.5" stroke="#ED7B43" stroke-width="27.4" stroke-opacity="0.4"/><path d="M601.0,453.3C690.8,453.3 690.8,408.3 780.7,408.3" stroke="#ED7B43" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,154.8C882.5,154.8 882.5,248.7 972.3,248.7" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,64.6C882.5,64.6 882.5,64.6 972.3,64.6" stroke="#E0A93E" stroke-width="49.3" stroke-opacity="0.4"/><path d="M792.7,338.7C882.5,338.7 882.5,408.1 972.3,408.1" stroke="#E0A93E" stroke-width="49.3" stroke-opacity="0.4"/><path d="M792.7,265.1C882.5,265.1 882.5,457.4 972.3,457.4" stroke="#E0A93E" stroke-width="49.3" stroke-opacity="0.4"/><path d="M792.7,207.9C882.5,207.9 882.5,109.8 972.3,109.8" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,461.4C882.5,461.4 882.5,171.1 972.3,171.1" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,408.3C882.5,408.3 882.5,326.4 972.3,326.4" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M984.3,80.6C1074.2,80.6 1074.2,80.6 1164.0,80.6" stroke="#EA6E9C" stroke-width="81.2" stroke-opacity="0.4"/><path d="M984.3,261.0C1074.2,261.0 1074.2,340.4 1164.0,340.4" stroke="#EA6E9C" stroke-width="65.7" stroke-opacity="0.4"/><path d="M984.3,424.1C1074.2,424.1 1074.2,161.8 1164.0,161.8" stroke="#EA6E9C" stroke-width="81.2" stroke-opacity="0.4"/><path d="M984.3,183.3C1074.2,183.3 1074.2,247.2 1164.0,247.2" stroke="#EA6E9C" stroke-width="65.7" stroke-opacity="0.4"/><path d="M984.3,338.7C1074.2,338.7 1074.2,433.6 1164.0,433.6" stroke="#EA6E9C" stroke-width="65.7" stroke-opacity="0.4"/></g><rect class="gt-nd gt-fn" data-id="AF-01" x="14.0" y="40.0" width="12" height="139.3" rx="2.5" fill="#3E8FE6"/><text class="gt-lbl" data-id="AF-01" x="31.0" y="109.7" dy="0.35em" font-size="11.5" fill="#C7D0E3">AF-01 Lift &amp; thrust</text><rect class="gt-nd gt-fn" data-id="AF-02" x="14.0" y="191.3" width="12" height="139.3" rx="2.5" fill="#3E8FE6"/><text class="gt-lbl" data-id="AF-02" x="31.0" y="261.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">AF-02 Flight path</text><rect class="gt-nd gt-fn" data-id="AF-03" x="14.0" y="342.7" width="12" height="139.3" rx="2.5" fill="#3E8FE6"/><text class="gt-lbl" data-id="AF-03" x="31.0" y="412.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">AF-03 Crew awareness</text><rect class="gt-nd" data-id="SYS-01" x="205.7" y="40.0" width="12" height="110.7" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-01" x="222.7" y="95.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Propulsion</text><rect class="gt-nd" data-id="SYS-02" x="205.7" y="162.7" width="12" height="73.8" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-02" x="222.7" y="199.6" dy="0.35em" font-size="11.5" fill="#C7D0E3">Flight control</text><rect class="gt-nd" data-id="SYS-03" x="205.7" y="248.5" width="12" height="147.6" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-03" x="222.7" y="322.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Electrical power</text><rect class="gt-nd" data-id="SYS-04" x="205.7" y="408.2" width="12" height="73.8" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-04" x="222.7" y="445.1" dy="0.35em" font-size="11.5" fill="#C7D0E3">Avionics</text><rect class="gt-nd" data-id="FC-01" x="397.3" y="40.0" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-01" x="414.3" y="79.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Loss of thrust</text><rect class="gt-nd" data-id="FC-02" x="397.3" y="130.8" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-02" x="414.3" y="170.2" dy="0.35em" font-size="11.5" fill="#C7D0E3">Loss of control</text><rect class="gt-nd" data-id="FC-03" x="397.3" y="221.6" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-03" x="414.3" y="261.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">Misleading display</text><rect class="gt-nd" data-id="FC-04" x="397.3" y="312.4" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-04" x="414.3" y="351.8" dy="0.35em" font-size="11.5" fill="#C7D0E3">Loss of all power</text><rect class="gt-nd" data-id="FC-05" x="397.3" y="403.2" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-05" x="414.3" y="442.6" dy="0.35em" font-size="11.5" fill="#C7D0E3">Asymmetric thrust</text><rect class="gt-nd" data-id="FTA-01" x="589.0" y="40.0" width="12" height="98.5" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-01" x="606.0" y="89.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · thrust</text><rect class="gt-nd" data-id="FTA-02" x="589.0" y="150.5" width="12" height="73.9" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-02" x="606.0" y="187.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · asym thrust</text><rect class="gt-nd" data-id="FTA-03" x="589.0" y="236.4" width="12" height="73.9" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-03" x="606.0" y="273.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · control</text><rect class="gt-nd" data-id="FTA-04" x="589.0" y="322.3" width="12" height="98.5" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-04" x="606.0" y="371.5" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · power</text><rect class="gt-nd" data-id="FTA-05" x="589.0" y="432.8" width="12" height="49.3" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-05" x="606.0" y="457.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · display</text><rect class="gt-nd" data-id="CMA-01" x="780.7" y="40.0" width="12" height="82.2" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="CMA-01" x="797.7" y="81.1" dy="0.35em" font-size="11.5" fill="#C7D0E3">CMA shared power</text><rect class="gt-nd" data-id="PRA-02" x="780.7" y="134.2" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="PRA-02" x="797.7" y="154.8" dy="0.35em" font-size="11.5" fill="#C7D0E3">PRA rotor burst</text><rect class="gt-nd" data-id="PRA-04" x="780.7" y="187.3" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="PRA-04" x="797.7" y="207.9" dy="0.35em" font-size="11.5" fill="#C7D0E3">PRA battery</text><rect class="gt-nd" data-id="ZSA-200" x="780.7" y="240.4" width="12" height="61.7" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="ZSA-200" x="797.7" y="271.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">ZSA power zone</text><rect class="gt-nd" data-id="ZSA-300" x="780.7" y="314.1" width="12" height="61.7" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="ZSA-300" x="797.7" y="344.9" dy="0.35em" font-size="11.5" fill="#C7D0E3">ZSA aft bay</text><rect class="gt-nd" data-id="ZSA-100" x="780.7" y="387.8" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="ZSA-100" x="797.7" y="408.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">ZSA fwd bay</text><rect class="gt-nd" data-id="CMA-02" x="780.7" y="440.9" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="CMA-02" x="797.7" y="461.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">CMA FCS sw</text><rect class="gt-nd" data-id="SR-014" x="972.3" y="40.0" width="12" height="98.5" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-014" x="989.3" y="89.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">Redundant power</text><rect class="gt-nd" data-id="SR-022" x="972.3" y="150.5" width="12" height="65.7" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-022" x="989.3" y="183.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">Independent lanes</text><rect class="gt-nd" data-id="SR-031" x="972.3" y="228.2" width="12" height="65.7" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-031" x="989.3" y="261.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">Thrust monitoring</text><rect class="gt-nd" data-id="SR-045" x="972.3" y="305.8" width="12" height="65.7" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-045" x="989.3" y="338.7" dy="0.35em" font-size="11.5" fill="#C7D0E3">Display integrity</text><rect class="gt-nd" data-id="SR-071" x="972.3" y="383.5" width="12" height="98.5" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-071" x="989.3" y="432.8" dy="0.35em" font-size="11.5" fill="#C7D0E3">Power routing</text><rect class="gt-nd" data-id="VV-01" x="1164.0" y="40.0" width="12" height="162.4" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-01" x="1181.0" y="121.2" dy="0.35em" font-size="11.5" fill="#C7D0E3">Power redund. test</text><rect class="gt-nd" data-id="VV-02" x="1164.0" y="214.4" width="12" height="81.2" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-02" x="1181.0" y="255.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">Lane dissimilarity</text><rect class="gt-nd" data-id="VV-03" x="1164.0" y="307.6" width="12" height="81.2" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-03" x="1181.0" y="348.2" dy="0.35em" font-size="11.5" fill="#C7D0E3">Thrust isolation</text><rect class="gt-nd" data-id="VV-04" x="1164.0" y="400.8" width="12" height="81.2" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-04" x="1181.0" y="441.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Display integ. test</text></svg>
+        </div>
+        <p class="section-sub" style="margin-top: var(--s-5);">
+            In the workspace the thread is live on your own project: click any node to lay out its ecosystem &mdash; every linked failure condition, analysis, requirement and verification &mdash; then generate its full trace report in one click. The same deterministic model the whole workspace runs on.
+        </p>
+    </div>
+
+    <div class="gt-modal" id="gt-modal" aria-hidden="true">
+        <div class="gt-modal-panel" role="dialog" aria-modal="true" aria-label="Golden thread trace">
+            <button class="gt-modal-x" id="gt-modal-x" aria-label="Close">&times;</button>
+            <div id="gt-modal-body"></div>
+        </div>
+    </div>
+</section>
+
+<script>window.GT_DATA = {"color":{"func":"#3E8FE6","sys":"#25C08E","fc":"#9D95F2","fta":"#ED7B43","cca":"#E0A93E","req":"#EA6E9C","vv":"#84C23F"},"lname":{"func":"Function","sys":"System","fc":"Failure condition","fta":"Fault tree","cca":"Common cause","req":"Requirement","vv":"V&V evidence"},"nodes":{"AF-01":{"kind":"func","name":"Provide lift & thrust","sev":null,"dal":null},"AF-02":{"kind":"func","name":"Control flight path","sev":null,"dal":null},"AF-03":{"kind":"func","name":"Inform the crew","sev":null,"dal":null},"SYS-01":{"kind":"sys","name":"Propulsion","sev":null,"dal":null},"SYS-02":{"kind":"sys","name":"Flight control","sev":null,"dal":null},"SYS-03":{"kind":"sys","name":"Electrical power","sev":null,"dal":null},"SYS-04":{"kind":"sys","name":"Avionics & displays","sev":null,"dal":null},"FC-01":{"kind":"fc","name":"Loss of thrust","sev":"Catastrophic","dal":null},"FC-02":{"kind":"fc","name":"Loss of flight control","sev":"Catastrophic","dal":null},"FC-03":{"kind":"fc","name":"Misleading display","sev":"Hazardous","dal":null},"FC-04":{"kind":"fc","name":"Loss of all power","sev":"Catastrophic","dal":null},"FC-05":{"kind":"fc","name":"Asymmetric thrust","sev":"Hazardous","dal":null},"FTA-01":{"kind":"fta","name":"Fault tree · loss of thrust","sev":null,"dal":null},"FTA-02":{"kind":"fta","name":"Fault tree · asymmetric thrust","sev":null,"dal":null},"FTA-03":{"kind":"fta","name":"Fault tree · loss of control","sev":null,"dal":null},"FTA-04":{"kind":"fta","name":"Fault tree · loss of power","sev":null,"dal":null},"FTA-05":{"kind":"fta","name":"Fault tree · misleading display","sev":null,"dal":null},"CMA-01":{"kind":"cca","name":"Shared power supply","sev":null,"dal":null},"PRA-02":{"kind":"cca","name":"Rotor / blade burst","sev":null,"dal":null},"PRA-04":{"kind":"cca","name":"Battery thermal runaway","sev":null,"dal":null},"ZSA-200":{"kind":"cca","name":"Center power zone","sev":null,"dal":null},"ZSA-300":{"kind":"cca","name":"Aft propulsion bay","sev":null,"dal":null},"ZSA-100":{"kind":"cca","name":"Fwd avionics bay","sev":null,"dal":null},"CMA-02":{"kind":"cca","name":"Common FCS software","sev":null,"dal":null},"SR-014":{"kind":"req","name":"Redundant power channels","sev":null,"dal":"A"},"SR-022":{"kind":"req","name":"Independent control lanes","sev":null,"dal":"A"},"SR-031":{"kind":"req","name":"Thrust monitoring & isolation","sev":null,"dal":"B"},"SR-045":{"kind":"req","name":"Display integrity monitor","sev":null,"dal":"B"},"SR-071":{"kind":"req","name":"Power routing segregation","sev":null,"dal":"B"},"VV-01":{"kind":"vv","name":"Power redundancy test","sev":null,"dal":null},"VV-02":{"kind":"vv","name":"Lane dissimilarity analysis","sev":null,"dal":null},"VV-03":{"kind":"vv","name":"Thrust isolation test","sev":null,"dal":null},"VV-04":{"kind":"vv","name":"Display integrity test","sev":null,"dal":null}},"links":[["AF-01","SYS-01"],["AF-01","SYS-03"],["AF-02","SYS-02"],["AF-02","SYS-03"],["AF-03","SYS-04"],["AF-03","SYS-03"],["SYS-01","FC-01"],["SYS-01","FC-05"],["SYS-02","FC-02"],["SYS-03","FC-04"],["SYS-04","FC-03"],["FC-01","FTA-01"],["FC-05","FTA-02"],["FC-02","FTA-03"],["FC-04","FTA-04"],["FC-03","FTA-05"],["FTA-01","PRA-02"],["FTA-01","ZSA-300"],["FTA-01","CMA-01"],["FTA-02","ZSA-300"],["FTA-02","CMA-01"],["FTA-03","CMA-02"],["FTA-03","ZSA-200"],["FTA-04","PRA-04"],["FTA-04","ZSA-200"],["FTA-04","CMA-01"],["FTA-05","ZSA-100"],["PRA-02","SR-031"],["CMA-01","SR-014"],["ZSA-300","SR-071"],["ZSA-200","SR-071"],["PRA-04","SR-014"],["CMA-02","SR-022"],["ZSA-100","SR-045"],["SR-014","VV-01"],["SR-031","VV-03"],["SR-071","VV-01"],["SR-022","VV-02"],["SR-045","VV-04"]]};</script>
+<script>
+(function(){
+    var D = window.GT_DATA; if(!D) return;
+    var order = ["func","sys","fc","fta","cca","req","vv"];
+    var GN = {func:"Functions", sys:"Systems", fc:"Failure conditions", fta:"Fault trees", cca:"Common-cause analyses (PRA / ZSA / CMA)", req:"Safety requirements", vv:"V&V evidence"};
+    var out = {}, inc = {};
+    Object.keys(D.nodes).forEach(function(id){ out[id]=[]; inc[id]=[]; });
+    D.links.forEach(function(L){ out[L[0]].push(L[1]); inc[L[1]].push(L[0]); });
+    function closure(start, adj){ var seen={}, st=(adj[start]||[]).slice(), o=[]; while(st.length){ var x=st.pop(); if(seen[x]) continue; seen[x]=1; o.push(x); (adj[x]||[]).forEach(function(y){ if(!seen[y]) st.push(y); }); } return o; }
+    var overlay = document.getElementById("gt-modal");
+    var body = document.getElementById("gt-modal-body");
+    function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+    function openNode(id){
+        var n = D.nodes[id]; if(!n) return;
+        var reach = {}; reach[id]=1;
+        closure(id,out).forEach(function(k){ reach[k]=1; });
+        closure(id,inc).forEach(function(k){ reach[k]=1; });
+        var groups = {}; order.forEach(function(l){ groups[l]=[]; });
+        Object.keys(reach).forEach(function(k){ if(k!==id) groups[D.nodes[k].kind].push(k); });
+        var h = '<div class="gt-m-head"><span class="gt-m-pill" style="background:'+D.color[n.kind]+'">'+D.lname[n.kind]+'</span><span class="gt-m-name">'+esc(n.name)+'</span><span class="gt-m-id">'+esc(id)+'</span></div>';
+        h += '<div class="gt-m-sub">Threads through '+(Object.keys(reach).length-1)+' linked items</div>';
+        order.forEach(function(l){
+            if(!groups[l].length) return;
+            h += '<div class="gt-m-sec"><div class="gt-m-sectitle">'+GN[l]+' ('+groups[l].length+')</div><div class="gt-m-chips">';
+            h += groups[l].map(function(k){ var m=D.nodes[k]; var meta = m.sev ? '<span class="gt-m-meta">'+esc(m.sev)+'</span>' : (m.dal ? '<span class="gt-m-meta">DAL '+esc(m.dal)+'</span>' : ''); return '<span class="gt-m-chip"><span class="gt-m-dot" style="background:'+D.color[m.kind]+'"></span><span class="gt-m-cid">'+esc(k)+'</span> '+esc(m.name)+meta+'</span>'; }).join('');
+            h += '</div></div>';
+        });
+        if(n.kind==="func"){ h += '<a class="gt-m-cta" href="/app">Open full trace report for '+esc(id)+' &#8599;</a>'; }
+        body.innerHTML = h;
+        overlay.classList.add("show"); overlay.setAttribute("aria-hidden","false");
+    }
+    function close(){ overlay.classList.remove("show"); overlay.setAttribute("aria-hidden","true"); }
+    document.querySelectorAll("#gt-svg [data-id]").forEach(function(el){ el.addEventListener("click", function(){ openNode(el.getAttribute("data-id")); }); });
+    overlay.addEventListener("click", function(e){ if(e.target===overlay) close(); });
+    document.getElementById("gt-modal-x").addEventListener("click", close);
+    document.addEventListener("keydown", function(e){ if(e.key==="Escape") close(); });
+})();
+</script>
+
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Testimonials / social proof
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="features" id="mbsa">
+    <div class="container">
+        <span class="section-eyebrow">The deterministic MBSA core</span>
+        <h2 class="section-title">The model doesn&rsquo;t illustrate the analyses. It produces them.</h2>
+        <p class="section-sub">
+            This is where the golden thread stops being a filing discipline and becomes an engine. One behavioral model of the aircraft &mdash; functions, systems, resources, zones, typed deviations, operating modes &mdash; compiles into the analyses, proves the safety claims, and answers what-if questions live. Built on the ARP4754A / 4761A methodology. No sampling, no heuristics, no AI in the loop: a <em>deterministic MBSA core</em> &mdash; same model in, same analyses and verdicts out, on any machine, every time.
+        </p>
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>The model compiles the analyses</h3>
+                <p>Availability rules compile into fault trees &mdash; and every compile is <em>proven equivalent</em> to the model it came from, automatically. Hand-built trees stay first-class; compiled ones can never quietly disagree with the model.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <h3>Safety claims, machine-checked</h3>
+                <p>No single failure reaches a Catastrophic condition. No single zonal event does either. Dispatch relief never stands alone. Model covers every Cat/Haz condition. Twenty-plus live checks prove these on the model itself &mdash; and every exception carries a signed engineering basis that reopens if the design moves.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fault injection you can watch</h3>
+                <p>Click a system, a shared resource, or a whole zone failed. The dependency cascade lights up, the availability arithmetic shows its work, and the tripped failure conditions appear with their severities &mdash; a read-only lens for design reviews and what-if sessions.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3>Two engines, forced to agree</h3>
+                <p>Every evaluation runs twice &mdash; clause arithmetic and compiled model logic &mdash; and the two are cross-checked on every run. Disagreement renders as a named finding. Corroboration isn&rsquo;t a claim here; it&rsquo;s a mechanism.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔀</div>
+                <h3>Failures are typed. Reconfiguration is real.</h3>
+                <p>Loss, erroneous, and inadvertent behavior propagate as distinct lanes &mdash; every claimed monitor or blocking path becomes a claim the common-mode analysis must own. Fallback modes are first-class, and the switchover itself is a named failure mode, corroborated by seeded Monte Carlo. Functional FMEAs generate from the model and enter your analysis only with an engineer&rsquo;s signature.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📌</div>
+                <h3>Standing on named assumptions</h3>
+                <p>Model rules cite the assumptions that substantiate them. Invalidate one and every claim resting on it is named on the spot &mdash; analyses, dispatch limits, signed acceptances, gates. The model&rsquo;s schema is versioned and enforced, so it can&rsquo;t silently drift.</p>
+            </div>
+
+        </div>
+        <p class="section-sub" style="margin-top: var(--s-5); text-align: center;">
+            And the core plugs into the tools you already run: architecture in from your MBSE tool over SysML/XMI, requirements flowing <em>both ways</em> with Jama &middot; Polarion &middot; DOORS &mdash; live change tracking on Jama, verification status returning over ReqIF. <a href="#connect" style="color: inherit; text-decoration: underline;">See the integrations &darr;</a>
+        </p>
+    </div>
+</section>
+
+<section class="tst-section" id="testimonials">
+    <div class="container">
+        <span class="section-eyebrow">From the field</span>
+        <h2 class="tst-lead">&ldquo;The most complete safety analysis tool I&rsquo;ve used.&rdquo;</h2>
+        <p class="tst-lead-by">— a safety engineer</p>
+        <p class="section-sub">And the part nobody forgets is the golden thread — the interconnectedness, and the live flagging of obsolescence and compromised requirements the moment something upstream changes.</p>
+
+        <div class="tst-pills">
+            <div class="tst-pill"><span class="tst-pill-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="tst-pill-txt">Used by DERs <em>on active certification programs</em></span></div>
+            <div class="tst-pill alt"><span class="tst-pill-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.2"/><path d="M12 9.8V5.4M12 14.2V18.6M9.8 12H5.4M14.2 12H18.6"/><circle cx="5" cy="5" r="1.5"/><circle cx="19" cy="5" r="1.5"/><circle cx="5" cy="19" r="1.5"/><circle cx="19" cy="19" r="1.5"/></svg></span><span class="tst-pill-txt">Validated across <em>multiple eVTOL beta programs</em></span></div>
+            <div class="tst-pill love"><span class="tst-pill-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.16 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.66-3.4 6.74-8.55 11.48L12 20.3z"/></svg></span><span class="tst-pill-txt">Loved by <em>industry veterans</em></span></div>
+        </div>
+
+        <figure class="tst-quote">
+            <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>Very powerful and highly visual — better than some of the tools I&rsquo;ve used with previous clients, including very large aeronautical companies. Its strongest points are document export and full traceability of the whole process, from requirements V&amp;V through to the safety CCAs. Really impressed.</blockquote>
+            <figcaption class="tst-byline">
+                <span class="tst-avatar" aria-hidden="true">SE</span>
+                <span class="tst-who">Safety engineer<span class="tst-tag">Verified beta tester</span></span>
+            </figcaption>
+        </figure>
+
+        <p class="tst-themelabel">What people call out most</p>
+        <div class="tst-themes">
+            <div class="tst-card">
+                <span class="tst-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.4 6H14a4 4 0 0 1 4 4v5.6"/></svg></span>
+                <h3>One connected thread</h3>
+                <p>Function → hazard → fault tree → requirement → evidence, every link live and traceable.</p>
+            </div>
+            <div class="tst-card">
+                <span class="tst-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v3h-3"/></svg></span>
+                <h3>Obsolescence, in real time</h3>
+                <p>When a part or standard goes stale, every artifact it touches lights up at once — no manual sweep.</p>
+            </div>
+            <div class="tst-card">
+                <span class="tst-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l1-1"/><path d="M14 11a5 5 0 0 0-7 0l-1 1"/><path d="M3 3l18 18"/></svg></span>
+                <h3>Compromised requirements, surfaced live</h3>
+                <p>An upstream change that undermines a requirement is flagged the moment it lands.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     How it works / Features
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="features" id="how">
+    <div class="container">
+        <span class="section-eyebrow">What's inside</span>
+        <h2 class="section-title">Where the math is first-class.</h2>
+        <p class="section-sub">
+            Every analysis engine is independently verified against textbook benchmarks. The math is exposed, the references are cited, and you can audit any computation back to the standard it implements.
+        </p>
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">🌳</div>
+                <h3>Fault Tree Analysis</h3>
+                <p>Quantitative fault tree analysis with minimal cutsets, K-of-N voting gates, dynamic gates (PAND / SPARE / FDEP), and common-cause failure models (β-factor, α-factor, MGL).</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Component reliability library</h3>
+                <p>200+ public-domain failure rates from MIL-HDBK-217F, NSWC-11, DOT-FAA-CT-83-49, with π_T (Arrhenius) stress prediction. Bring your own NPRD / EPRD via BYOL if your organization is licensed.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Means of Compliance matrix</h3>
+                <p>Every requirement maps to a 14 CFR / CS-25 / AMC paragraph with the method of compliance (analysis / test / demonstration / inspection / similarity). Filters by your project's cert basis automatically.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <h3>Configuration baselines</h3>
+                <p>Snapshot the entire project at each milestone (PDR, CDR, submission) with a SHA-256 hash. Iterate freely in the live project; baselines stay immutable for the audit trail.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Reports your DER actually reads</h3>
+                <p>AFHA, PASA, SFHA, PSSA, SSA, ASA, PRA, ZSA, CMA — all nine ARP 4761A reports generated to Word or PDF, with your own org template if you have one.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     R&M suite — the complete reliability & maintainability program
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="features" id="ram">
+    <div class="container">
+        <span class="section-eyebrow">Reliability &amp; Maintainability · Pro+</span>
+        <h2 class="section-title">A complete R&amp;M program, on the same golden thread.</h2>
+        <p class="section-sub">
+            Not a bolted-on calculator — the same failure rates that drive your fault trees drive prediction, spares, maintenance intervals and cost. A field finding on a rate a handed-off safety argument used shows up on the dashboard as a challenge to that gate.
+        </p>
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Prediction to field data, closed loop</h3>
+                <p>Reliability prediction, MTTR/MDT ledgers, dispatch reliability, and FRACAS with statistical verdicts — a field MTBF is VERIFIED only when the chi-square lower confidence bound clears the prediction, never on a point estimate.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎲</div>
+                <h3>RBD — exact and Monte Carlo</h3>
+                <p>Exact k-of-N block diagrams with live fault-tree duals, plus seeded Monte Carlo for what product forms can't express: standby redundancy, imperfect switching, warm dormancy, phased missions. Same seed, same number — reproducible for the auditor.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📐</div>
+                <h3>Life data, honestly bounded</h3>
+                <p>Weibull by median-rank regression and maximum likelihood side by side, with Fisher confidence bounds. A wear-out claim needs the whole β interval above 1 — a point estimate alone is not evidence. Crow-AMSAA growth with goodness-of-fit.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🛠</div>
+                <h3>MSG-3, all four programs</h3>
+                <p>Systems &amp; powerplant analysis with the full logic cascade, plus structures (AD/ED/FD ratings → derived task sets), zonal derived from your ZSA register, and L/HIRF protection features — all pushing into one maintenance ledger with provenance.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✈️</div>
+                <h3>MMEL &amp; dispatch, computed</h3>
+                <p>Dispatch rulings from exact minimal cut sets — an item whose loss leaves order-1 protection is NO DISPATCH, mechanically. Quantitative exposure via transient recomputation, time-limited dispatch budgets from your safety targets.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Spares, intervals, cost</h3>
+                <p>Poisson spares at your fill rate, PM intervals reconciled against latent-failure not-to-exceed limits, testability rollups, level-of-repair, and life-cycle cost — priced from the λ and MTTR the safety case already carries, so design trades price themselves.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Connectivity — plays well with the tools you already run
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="features" id="connect">
+    <div class="container">
+        <span class="section-eyebrow">Connectivity</span>
+        <h2 class="section-title">Your requirements live in an ALM. Ours plug into it.</h2>
+        <p class="section-sub">
+            Polarion, Jama Connect, IBM DOORS — Safety Lab imports the standard ReqIF interchange every major requirements tool exports, so requirements and FHA content arrive with their identifiers, attributes, hierarchy and trace links intact. Not as text to re-type.
+        </p>
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3>ReqIF from any ALM</h3>
+                <p>OMG-standard ReqIF import with a preview before anything touches your project. Works with Polarion's Round-trip export, Jama Connect Interchange, DOORS, Codebeamer — one importer, every tool.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔁</div>
+                <h3>Re-import is a sync, not a paste</h3>
+                <p>Rows match on their source identifiers: unchanged rows skip, changed rows update in place and keep their safety traces, deleted rows are flagged for disposition — never silently removed while analyses still reference them.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>FHA import that refuses to guess</h3>
+                <p>Failure conditions import with severity, phases and effects — and a severity wording the importer can't map unambiguously arrives unclassified with a warning, because a misread classification is worse than a missing one.</p>
+            </div>
+
+
+            <div class="feature-card">
+                <div class="feature-icon">📐</div>
+                <h3>Architecture from your MBSE tool</h3>
+                <p>SysML blocks become systems, activities become functions, internal-block connectors become the interfaces and resources the dependency and propagation models run on &mdash; imported over standard XMI (Cameo and friends), re-import diffing changes onto the thread. Pilot program: bring a sample export.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📡</div>
+                <h3>Status flows back, live</h3>
+                <p>Your requirements team keeps working in their tool. The live bridge watches your Jama project and stages every change for signed import &mdash; nothing crosses the boundary without an engineer&rsquo;s signature, and your API token never leaves your machine. Verification status, MoC state, and DAL flow back over ReqIF today; direct API write-back is next. Polarion rides the same connector.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Your data stays yours</h3>
+                <p>Imports parse entirely in your browser — requirement data never transits our servers. Excel round-trip for tools without ReqIF; live API synchronization with status write-back available as a pilot.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     The discipline — sell the refusals
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="features" id="you">
+    <div class="container">
+        <span class="section-eyebrow">The story</span>
+        <h2 class="section-title">It&rsquo;s not us. It&rsquo;s you.</h2>
+        <p class="section-sub">
+            Safety Lab doesn&rsquo;t do safety engineering. It makes <em>your</em> safety engineering executable, checkable, and provable &mdash; and then gets out of the way.
+        </p>
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Your judgment</h3>
+                <p>Every hazard call, severity, independence claim, &beta;, and acceptance carries <em>your</em> signature &mdash; the engine derives everything else from those decisions and re-derives it when they change. Computed output never overwrites an engineer&rsquo;s word.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📌</div>
+                <h3>Your assumptions, load-bearing</h3>
+                <p>Every claim knows what it rests on. Assumptions bind to the analyses, model rules, dispatch limits and dispositions built on them &mdash; invalidate one, and every exposed claim is named on the spot. An assumption nothing rests on gets flagged too.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🖥</div>
+                <h3>Your machine, your data</h3>
+                <p>Analyses parse and compute in your browser. Imports never transit our servers. The engine self-test runs the 25 published-reference benchmarks on <em>your</em> hardware and stamps the result into every evidence package.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔁</div>
+                <h3>Your tools, not ours</h3>
+                <p>Requirements stay in Polarion, Jama, or DOORS; architecture stays in your MBSE tool. Safety Lab reads them, builds the safety argument on top, and reports status back. No migration, no lock-in, no second source of truth.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Your proof, re-runnable by anyone</h3>
+                <p>Deterministic end to end: same project file, same trees, same requirements, same verdicts &mdash; on any machine, including your DER&rsquo;s. The hash-chained journal makes the history itself tamper-evident.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✍️</div>
+                <h3>Your name on it, deservedly</h3>
+                <p>When the evidence package goes out, it is your engineering &mdash; every derivation traceable to your inputs, every acceptance carrying your basis, every gate signed by your team. The tool just made it impossible to lose the thread.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="features" id="discipline">
+    <div class="container">
+        <span class="section-eyebrow">The discipline</span>
+        <h2 class="section-title">What the tool refuses to do.</h2>
+        <p class="section-sub">
+            Anyone can add features. The reason a DER trusts a workspace is what it will not let slide. These guardrails are not a mode you switch on &mdash; they are the design.
+        </p>
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">🧮</div>
+                <h3>The AI never does the math</h3>
+                <p>The deterministic engine owns every computation. The AI drafts structure and accelerates the busywork &mdash; but it never does the math, and nothing it produces enters your analysis until a qualified engineer reviews and accepts it.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✍️</div>
+                <h3>Nothing is approved on trust</h3>
+                <p>An approval is a re-authenticated signature bound to the exact analysis it signs. If the analysis changes after sign-off, the signature no longer matches that state &mdash; and the record says so.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⛓️</div>
+                <h3>The record can&rsquo;t be quietly changed</h3>
+                <p>Saves, sealed revisions, and sign-offs land in an append-only, hash-chained ledger. Any later edit or deletion of a past record is mathematically detectable &mdash; the audit trail a certification authority expects.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>The math is never a black box</h3>
+                <p>Every engine is independently verified against textbook benchmarks, the references are cited, and any computation traces back to the standard it implements. You can always check our work.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Pricing
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="pricing" id="pricing">
+    <div class="container">
+        <span class="section-eyebrow">Pricing</span>
+        <h2 class="section-title">Real numbers. No "contact us" for the basics.</h2>
+        <p class="section-sub">
+            Aerospace buyers respect transparency. Every tier includes the full safety workspace; what changes is the scale and the support depth.
+        </p>
+
+        <div class="pricing-grid">
+
+            <div class="tier-card">
+                <div class="tier-name">Education</div>
+                <div class="tier-price">Free <small>/ forever</small></div>
+                <div class="tier-desc">Verified .edu or academic — for individual coursework, thesis work, and research.</div>
+                <ul class="tier-features">
+                    <li>Full FTA / FMEA / FHA tools</li>
+                    <li>Component library</li>
+                    <li>Reports in Word and PDF</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="/app" class="tier-btn">Sign up free</a>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Pro</div>
+                <div class="tier-price">$500 <small>/ seat &middot; month</small></div>
+                <div class="tier-desc">Working safety engineers — the full classical toolset, no AI assist.</div>
+                <ul class="tier-features">
+                    <li>Everything in Education</li>
+                    <li>End-to-end requirements workflow</li>
+                    <li>Verification evidence tracking</li>
+                    <li>Configuration baselines</li>
+                    <li>Means of Compliance matrix</li>
+                    <li>10-day free trial</li>
+                </ul>
+                <a href="/app" class="tier-btn">Start 10-day trial</a>
+            </div>
+
+            <div class="tier-card featured">
+                <div class="tier-name">Pro+</div>
+                <div class="tier-price">$1,000 <small>/ seat &middot; month</small></div>
+                <div class="tier-desc">AI-assisted authoring + DO-330 tool-qualification kit.</div>
+                <ul class="tier-features">
+                    <li>Everything in Pro</li>
+                    <li>AI Assistant (hosted)</li>
+                    <li>DO-330 dossier (9 docs)</li>
+                    <li>Priority support</li>
+                    <li>ITAR-aware routing</li>
+                </ul>
+                <a href="/app" class="tier-btn">Start 10-day trial</a>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Enterprise</div>
+                <div class="tier-price">Custom</div>
+                <div class="tier-desc">Multi-seat teams, on-prem deployment, custom integrations.</div>
+                <ul class="tier-features">
+                    <li>Everything in Pro+</li>
+                    <li>SSO &amp; user provisioning</li>
+                    <li>On-prem / private cloud</li>
+                    <li>Dedicated success engineer</li>
+                    <li>Custom report templates</li>
+                </ul>
+                <a href="mailto:waqas.nafees@safetylabaero.com?subject=Safety%20Lab%20Aero%20Enterprise%20-%20Inquiry" class="tier-btn">Contact sales</a>
+            </div>
+
+        </div>
+
+        <p class="pricing-note">
+            Pro and Pro+ are priced per seat, billed monthly — cancel anytime. Education is free for verified academic use. Multi-seat and volume pricing — <a href="mailto:waqas.nafees@safetylabaero.com?subject=Multi-seat%20%26%20volume%20pricing">ask us</a>.
+        </p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     About / Founder
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="about" id="about">
+    <div class="container">
+        <span class="section-eyebrow">About</span>
+        <h2 class="section-title">For safety engineers, by a safety engineer.</h2>
+        <div class="about-grid">
+
+            <div class="founder-card">
+                <div class="founder-avatar" aria-hidden="true">MW</div>
+                <p class="founder-name">Muhammad Waqas Nafees</p>
+                <p class="founder-role">Founder &middot; Safety Lab Aero</p>
+            </div>
+
+            <div class="about-body">
+                <p>
+                    I've spent years inside Part 25 and SC-VTOL programs — running FHAs, building fault trees, allocating DALs, and walking DERs through verification. The classical safety toolset has earned its place; its methods have been refined over decades of certified flight.
+                </p>
+                <p>
+                    What I wanted was a single workspace where every artifact connects to every other one — where the FHAs, fault trees, requirements, and supporting analyses share state automatically, instead of living in separate documents that get reconciled by hand.
+                </p>
+                <p>
+                    <strong>Safety Lab Aero is that workspace.</strong> It's designed to fit how safety teams already work — and to give them back the time currently spent reconciling.
+                </p>
+                <p style="font-size: 14px; color: var(--text-muted);">
+                    Questions? <a href="mailto:waqas.nafees@safetylabaero.com">waqas.nafees@safetylabaero.com</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Closing CTA
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="cta-strip">
+    <div class="container">
+        <h2>Stop reconciling. Start certifying.</h2>
+        <p>Spin up a free trial — full Pro tier, no credit card for 10 days.</p>
+        <a href="/app" class="btn">Start free trial</a>
+        <a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-mac-arm64.dmg" class="btn" style="margin-left: 10px;">⬇ Download for Mac</a>
+        <a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-win-x64.exe" class="btn" style="margin-left: 10px;">⬇ Download for Windows</a>
+        <p style="font-size:12px; opacity:.65; margin-top:10px;"><a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-mac-x64.dmg" style="color:inherit; text-decoration:underline;">Intel Mac version</a> · desktop apps auto-update to the latest release</p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     Footer
+     ═══════════════════════════════════════════════════════════════════════ -->
+<footer>
+    <div class="foot-inner">
+        <div class="foot-brand">
+            <span class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 64 64"><polygon points="32,16 48,48 16,48" fill="#fff"/></svg>
+            </span>
+            Safety Lab Aero
+        </div>
+        <div class="foot-links">
+            <a href="#how">How it works</a>
+            <a href="#ram">R&amp;M suite</a>
+            <a href="#connect">Integrations</a>
+            <a href="#mbsa">MBSA</a>
+            <a href="#you">The Story</a>
+            <a href="/tools">Calculators</a>
+            <a href="/templates">Templates</a>
+            <a href="/security">Trust &amp; security</a>
+            <a href="/resources">Resources</a>
+            <a href="/roi">ROI calculator</a>
+            <a href="/fault-tree-analysis">Fault Tree Analysis</a>
+            <a href="/arp-4761a">ARP 4761A</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#about">About</a>
+            <a href="/app">Sign in</a>
+            <a href="mailto:waqas.nafees@safetylabaero.com">Contact</a>
+        </div>
+    </div>
+    <p class="foot-copy">
+        &copy; <span id="year">2026</span> Safety Lab Aero, Inc. &middot; safetylabaero.com &middot; All rights reserved.
+    </p>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>

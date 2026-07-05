@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free aerospace safety calculators — DAL, failure probability, fault-tree gates | Safety Lab Aero</title>
+<meta name="description" content="Free quick-reference calculators for aircraft safety engineers: severity → DAL and probability target (CS/FAR-25), failure probability P = 1 − e^(−λt), and AND/OR fault-tree gate probability. From Safety Lab Aero.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+    --brand-blue:#007aff; --brand-purple:#af52de;
+    --ink-navy:#0A1F44; --ink-body:#181B22; --ink-muted:#555B6B;
+    --bg:#ffffff; --bg-soft:#f7f8fb; --bg-card:#ffffff;
+    --border-hair:#e3e6ee; --border:#d4d8e3;
+    --text:#181B22; --text-strong:#0A1F44; --text-muted:#555B6B;
+    --r-md:10px; --r-lg:16px; --r-xl:24px;
+    --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px;
+    --grad:linear-gradient(135deg,var(--brand-blue) 0%,var(--brand-purple) 100%);
+    --shadow-md:0 4px 12px rgba(10,31,68,.06),0 8px 32px rgba(10,31,68,.08);
+    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+    --font-mono:'JetBrains Mono',SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font-sans);font-size:16px;line-height:1.55;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+a{color:var(--brand-blue);text-decoration:none;}
+.container{max-width:1000px;margin:0 auto;padding:0 var(--s-5);}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);-webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border-hair);}
+.nav-inner{max-width:1000px;margin:0 auto;padding:12px var(--s-5);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text-strong);font-weight:700;font-size:16px;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:inline-flex;align-items:center;justify-content:center;flex:none;}
+.brand-mark svg{width:17px;height:17px;}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;background:var(--grad);color:#fff;font-weight:600;font-size:14px;padding:8px 16px;border-radius:10px;}
+.hero{padding:var(--s-8) 0 var(--s-6);}
+.eyebrow{display:block;font-size:12px;font-weight:600;color:var(--brand-blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--s-3);}
+h1{font-size:clamp(28px,3.4vw,40px);font-weight:700;color:var(--text-strong);line-height:1.15;letter-spacing:-.015em;margin:0 0 var(--s-4);}
+.lead{font-size:17px;color:var(--text-muted);max-width:760px;margin:0 0 var(--s-2);line-height:1.55;}
+.calc-grid{display:grid;grid-template-columns:1fr;gap:var(--s-5);padding-bottom:var(--s-7);}
+.calc{background:var(--bg-card);border:1px solid var(--border-hair);border-radius:var(--r-lg);padding:var(--s-5) var(--s-5) var(--s-5);box-shadow:var(--shadow-md);}
+.calc h2{font-size:19px;font-weight:700;color:var(--text-strong);margin:0 0 4px;letter-spacing:-.01em;}
+.calc .desc{font-size:13.5px;color:var(--text-muted);margin:0 0 var(--s-4);line-height:1.5;}
+.field{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px;}
+.field label{font-size:13px;font-weight:600;color:var(--text-strong);min-width:150px;}
+.field input,.field select{font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--text);min-width:160px;flex:1;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--brand-blue);box-shadow:0 0 0 3px rgba(0,122,255,.12);}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.seg button{font:inherit;font-size:13px;font-weight:600;padding:9px 16px;border:none;background:#fff;color:var(--text-muted);cursor:pointer;}
+.seg button.on{background:var(--grad);color:#fff;}
+.out{margin-top:var(--s-4);padding:var(--s-4);background:var(--bg-soft);border:1px solid var(--border-hair);border-radius:var(--r-md);border-left:4px solid var(--brand-blue);}
+.out-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:3px 0;font-size:14px;}
+.out-row .k{color:var(--text-muted);}
+.out-row .v{font-weight:700;color:var(--text-strong);font-family:var(--font-mono);text-align:right;}
+.out .dal{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;background:var(--grad);color:#fff;font-weight:800;font-size:15px;}
+.note{font-size:12px;color:var(--text-muted);margin-top:10px;line-height:1.45;}
+.cta-band{background:var(--bg-soft);border:1px solid var(--border-hair);border-radius:var(--r-xl);padding:var(--s-6);text-align:center;margin-bottom:var(--s-8);}
+.cta-band h3{font-size:22px;font-weight:700;color:var(--text-strong);margin:0 0 8px;letter-spacing:-.01em;}
+.cta-band p{font-size:15px;color:var(--text-muted);max-width:620px;margin:0 auto var(--s-4);line-height:1.55;}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:#fff;font-weight:600;font-size:15px;padding:12px 22px;border-radius:12px;}
+footer{border-top:1px solid var(--border-hair);padding:var(--s-5) 0;color:var(--text-muted);font-size:13px;}
+footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+@media (max-width:560px){.field label{min-width:0;width:100%;}}
+</style>
+<style>
+/* Phase 62.6 — flight recorder identity override: Plex, paper, squared corners, spine. */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+*{border-radius:0 !important;}
+body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif !important;background:#F7F4EC !important;color:#16181D;}
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#007aff,#af52de);z-index:2000;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 L20 19 H4 Z" fill="#fff"/></svg></span>Safety Lab Aero</a>
+    <a class="nav-cta" href="/app">Open the app</a>
+</div></nav>
+
+<section class="hero"><div class="container">
+    <span class="eyebrow">Free safety tools</span>
+    <h1>Aircraft safety calculators</h1>
+    <p class="lead">Quick-reference calculators for everyday safety-assessment work — severity to DAL, failure probability, and fault-tree gate probability. They run right here, no sign-up. The full traceable versions live inside Safety Lab Aero.</p>
+</div></section>
+
+<section><div class="container"><div class="calc-grid">
+
+    <div class="calc">
+        <h2>Severity → DAL &amp; probability target</h2>
+        <p class="desc">Map a failure-condition severity to its top-level Development Assurance Level and the quantitative probability target for transport-category aircraft (CS/FAR-25 &middot; AC 25.1309).</p>
+        <div class="field">
+            <label for="sev">Failure-condition severity</label>
+            <select id="sev">
+                <option value="cat">Catastrophic</option>
+                <option value="haz">Hazardous / Severe-Major</option>
+                <option value="maj" selected>Major</option>
+                <option value="min">Minor</option>
+                <option value="nse">No Safety Effect</option>
+            </select>
+        </div>
+        <div class="out" id="sevOut"></div>
+        <p class="note">Top-level FDAL from severity. Under ARP 4754A, independent members of a development-assurance set can be assigned lower IDALs — the full tool walks that allocation and keeps it traceable. Part-23 targets scale by certification level/class.</p>
+    </div>
+
+    <div class="calc">
+        <h2>Failure probability — P = 1 − e<sup>−λt</sup></h2>
+        <p class="desc">Convert a constant failure rate λ and an exposure time t into a failure probability over that interval. For small λt, P ≈ λt.</p>
+        <div class="field">
+            <label for="lambda">Failure rate λ (per hour)</label>
+            <input id="lambda" type="text" inputmode="decimal" value="1e-5">
+        </div>
+        <div class="field">
+            <label for="texp">Exposure time t (hours)</label>
+            <input id="texp" type="text" inputmode="decimal" value="10">
+        </div>
+        <div class="out" id="probOut"></div>
+    </div>
+
+    <div class="calc">
+        <h2>Fault-tree gate probability</h2>
+        <p class="desc">Combine basic-event probabilities through a single gate. AND multiplies (independent events); OR uses the complement rule 1 − ∏(1 − p<sub>i</sub>).</p>
+        <div class="field">
+            <label>Gate type</label>
+            <span class="seg" id="gateSeg">
+                <button data-gate="and" class="on">AND</button>
+                <button data-gate="or">OR</button>
+            </span>
+        </div>
+        <div class="field">
+            <label for="probs">Basic-event probabilities</label>
+            <input id="probs" type="text" value="1e-3, 2e-4, 5e-4" placeholder="comma-separated, e.g. 1e-3, 2e-4">
+        </div>
+        <div class="out" id="gateOut"></div>
+        <p class="note">Single-gate combination assuming independence. Real cut-set / minimal-cut-set evaluation across a full tree (with shared events and common cause) is what the deterministic engine in the app does.</p>
+    </div>
+
+</div></div></section>
+
+<section><div class="container">
+    <div class="cta-band">
+        <h3>These are the quick version. The real one is traceable.</h3>
+        <p>Inside Safety Lab Aero, every number you see here is connected to its failure condition, its fault tree, and its requirements — the golden thread — so changing one updates the rest. Grounded in ARP 4761A / 4754B.</p>
+        <a class="btn" href="/app">Start free — open the app →</a>
+    </div>
+</div></section>
+
+<footer><div class="container">
+    <span>© <span id="yr"></span> Safety Lab Aero</span>
+    <span><a href="/">Home</a> &middot; <a href="/app">Open the app</a></span>
+</div></footer>
+
+<script>
+(function(){
+    var yr=document.getElementById('yr'); if(yr) yr.textContent=new Date().getFullYear();
+    function fmtP(p){ if(p<=0) return '0'; if(p>=1) return '1.00'; return p>=1e-3 ? p.toPrecision(3) : p.toExponential(2); }
+    function row(k,v){ return '<div class="out-row"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'; }
+
+    var SEV={
+        cat:{dal:'A',q:'Extremely Improbable',t:'≤ 1×10⁻⁹ / flight hour'},
+        haz:{dal:'B',q:'Extremely Remote',t:'≤ 1×10⁻⁷ / flight hour'},
+        maj:{dal:'C',q:'Remote',t:'≤ 1×10⁻⁵ / flight hour'},
+        min:{dal:'D',q:'Probable',t:'≤ 1×10⁻³ / flight hour'},
+        nse:{dal:'E',q:'No probability requirement',t:'No quantitative requirement'}
+    };
+    var sevEl=document.getElementById('sev'), sevOut=document.getElementById('sevOut');
+    function calcSev(){ var s=SEV[sevEl.value];
+        sevOut.innerHTML='<div class="out-row"><span class="k">Development Assurance Level</span><span class="dal">'+s.dal+'</span></div>'
+            +row('Qualitative objective', s.q)+row('Quantitative target', s.t); }
+    sevEl.addEventListener('change',calcSev); calcSev();
+
+    var lam=document.getElementById('lambda'), tex=document.getElementById('texp'), probOut=document.getElementById('probOut');
+    function calcProb(){ var l=parseFloat(lam.value), t=parseFloat(tex.value);
+        if(!isFinite(l)||!isFinite(t)||l<0||t<0){ probOut.innerHTML=row('Result','enter valid λ and t'); return; }
+        var lt=l*t, P=1-Math.exp(-lt);
+        probOut.innerHTML=row('λ·t (expected failures)', lt.toExponential(3))
+            +row('P = 1 − e^(−λt)', fmtP(P))
+            +row('Approx. λ·t', fmtP(lt))
+            +'<p class="note" style="margin-top:8px;">'+(lt<0.1?'λt is small — the λ·t approximation is valid here.':'λt is not small — use the exact 1 − e^(−λt) value, not λ·t.')+'</p>'; }
+    lam.addEventListener('input',calcProb); tex.addEventListener('input',calcProb); calcProb();
+
+    var gate='and', gateSeg=document.getElementById('gateSeg'), probsEl=document.getElementById('probs'), gateOut=document.getElementById('gateOut');
+    gateSeg.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return;
+        gate=b.getAttribute('data-gate');
+        Array.prototype.forEach.call(gateSeg.children,function(c){ c.classList.toggle('on', c===b); }); calcGate(); });
+    function calcGate(){ var parts=(probsEl.value||'').split(',').map(function(x){return parseFloat(x.trim());}).filter(function(x){return isFinite(x);});
+        if(!parts.length){ gateOut.innerHTML=row('Result','enter one or more probabilities'); return; }
+        var bad=parts.some(function(p){return p<0||p>1;});
+        if(bad){ gateOut.innerHTML=row('Result','probabilities must be between 0 and 1'); return; }
+        var P; if(gate==='and'){ P=parts.reduce(function(a,b){return a*b;},1); }
+        else { P=1-parts.reduce(function(a,b){return a*(1-b);},1); }
+        gateOut.innerHTML=row(gate.toUpperCase()+' of '+parts.length+' event'+(parts.length>1?'s':''), '')
+            +row('Top-event probability', fmtP(P)); }
+    probsEl.addEventListener('input',calcGate); calcGate();
+})();
+</script>
+</body>
+</html>

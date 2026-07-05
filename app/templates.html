@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free aircraft safety templates — FHA, FMEA, SSPP | Safety Lab Aero</title>
+<meta name="description" content="Free starter templates for aircraft safety engineers: a Functional Hazard Assessment (FHA) spreadsheet with severity→DAL auto-fill, an FMEA worksheet, and an in-app SSPP generator. ARP 4761A / 4754B aligned. From Safety Lab Aero.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+    --brand-blue:#007aff; --brand-purple:#af52de;
+    --ink-navy:#0A1F44; --ink-body:#181B22; --ink-muted:#555B6B;
+    --bg:#ffffff; --bg-soft:#f7f8fb; --bg-card:#ffffff;
+    --border-hair:#e3e6ee; --border:#d4d8e3;
+    --text:#181B22; --text-strong:#0A1F44; --text-muted:#555B6B;
+    --r-md:10px; --r-lg:16px; --r-xl:24px;
+    --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px;
+    --grad:linear-gradient(135deg,var(--brand-blue) 0%,var(--brand-purple) 100%);
+    --shadow-md:0 4px 12px rgba(10,31,68,.06),0 8px 32px rgba(10,31,68,.08);
+    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font-sans);font-size:16px;line-height:1.55;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+a{color:var(--brand-blue);text-decoration:none;}
+.container{max-width:1000px;margin:0 auto;padding:0 var(--s-5);}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);-webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border-hair);}
+.nav-inner{max-width:1000px;margin:0 auto;padding:12px var(--s-5);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text-strong);font-weight:700;font-size:16px;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:inline-flex;align-items:center;justify-content:center;flex:none;}
+.brand-mark svg{width:17px;height:17px;}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;background:var(--grad);color:#fff;font-weight:600;font-size:14px;padding:8px 16px;border-radius:10px;}
+.hero{padding:var(--s-8) 0 var(--s-6);}
+.eyebrow{display:block;font-size:12px;font-weight:600;color:var(--brand-blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--s-3);}
+h1{font-size:clamp(28px,3.4vw,40px);font-weight:700;color:var(--text-strong);line-height:1.15;letter-spacing:-.015em;margin:0 0 var(--s-4);}
+.lead{font-size:17px;color:var(--text-muted);max-width:760px;margin:0;line-height:1.55;}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s-5);padding:var(--s-6) 0 var(--s-7);}
+.tpl{background:var(--bg-card);border:1px solid var(--border-hair);border-radius:var(--r-lg);padding:var(--s-5);box-shadow:var(--shadow-md);display:flex;flex-direction:column;}
+.tpl .ic{width:42px;height:42px;border-radius:11px;background:rgba(0,122,255,.08);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;font-weight:800;color:var(--brand-blue);font-size:13px;letter-spacing:.02em;}
+.tpl h2{font-size:18px;font-weight:700;color:var(--text-strong);margin:0 0 6px;letter-spacing:-.01em;}
+.tpl p{font-size:14px;color:var(--text-muted);margin:0 0 16px;line-height:1.5;flex:1;}
+.tpl .meta{font-size:11.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;}
+.dl{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--grad);color:#fff;font-weight:600;font-size:14px;padding:11px 16px;border-radius:10px;text-align:center;}
+.dl.ghost{background:transparent;color:var(--brand-blue);border:1px solid var(--border);}
+.cta-band{background:var(--bg-soft);border:1px solid var(--border-hair);border-radius:var(--r-xl);padding:var(--s-6);text-align:center;margin-bottom:var(--s-8);}
+.cta-band h3{font-size:22px;font-weight:700;color:var(--text-strong);margin:0 0 8px;letter-spacing:-.01em;}
+.cta-band p{font-size:15px;color:var(--text-muted);max-width:640px;margin:0 auto var(--s-4);line-height:1.55;}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:#fff;font-weight:600;font-size:15px;padding:12px 22px;border-radius:12px;}
+.fineprint{font-size:12.5px;color:var(--text-muted);text-align:center;margin:0 auto var(--s-7);max-width:640px;line-height:1.5;}
+footer{border-top:1px solid var(--border-hair);padding:var(--s-5) 0;color:var(--text-muted);font-size:13px;}
+footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+</style>
+<style>
+/* Phase 62.6 — flight recorder identity override: Plex, paper, squared corners, spine. */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+*{border-radius:0 !important;}
+body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif !important;background:#F7F4EC !important;color:#16181D;}
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#007aff,#af52de);z-index:2000;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 L20 19 H4 Z" fill="#fff"/></svg></span>Safety Lab Aero</a>
+    <a class="nav-cta" href="/app">Open the app</a>
+</div></nav>
+
+<section class="hero"><div class="container">
+    <span class="eyebrow">Free templates</span>
+    <h1>Safety assessment templates</h1>
+    <p class="lead">Clean starter templates for the core ARP 4761A artifacts — free to download and use, no sign-up. The FHA sheet auto-fills the DAL from severity; the FMEA carries failure rates (λ) and mode distributions (α). When you want them all connected and traceable, that's what the app is for.</p>
+</div></section>
+
+<section><div class="container"><div class="tpl-grid">
+
+    <div class="tpl">
+        <span class="ic" aria-hidden="true">FHA</span>
+        <h2>Functional Hazard Assessment</h2>
+        <p>Aircraft FHA worksheet: function, failure condition, phase, effect, and a severity dropdown that auto-fills the DAL. Two worked example rows included.</p>
+        <div class="meta">Excel · .xlsx</div>
+        <a class="dl" href="/downloads/FHA_template.xlsx" download>↓ Download FHA template</a>
+    </div>
+
+    <div class="tpl">
+        <span class="ic" aria-hidden="true">FMEA</span>
+        <h2>Failure Modes, Effects &amp; Criticality</h2>
+        <p>FMEA/FMECA worksheet: item, failure mode, cause, failure rate λ and mode ratio α (mode rate λ·α computes for you), local → next → end effects, severity, detection, and compensating provisions — linkable back to the FHA.</p>
+        <div class="meta">Excel · .xlsx</div>
+        <a class="dl" href="/downloads/FMEA_template.xlsx" download>↓ Download FMEA template</a>
+    </div>
+
+    <div class="tpl">
+        <span class="ic" aria-hidden="true">SSPP</span>
+        <h2>System Safety Program Plan</h2>
+        <p>Rather than a blank shell, the app generates a complete SSPP tailored to your program — scope, methods, RASCI roles, and work instructions for every assessment — grounded in ARP 4754B / 4761A.</p>
+        <div class="meta">Generated in-app · Word</div>
+        <a class="dl ghost" href="/app">Generate a tailored SSPP →</a>
+    </div>
+
+</div></div></section>
+
+<section><div class="container">
+    <p class="fineprint">Free to use on your programs. Built and maintained by Safety Lab Aero. These are starting points — they don't replace your project's tailoring, your DER's judgment, or the applicable regulations.</p>
+    <div class="cta-band">
+        <h3>Templates get you started. The thread keeps you honest.</h3>
+        <p>In the app, your FHA, fault trees, FMEA, and requirements are one connected golden thread — change a severity and every downstream artifact updates, with full traceability for the cert basis.</p>
+        <a class="btn" href="/app">Start free — open the app →</a>
+    </div>
+</div></section>
+
+<footer><div class="container">
+    <span>© <span id="yr"></span> Safety Lab Aero</span>
+    <span><a href="/tools">Free calculators</a> &middot; <a href="/">Home</a> &middot; <a href="/app">Open the app</a></span>
+</div></footer>
+
+<script>var y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear();</script>
+</body>
+</html>

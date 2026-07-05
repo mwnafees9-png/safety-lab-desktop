@@ -1,0 +1,548 @@
+[
+ {
+  "id": "nasafth-01",
+  "source": "NASA-FTH-2002",
+  "topic": "FTA as deductive analysis",
+  "text": "Fault tree analysis is a deductive, top-down technique: reasoning proceeds from a general postulated failure of the system toward the specific lower-level faults that can bring it about. The analyst assumes the undesired system state has occurred and works backward to assemble, in a systematic and logical way, the chains of more basic faults that contribute to it. This contrasts with inductive (bottom-up) methods, which start from an assumed component fault or initiating event and trace its effects upward to the system. Deduction answers how a given failed state can arise; induction answers what states are possible. Because it is deductive, a fault tree is a structured model of the necessary and sufficient relationships among events that culminate in the top event, not a catalog of effects accumulated from individual part failures."
+ },
+ {
+  "id": "nasafth-02",
+  "source": "NASA-FTH-2002",
+  "topic": "Steps of a fault tree analysis",
+  "text": "A fault tree analysis proceeds through an ordered set of steps. First, identify the objective the analysis must serve, phrased as a failure of the system under study. Second, define the top event that represents that failure. Third, define the scope, fixing which failures and contributors are included and which are excluded. Fourth, define the resolution, the level of detail to which causes will be developed. Fifth, set ground rules and naming conventions. Sixth, construct the tree. Seventh, evaluate it qualitatively and quantitatively. Eighth, interpret and present the results. The first five steps frame the problem; scope, resolution, and ground rules can be developed concurrently and are often revised during construction and evaluation. Emphasis belongs on interpretation, not mere documentation, so that findings translate into actionable implications for the original objective."
+ },
+ {
+  "id": "nasafth-03",
+  "source": "NASA-FTH-2002",
+  "topic": "Defining the top event",
+  "text": "The top event governs the entire analysis; if it is defined incorrectly, the whole fault tree and any decisions drawn from it will be wrong. Define the top event in terms of the specific criteria that constitute its occurrence. For a system failure, first state the system success criteria, then define failure as the negation of those criteria. Confirm that the chosen top event is consistent with the analysis objective and the actual problem to be solved; analysts have frequently picked a plausible-sounding top event that did not match the decision maker's intent. When uncertain, formulate several candidate top events and assess the applicability of each before committing. The initial state of the system should be fixed as part of the top-event definition or the scope. A separate top event may be needed for each distinct objective or each mission phase."
+ },
+ {
+  "id": "nasafth-04",
+  "source": "NASA-FTH-2002",
+  "topic": "Scope and boundaries of the analysis",
+  "text": "Define the boundaries of the analysis before construction begins and document them; if they shift during construction, record the changes. Scope fixes what is inside the analysis (the contributors and events whose relationship to the top event will be developed) and what is outside (contributors that will not be developed). It also fixes the design version, the time period, the operating modes, and the boundary conditions, including component initial states and assumed inputs to the system. A fault tree is a snapshot of the system at a given time, in a given configuration, under a given boundary. Interfaces such as power, cooling, or supply sources sit at the boundary: if they are excluded, their assumed states must still be specified so the inputs to the analyzed components are defined. Good practice is to show interfaces and their assumed states explicitly, which documents the boundary and lets external models be attached later."
+ },
+ {
+  "id": "nasafth-05",
+  "source": "NASA-FTH-2002",
+  "topic": "Resolution of the analysis",
+  "text": "Resolution is the level of detail to which the causes of the top event are developed. A functional system failure is generally resolved down to the major components, such as valves, pumps, and control modules. A phenomenological top event is resolved to the level at which its causes are meaningfully modeled. The guiding aim is to develop the tree to a depth where adequate failure-probability data exist and where further subdivision no longer changes the risk discrimination. Deeper resolution becomes necessary when decisions hinge on subcomponents or support systems, or when an event cannot be shown independent of others, such as shared actuation signals or shared power. Developing below the level where data exist, or below the level where distinctions matter, is usually unnecessary and counterproductive."
+ },
+ {
+  "id": "nasafth-06",
+  "source": "NASA-FTH-2002",
+  "topic": "Ground rules and naming",
+  "text": "Before constructing a fault tree, establish ground rules that govern how events and gates are named and how particular kinds of failures are to be modeled. A clear, agreed naming scheme is essential to an understandable tree and to correct evaluation. Modeling ground rules promote consistency, which matters especially when several analysts build different trees that must be compared or combined. Such rules can specify how component failures, human errors, and common-cause failures are represented. Settling these conventions up front, and putting procedures in place to avoid accidentally giving one event two different names, prevents errors that are costly to fix later: renaming events in an already-built tree is difficult and error-prone."
+ },
+ {
+  "id": "nasafth-07",
+  "source": "NASA-FTH-2002",
+  "topic": "Basic construction paradigm",
+  "text": "The core construction paradigm is to think small, or more precisely to think myopically. For each event under analysis, identify only the necessary and sufficient immediate events, the most closely related causes that directly produce it. Do not jump ahead to the basic or root causes. Instead, take one small step backward at a time, naming the immediate causes, then treat each of those as a new event and repeat. This stepwise backward tracing guarantees that no intermediate relationship or contributing event is skipped, and it reveals the precise logic that is necessary and sufficient for the event. The process terminates when the backward stepping reaches the basic causes that define the chosen resolution of the analysis."
+ },
+ {
+  "id": "nasafth-08",
+  "source": "NASA-FTH-2002",
+  "topic": "Immediate cause concept",
+  "text": "The immediate-cause concept, also called the Think Small rule, directs the analyst to find the immediate, necessary, and sufficient causes of each event rather than its underlying basic causes. After defining the system boundary and selecting a failure mode as the top event, determine that event's immediate causes, then treat each as a sub-top event and find its immediate causes in turn. With each step the analyst's viewpoint shifts from failure mechanism to failure mode and the resolution grows finer, continuing until the limit of resolution, the basic component faults, is reached. Taking only one step at a time is what assures completeness: skipping ahead can silently omit a valid intermediate cause, for example a path where an input is present but the component still fails to produce its output."
+ },
+ {
+  "id": "nasafth-09",
+  "source": "NASA-FTH-2002",
+  "topic": "Faults versus failures",
+  "text": "A distinction is drawn between failures and the broader notion of faults. A failure is a basic abnormal occurrence: a component does not perform as required when conditions call for it. A fault is a higher-order, more general event: the component may operate exactly as built but at the wrong time or in response to an improper command from elsewhere, putting the larger system into an undesirable state. Thus all failures are faults, but not all faults are failures. Properly specifying a fault requires stating both what the undesired state is and when it occurs; both the what and the when belong in the event description entered into the tree. As a working convention during construction, an event that is developed further is termed a fault, while a basic input that is not developed further is termed a failure."
+ },
+ {
+  "id": "nasafth-10",
+  "source": "NASA-FTH-2002",
+  "topic": "Mechanism, mode, and effect",
+  "text": "System, subsystem, and component are relative designations chosen for convenience to give the problem a hierarchy and boundaries; a key strength of fault tree analysis is that elements are viewed by function rather than by artificial structural boundaries. Three linked ideas organize the causal chain. A failure effect is why a failure matters, its consequence on the system. A failure mode is the specific manner in which a failure presents. A failure mechanism is how a given mode comes about. Mechanisms produce modes, and modes produce effects. The same event changes label with the observer's level: what is a mechanism at one level is a mode at the next level down and an effect at the level below that. Moving down the tree, the analyst continually re-views each event from mechanism to mode while approaching finer resolution."
+ },
+ {
+  "id": "nasafth-11",
+  "source": "NASA-FTH-2002",
+  "topic": "Looking beyond system boundaries",
+  "text": "Fault tree analysis is powerful precisely because it looks past nominal system boundaries and examines the role each subsystem or component plays in the overall design. While stepping down the tree, the analyst must watch for cases in which faults originating in other systems can cause a component to fail, and must investigate those external faults rather than assume the component is isolated. Causes that lie beneath one analyst's chosen limit of resolution, such as quality-control, manufacturing, or environmental effects on a component, may nevertheless be dominant contributors to overall system failure and should not be dismissed merely because they fall below the system designer's normal level of interest."
+ },
+ {
+  "id": "nasafth-12",
+  "source": "NASA-FTH-2002",
+  "topic": "Cut sets and path sets",
+  "text": "Evaluating a fault tree yields cut sets, also called failure sets. A cut set is a collection of basic events whose simultaneous occurrence produces the top event, directly linking the bottom-level events to the top. A minimal cut set is a smallest such collection: if any of its events does not occur, that combination no longer causes the top event. A tree has a finite number of unique minimal cut sets, and together they enumerate every distinct way the top event can happen in terms of basic events. Cut sets are often sorted by order, the number of events they contain, to reveal how many simultaneous failures are required. Path sets are the logical complement, drawn from the success tree: a path set is a set of events whose joint non-occurrence guarantees the top event does not occur, and a minimal path set is a smallest such set, enumerating the unique ways to assure success."
+ },
+ {
+  "id": "nasafth-13",
+  "source": "NASA-FTH-2002",
+  "topic": "Success space and the success tree",
+  "text": "Analysis may be carried out equivalently in failure space or in success space. The fault tree works in failure space, modeling combinations of faults that produce the undesired event. Its logical complement is the success tree, which models the conditions that guarantee the undesired event does not occur; the minimal path sets of the success tree are the complements of the minimal cut sets of the fault tree. The two formulations describe the same system and yield consistent results. In many cases the failure-space approach is the less laborious of the two, which is why fault trees remain the primary working tool, but recognizing the equivalence lets the analyst cross-check a result or reason about guaranteed-success conditions when that perspective is more convenient."
+ },
+ {
+  "id": "nasafth-14",
+  "source": "NASA-FTH-2002",
+  "topic": "Basic gate semantics",
+  "text": "Two gates underlie all fault tree logic. An OR gate produces its output fault when at least one of its input faults occurs; its inputs are restatements of the output, each made more specific as to cause or scenario, so causes do not feed an OR gate directly. An AND gate produces its output fault only when all of its input faults occur; here the inputs collectively represent the cause of the output, so causes may input an AND gate directly. Other gates are special cases of these two. Because OR inputs are refinements of the output while AND inputs are joint causes, the choice between them must reflect the real necessary-and-sufficient logic of the system, never mere convenience of drawing."
+ },
+ {
+  "id": "nasafth-15",
+  "source": "NASA-FTH-2002",
+  "topic": "Dependencies at AND gates",
+  "text": "When events feeding an AND gate are not independent, the dependency must be written into the event definitions wherever it affects the system logic. Dependencies typically arise when one failure changes the system, for example by switching in a standby unit or altering operating modes and stress levels in a way that changes how the remaining fault can occur. In such cases a later input should be defined as that fault given the prior fault has occurred, and the subtree describing the mechanisms of the conditioned event will differ from the subtree for the unconditioned event. A priority-form AND gate can make ordered dependence explicit. With multiple dependent inputs, each given condition must incorporate all the preceding events."
+ },
+ {
+  "id": "nasafth-16",
+  "source": "NASA-FTH-2002",
+  "topic": "Special gates and conditioning",
+  "text": "Several specialized gates refine the two basic types. An INHIBIT gate is a special AND gate in which a single input produces the output only when a stated qualifying or enabling condition holds; the condition is recorded in a conditioning event drawn beside the gate. A PRIORITY AND gate is an AND gate that fires only when its inputs occur in a specified order, again noted in an attached conditioning event. An EXCLUSIVE OR gate is an OR gate that fires when one input occurs but not when both do; in most modeling the quantitative difference from an ordinary OR is negligible and can be deferred to quantification. A COMBINATION gate fires when a specified number of its inputs occur, providing a convenient way to express threshold logic without enumerating every qualifying combination."
+ },
+ {
+  "id": "nasafth-17",
+  "source": "NASA-FTH-2002",
+  "topic": "Basic event symbols",
+  "text": "Basic events are events not developed further; each needs a probability if the tree is to be quantified. A circle denotes a primary basic event, a basic initiating fault that requires no further development because the chosen limit of resolution has been reached. A diamond denotes an undeveloped event, a fault left undeveloped either because it is of insufficient consequence or because the information needed to develop it is unavailable. An ellipse denotes a conditioning event, recording a condition or restriction attached to a gate, used chiefly with INHIBIT and PRIORITY AND gates. A house denotes an event normally expected to occur, such as an anticipated change of phase; a house event is not itself a fault. Transfer symbols link a portion of the tree developed elsewhere to its attachment point, avoiding duplication and letting a large tree be split for clarity."
+ },
+ {
+  "id": "nasafth-18",
+  "source": "NASA-FTH-2002",
+  "topic": "Primary, secondary, command faults",
+  "text": "Component faults fall into three useful categories. A primary fault is a fault occurring within the environment for which the component was qualified, such as a component breaking under conditions it was designed to withstand. A secondary fault occurs in an environment beyond what the component was qualified for, that is, under conditions exceeding its design, including damage from external stresses or loss of environmental control. Primary and secondary faults are generally component failures and are often called primary and secondary failures. A command fault involves the component operating properly but at the wrong time or place, typically due to an improper or mistimed signal, or failing to operate because a control signal or control power was lost. These categories serve as a checklist; analysts who take shortcuts sometimes omit secondary or command faults, leaving the tree incomplete."
+ },
+ {
+  "id": "nasafth-19",
+  "source": "NASA-FTH-2002",
+  "topic": "Passive versus active components",
+  "text": "It is useful to separate components into passive and active types. A passive component contributes in a largely static way, transmitting energy, loads, or a signal from one place to another, or serving as the medium by which one active component's output becomes another's input; its failure means loss of that transmission. An active component contributes dynamically, modifying system behavior and generally requiring an input or trigger to produce its output, so it acts as a transfer function; its failure can mean no output or an incorrect output. These definitions apply to the component's primary function. The distinction matters for both modeling and quantification, since active and passive components typically differ substantially in failure rate."
+ },
+ {
+  "id": "nasafth-20",
+  "source": "NASA-FTH-2002",
+  "topic": "Ground Rule I: writing fault statements",
+  "text": "Ground Rule I governs how event boxes are filled in: write each entry as a fault, stating precisely what the fault is and the conditions under which it occurs, and never mix successes with faults. Every fault statement should carry two parts. The what-condition describes the relevant failed or operating state of the component. The when-condition describes the state of the system, relative to that component, that makes that component state a fault. Verbose statements are acceptable and often necessary; do not shorten the description to fit a drawn box or abbreviate the underlying idea. Abbreviating words is fine, but the full meaning of each event must be preserved so the logic remains unambiguous."
+ },
+ {
+  "id": "nasafth-21",
+  "source": "NASA-FTH-2002",
+  "topic": "Ground Rule II: component vs system fault",
+  "text": "After writing a fault statement, ask whether it is a state-of-component fault or a state-of-system fault; this is Ground Rule II. If the fault is a component failure localized to a single component, classify it as state-of-component. If it is not localized to one component, and instead involves a system-level condition or the occurrence of multiple faults, classify it as state-of-system. The classification dictates the next structure. A state-of-component fault is developed by placing an OR gate beneath it and seeking primary, secondary, and command contributions, or it is left as a primary event. A state-of-system fault is developed by finding the minimum necessary and sufficient immediate causes, which may call for an AND, OR, or INHIBIT gate, or possibly no gate at all. As a guide, when the driving energy originates outside the component, the fault is usually state-of-system."
+ },
+ {
+  "id": "nasafth-22",
+  "source": "NASA-FTH-2002",
+  "topic": "No Miracles rule",
+  "text": "The No Miracles rule governs how the normal behavior of components is treated while tracing a fault sequence. If the normal functioning of a component would help propagate a fault sequence, assume the component functions normally and let the sequence pass; do not rely on a fortuitous, unexpected failure to block it. Conversely, if the normal functioning of a component would block a fault sequence, then that normal function must itself be defeated by faults for the sequence to continue upward, and the model must represent the faults required to defeat it. Put differently, wherever the real system imposes an AND condition, the tree must capture it rather than wish it away."
+ },
+ {
+  "id": "nasafth-23",
+  "source": "NASA-FTH-2002",
+  "topic": "Complete-the-Gate and No Gate-to-Gate",
+  "text": "Two procedural rules guard against unmethodical shortcutting. The Complete-the-Gate rule requires that all inputs to a gate be fully defined before any one of them is developed further; the tree is built level by level, each level finished before the next is begun. The No Gate-to-Gate rule requires that every gate input be a properly defined fault event, so gates are never wired directly to other gates. A gate-to-gate connection signals sloppy analysis and often reveals that the analyst does not yet fully understand the system. Both rules reflect the underlying truth that a fault tree succeeds only when the analyst has a clear and complete understanding of the system being modeled."
+ },
+ {
+  "id": "nasafth-24",
+  "source": "NASA-FTH-2002",
+  "topic": "Modeling state-of-system faults by gate",
+  "text": "How a fault is modeled follows directly from its classification. A state-of-component fault is always represented either as a primary event or as an OR gate; for instance a component's functional failure may be an OR of an internal failure of the component and a failure of the signal commanding it. A state-of-system fault is represented with whichever gate captures the real logic among the contributing components. For a redundancy where every unit must fail to cause the system fault, an OR over the upstream causes may apply; where any one unit failing is sufficient, an AND of the unit failures applies. The analyst selects the gate by working out the necessary and sufficient immediate causes, not by habit."
+ },
+ {
+  "id": "nasafth-25",
+  "source": "NASA-FTH-2002",
+  "topic": "Depth of a fault tree",
+  "text": "The depth to which a fault tree is built determines how meaningful its results are, and erring toward excessive depth is more common and more damaging than insufficient depth. Building too deep wastes effort and injects extra uncertainty and obscurity, because data are sparse or absent at very fine levels and because decomposing an entity into many sub-parts scatters it across the results and obscures its identity. The governing principle: develop the tree only to the depth needed to identify functional dependencies and relationships among events, and to a depth consistent with the available data and the analysis objective. A system failure is usually developed to the major-component or major-contributor level. Depth for its own sake is misguided; the necessary depth is whatever is required to expose dependencies, no more."
+ },
+ {
+  "id": "nasafth-26",
+  "source": "NASA-FTH-2002",
+  "topic": "Depth governed by architecture",
+  "text": "Fault tree depth must be driven by the system architecture supplied to the analyst, not invented. Stop developing a branch at the level the architecture actually resolves: the major components, contributors, and support interfaces that the described system exposes. Do not introduce structure, sub-parts, or basic events that the given architecture does not support, since decomposing past that level fragments recognizable entities and produces basic events for which no data and no decision relevance exist. Show the support interfaces, such as power and cooling supplies, because these are what reveal hardwired and functional dependencies among components. The right stopping point is the level where dependencies are exposed and where credible data attach; descending below what the architecture and data justify only inflates uncertainty without improving the model."
+ },
+ {
+  "id": "nasafth-27",
+  "source": "NASA-FTH-2002",
+  "topic": "Why FMEAs cannot be combined into a tree",
+  "text": "Failure modes and effects analyses cannot be patched together to form a fault tree, and attempting it is bad practice that yields an erroneous model. An FMEA is built bottom-up, linking selected initiating causes to their consequences, and because those consequences resemble events in a tree it can seem they could be stitched into a top or intermediate event. They cannot. A fault tree is a top-down structure of the immediate, necessary, and sufficient relationships among events, within which basic events are identified exhaustively and consistently. An FMEA selects its initiating causes without a defining logic structure and does not show the relationships among causes, so it cannot guarantee the comprehensiveness or consistency a tree provides, nor reveal where causes are redundant or absorbed by others. An FMEA can usefully check a constructed tree or help decide whether and how deeply to build one, but it cannot substitute for deductive construction."
+ },
+ {
+  "id": "nasafth-28",
+  "source": "NASA-FTH-2002",
+  "topic": "Top event shapes the structure",
+  "text": "The definition of the top event determines the structure of the entire tree, and the same physical system can produce very different trees depending on which failure is chosen as the top event. A loss-of-function top event, such as no flow or no signal reaching a destination, typically resolves into an OR of several single failures, because any one of several blockages can interrupt the function. An inadvertent-function top event, such as undesired flow or signal where none should occur, typically resolves into an AND of multiple failures, because every element in the path must wrongly pass for the unwanted output to reach the end. This parallelism, with AND gates replacing OR gates between the two formulations, recurs generally, and the applicable component failure modes differ between the two, so they would require different data."
+ },
+ {
+  "id": "nasafth-29",
+  "source": "NASA-FTH-2002",
+  "topic": "Modeling common-cause failures",
+  "text": "Common-cause failures are two or more component failures arising from a single shared cause at the same time or within a short interval. The relevant common causes are implicit dependencies not already captured by explicitly modeled functional dependencies; they include shared design or material deficiencies, common installation or maintenance errors, and shared harsh environments. Because a single such cause can disable an entire redundant set, neglecting it can grossly underestimate the top-event probability, so common-cause contributions must be modeled explicitly. The key is to identify which components are susceptible and represent the shared cause as a separate contributor, for example as an additional event combined with the independent-failure logic of a redundant group. A cause already modeled explicitly is not also treated as common-cause, but other shared causes still must be added."
+ },
+ {
+  "id": "nasafth-30",
+  "source": "NASA-FTH-2002",
+  "topic": "Common-cause modeling level and rules",
+  "text": "Common-cause failures are generally most important for redundant, identical, active components, and become more dominant as the number of redundant units grows. A sound rule of thumb is to include a common-cause contribution for any redundancy of identical active components, and to add one for identical redundant passive or electrical components when they are judged potentially susceptible; when in doubt, include it. The contribution can be modeled at the component level, or at the train or subsystem level if those units are identical and suitable common-cause data exist at that level; if there is any doubt, model it at the basic-component level. After modeling, sensitivity studies can reveal how strongly the top-event probability depends on the common-cause probability, and contributors that prove influential can then be analyzed in more detail."
+ },
+ {
+  "id": "nasafth-31",
+  "source": "NASA-FTH-2002",
+  "topic": "When to model human errors",
+  "text": "Human errors can be important contributors and should be represented in a fault tree to give a realistic failure picture. The decision is whether to model an error explicitly or fold it into an equipment probability. A test or maintenance error need not be modeled explicitly if the resulting equipment failure is already in the tree, provided that equipment's probability then includes the human contribution; but it should be modeled explicitly when it produces a misconfiguration rather than a failure, since misconfigurations differ in nature and recovery, and always when one error can disable two or more components. An error that can affect multiple sites is modeled with a single shared identifier so its common impact is captured. When in doubt, model the error explicitly. Human errors are represented as basic events causing an equipment failure or misconfiguration."
+ },
+ {
+  "id": "nasafth-32",
+  "source": "NASA-FTH-2002",
+  "topic": "Types of human error and commission",
+  "text": "Several categories of human error may warrant modeling: test and maintenance errors, errors that cause initiating events, procedural errors during a response, errors of omission, and detection or recovery errors. Errors causing initiating events are usually folded into initiating-event frequencies and modeled explicitly only when not already included there or when one action causes multiple impacts, such as initiating an event while also disabling a mitigating component. Procedural and omission errors, like failing to act or to change a component's state, are modeled as basic events attributing an equipment effect to human error. Detection and recovery errors may be modeled to show their contribution or otherwise absorbed into equipment probabilities. Errors of commission, unforeseen inappropriate actions, are generally not modeled, because bounding their scope and assigning probabilities is impractical. How each type will be handled should be decided when scope and approach are defined."
+ },
+ {
+  "id": "nasafth-33",
+  "source": "NASA-FTH-2002",
+  "topic": "Avoiding loops in feedback models",
+  "text": "When systems exchange signals in a feedback arrangement, a naive fault tree can form a logical loop, for instance by listing one system's failure as a cause of a second system's failure while also listing the second as a cause of the first, which absurdly makes a system cause its own failure. To prevent this, when developing the branch where one system fails because of a failed signal from another, include only the internal failures of the system that originates that signal; do not trace failures arising from the feedback itself. Applying this rule, that only internal failures of the originating system are considered, to any number of interacting systems cuts the loops so none appear in the resulting tree. The internal failures developed may differ between the trees for the different systems."
+ },
+ {
+  "id": "nasafth-34",
+  "source": "NASA-FTH-2002",
+  "topic": "Modeling conditional sequences",
+  "text": "A phenomenological sequence consists of an initiating event followed by pivotal events leading to an undesired outcome, and is usually modeled with an event sequence diagram or event tree, though a fault tree can be used when desired. When it is, the final undesired outcome becomes the top event, and the sequence is typically represented by an AND gate combining the events. Because later events depend on earlier ones, their conditional nature must be made explicit in the event descriptions, each stating the given conditions under which it occurs, so the proper order is preserved and the probabilities assigned are conditional on the preceding events. If explicit ordering must be enforced, replace the AND gate with a PRIORITY AND gate to guarantee the physical sequence is retained."
+ },
+ {
+  "id": "nasafth-35",
+  "source": "NASA-FTH-2002",
+  "topic": "Naming schemes",
+  "text": "Naming matters because correct cut sets and probabilities depend on consistent identifiers when a gate or basic event appears more than once. If one identical component failure is given two different names, an AND gate would misread a single failure as two failures, and under an OR gate the event would be double counted. Identifiers should be concise and descriptive and fit any character limits the software imposes. A common form for a component failure combines component type, a unique component identifier, and the failure mode; a system or element identifier can be prepended when several systems are modeled. Intermediate events can follow similar conventions. Above all, adopt an agreed naming scheme before construction and use procedures to prevent giving one event two names, since renaming a finished tree is difficult and error-prone."
+ },
+ {
+  "id": "nasafth-36",
+  "source": "NASA-FTH-2002",
+  "topic": "Construction ground rules for scope",
+  "text": "Several ground rules narrow a tree's scope without harming results, but each must be checked for applicability to the problem at hand. Model to the highest level for which data exist and at which there are no shared hardware interfaces with other contributors, generally the major-component level; deeper modeling wastes effort and inflates uncertainty, following the maxim that too much detail brings too much uncertainty. Wiring and piping faults between components are generally omitted because their probabilities are low, unless no higher contributors exist, the objective requires them, or they can be affected by other failures such as fire or aging. Out-of-design conditions are generally not modeled and require justification if included. Stop developing an AND gate of high order when lower-order combinations already exist and no shared interfaces link its inputs, and stop developing an OR-gate input shown to have far lower probability than other inputs, leaving such events undeveloped."
+ },
+ {
+  "id": "nasafth-37",
+  "source": "NASA-FTH-2002",
+  "topic": "Validating a fault tree",
+  "text": "Because a tree's quantitative output is an intangible probability, validation is indirect but important. Obtain the minimal cut sets and confirm that the smallest-order ones are genuine failure paths to the top event, checking against the system schematic. Check that failures and events recorded in operating history actually appear in the tree, testing scope and completeness. Obtain the success paths and validate that the smallest are real success paths. If validating the top event directly is too hard, validate the cut sets and success paths of intermediate faults instead. Finally, sanity-check probabilities: low-order cut sets and those with active-component failures should rank highest, modeled common-cause and human-error contributions should appear prominent, and intermediate and top-event probabilities should be reasonable against past experience. Extremely small top-event probabilities are usually fictitious and indicate that more likely failure paths were missed."
+ },
+ {
+  "id": "nureg-01",
+  "source": "NRC-NUREG-0492",
+  "topic": "Inductive vs deductive analysis",
+  "text": "System analysis reasoning falls into two complementary modes. Inductive analysis reasons from the particular to the general: it postulates a specific component condition or initiating fault and traces forward to determine the effect on the whole system, answering 'what happens if this occurs?' Deductive analysis reasons from the general to the particular: it postulates a defined system state, usually a failure, and works backward to identify the combinations of more basic faults that could produce it. Fault tree analysis is a deductive technique. Inductive methods are used to discover which system states are possible; deductive methods are used to discover how a given system state can arise. Choosing the deductive direction is appropriate when one undesired outcome must be explained in terms of its contributing causes."
+ },
+ {
+  "id": "nureg-02",
+  "source": "NRC-NUREG-0492",
+  "topic": "Failure space orientation",
+  "text": "Fault tree analysis works in failure space rather than success space. Failure, especially complete or catastrophic failure, is usually easier to define unambiguously and easier to model as discrete events than success, which tends to involve continuous performance measures and contested definitions. Practically, a system can fail in fewer significant ways than it can succeed, so modeling failure is more economical: a small number of failure models can cover the significant failure modes, whereas success modeling may require many models for differing definitions of success. The analyst therefore frames the study around an undesired event and enumerates the credible ways it can occur, rather than trying to characterize all the ways the system can work correctly."
+ },
+ {
+  "id": "nureg-03",
+  "source": "NRC-NUREG-0492",
+  "topic": "System definition and boundaries",
+  "text": "Before any fault tree is drawn, the system must be defined: its purpose, its discrete elements, and its boundaries. The external boundary separates the system from its environment and fixes the comprehensiveness of the analysis by determining which inputs and outputs are considered. Boundaries may be physical or temporal, and may shift with operating phase or design changes. Boundary choices should reflect the performance aspect of concern and must remain feasible given available time, information, and resources; if the scope is too large to support, the boundary is drawn in and the expected conclusions are reduced accordingly. Boundaries should ideally be set before analysis and held fixed, but may be revised as information emerges. Whatever is chosen must be stated explicitly in the analysis."
+ },
+ {
+  "id": "nureg-04",
+  "source": "NRC-NUREG-0492",
+  "topic": "Limit of resolution governs depth",
+  "text": "The limit of resolution is the internal boundary that fixes how finely the system is decomposed and therefore how deep the fault tree develops. It defines the 'discrete elements' or basic events below which the analyst assumes no knowledge and models no further interactions. Resolution is governed by feasibility and by the goal of the analysis: detail must not be pushed below the level the available system information can support, and if failure probabilities are to be computed, the limit should stop at events for which data are obtainable. Crucially, tree depth follows the system definition rather than driving it. Developing structure that the system description does not actually justify introduces detail the information cannot support and should be avoided. The chosen limit, and any later changes to it, must be clearly recorded."
+ },
+ {
+  "id": "nureg-05",
+  "source": "NRC-NUREG-0492",
+  "topic": "Interface pitfalls",
+  "text": "Many analysis failures arise at interfaces. Where subsystems are built by different groups, failure modes can emerge from their integration that are invisible when parts are viewed separately. To keep integrated analyses consistent, the same fault definitions and the same event symbols must be used across the pieces, and system boundaries and limits of resolution must be stated clearly so hidden faults and inconsistencies surface. Control systems are particularly prone to interface problems and should not be fragmented; where a control input crosses into a model, a placeholder transfer can be left so the control logic is supplied as one coherent unit. Disciplinary differences in viewpoint also create blind spots, so the analyst must remain unbiased and informed enough to recognize interface problems when they arise."
+ },
+ {
+  "id": "nureg-06",
+  "source": "NRC-NUREG-0492",
+  "topic": "Undesired top event selection",
+  "text": "A fault tree is built around a single undesired event, which becomes the top event and is usually a complete or catastrophic system failure state critical from a safety standpoint. The whole tree is then tailored to this top event: it includes only faults that contribute to that particular failure mode and is not a model of every possible system failure or every possible cause. The faults included are the most credible ones as judged by the analyst, not an exhaustive list. Choosing the top event well is decisive. Too broad a top event makes the analysis unmanageable; too narrow a top event fails to give a sufficiently wide view of the system. Because the analysis can be costly, the value of investigating a given top event should be weighed against the consequences of its occurrence."
+ },
+ {
+  "id": "nureg-07",
+  "source": "NRC-NUREG-0492",
+  "topic": "Fault tree as qualitative logic model",
+  "text": "A fault tree is a graphic logic model showing the parallel and sequential combinations of faults that lead to the predefined top event. Its building blocks are events connected by gates: a gate's output is the higher event, its inputs are the contributing lower events, and the gate symbol states the logical relationship that the inputs must satisfy for the output to occur. The faults may represent hardware failures, human errors, or any other pertinent contributing events. A fault tree is fundamentally a qualitative model that depicts logical interrelationships; it can be evaluated quantitatively and often is, but quantification does not change its qualitative nature. Construction proceeds downward from the top event toward progressively more basic events until the limit of resolution is reached."
+ },
+ {
+  "id": "nureg-08",
+  "source": "NRC-NUREG-0492",
+  "topic": "Faults versus failures",
+  "text": "Fault tree work distinguishes 'failure' from the broader term 'fault.' A failure is a basic abnormal occurrence, such as a component not performing when properly demanded. A fault is a higher-order event: it includes failures but also covers cases where a component operates correctly in itself yet at the wrong time or place because of an upstream condition, producing an undesirable system state without any local failure. Thus all failures are faults, but not all faults are failures. Because timing matters, a fault is properly specified only by stating both what the undesirable state is and when it occurs. These 'what' and 'when' specifications must be part of every event description entered into the tree. By convention, events developed further are termed faults, while basic events not developed further are termed failures."
+ },
+ {
+  "id": "nureg-09",
+  "source": "NRC-NUREG-0492",
+  "topic": "Primary, secondary, and command faults",
+  "text": "Component faults are classified into three categories. A primary fault is a fault of a component occurring within the environment and conditions for which the component was qualified and designed; it is an internal failure under normal operating circumstances. A secondary fault is a fault occurring in an environment or under conditions exceeding those for which the component was qualified, that is, failure caused by excessive stresses beyond the design envelope. Both primary and secondary faults are generally component failures. A command fault is different: it involves the component operating correctly in itself but at the wrong time or in the wrong place because of an improper signal or command from some upstream source. This distinction matters because primary and secondary faults are basic events, while command faults point back to causes elsewhere in the system."
+ },
+ {
+  "id": "nureg-10",
+  "source": "NRC-NUREG-0492",
+  "topic": "Passive and active components",
+  "text": "It is useful to separate components into passive and active types. A passive component contributes statically, transmitting energy, a load, or a signal from one place to another; its failure results in non-transmission or partial transmission of that signal. An active component contributes dynamically, originating or modifying a signal and typically requiring an input or trigger to produce its output; its failure may yield no output or an incorrect output. The distinction guides how each is assessed and reflects a general reliability difference, with active components typically exhibiting substantially higher failure rates than passive ones. These definitions apply to a component's main function, so specific failure modes may not always align with the component's overall active or passive classification."
+ },
+ {
+  "id": "nureg-11",
+  "source": "NRC-NUREG-0492",
+  "topic": "Mechanism, mode, and effect",
+  "text": "Three relative concepts organize how events link in a fault tree. A failure effect is why a failure matters, that is, its consequence on the system. A failure mode is exactly what aspect of failure is of concern. A failure mechanism is how a given mode comes about. Mechanisms produce modes, which in turn produce effects. These roles are relative to the level of analysis: one event can be an effect at a higher level, a mode at the middle, and a mechanism at a lower level, because system, subsystem, and component are themselves relative designations chosen to give the problem hierarchy and boundaries. As the tree descends, the analyst's viewpoint shifts continually from mechanism to mode, with each level's mechanisms becoming the next lower level's modes, until basic component failures at the limit of resolution are reached."
+ },
+ {
+  "id": "nureg-12",
+  "source": "NRC-NUREG-0492",
+  "topic": "Immediate cause concept",
+  "text": "Fault tree development proceeds by the immediate cause concept, sometimes called the 'think small' rule. For any event, the analyst identifies its immediate, necessary, and sufficient causes, not its basic or root causes, taking only one step down at a time. These immediate causes become the next set of events, and the procedure repeats on each of them, advancing one level at a time until the limit of resolution is reached. Working in single steps is essential because it guards against skipping intermediate events: jumping directly to a deeper cause can silently omit a contributing fault that lies between. Methodical one-step development therefore provides assurance that no fault event in the chain is overlooked, and it naturally produces the linked structure of AND and OR logic that the tree expresses."
+ },
+ {
+  "id": "nureg-13",
+  "source": "NRC-NUREG-0492",
+  "topic": "Primary event symbols",
+  "text": "Primary events are events not developed further; they form the leaves of the tree and are where probabilities must be supplied if the tree is to be quantified. The basic event, drawn as a circle, is a basic initiating fault requiring no further development, signifying that the limit of resolution has been reached. The undeveloped event, drawn as a diamond, is a specific fault left undeveloped either because it is of insufficient consequence or because relevant information is unavailable. The conditioning event, drawn as an ellipse, records specific conditions or restrictions applied to a logic gate and is used primarily with the PRIORITY-AND and INHIBIT gates. The external (house) event, drawn as a house, represents an event normally expected to occur, such as a phase change, and so is not itself a fault."
+ },
+ {
+  "id": "nureg-14",
+  "source": "NRC-NUREG-0492",
+  "topic": "Intermediate events and transfers",
+  "text": "An intermediate event, drawn as a rectangle, is a fault event that occurs because of one or more antecedent causes acting through logic gates; every event that is developed further by a gate is represented this way. Each intermediate event should carry a precise statement of the fault and the conditions under which it is a fault. Transfer symbols, drawn as triangles, are organizational conveniences that avoid duplicating portions of a tree. A transfer-out marks a branch that must be attached elsewhere, and a corresponding transfer-in, possibly on another sheet, indicates where that branch is developed further. Transfers also provide a clean way to leave a defined place for an externally supplied analysis, such as a control system input, so that the supplied logic attaches as one coherent unit."
+ },
+ {
+  "id": "nureg-15",
+  "source": "NRC-NUREG-0492",
+  "topic": "OR gate meaning",
+  "text": "The OR gate states that its output event occurs if at least one of its input events occurs, and it may take any number of inputs. Its essential property is that causality never passes through it: the inputs do not cause the output. Instead, each input is simply the same output event restated more specifically as to cause, so the output encompasses all of the inputs. The OR gate is therefore a re-expression of the event above it in terms of more narrowly defined contributing events, corresponding to a Boolean union. A practical diagnostic follows from this: if causality appears to pass through an OR gate, the logic is wrong, which usually signals a missing AND gate and improper analysis. OR gates are normally the inclusive variety unless otherwise stated."
+ },
+ {
+  "id": "nureg-16",
+  "source": "NRC-NUREG-0492",
+  "topic": "AND gate meaning",
+  "text": "The AND gate states that its output event occurs only if all of its input events occur, and it may take any number of inputs. Unlike the OR gate, it expresses a genuine causal relationship: the input faults collectively constitute the cause of the output fault, corresponding to a Boolean intersection. The AND gate says nothing about the antecedents of its inputs. When dependencies exist among the inputs, they must be incorporated into the event definitions wherever they affect the system logic. In particular, if the occurrence of one input alters the system, for example by switching in a standby unit or changing operating modes or stress levels, a later input must be defined conditionally as 'given the occurrence of' the earlier one, and with multiple dependent inputs each 'given' must incorporate all preceding events."
+ },
+ {
+  "id": "nureg-17",
+  "source": "NRC-NUREG-0492",
+  "topic": "INHIBIT gate",
+  "text": "The INHIBIT gate, drawn as a hexagon, is a special case of the AND gate. Its output is produced by a single input, but only when a qualifying or enabling condition is satisfied; that condition is described in a conditioning event drawn to the side of the gate. The output occurs only if the input occurs under the specified condition. The enabling condition is necessary but is not always by itself sufficient: the input must occur while the condition holds, and the conditioning event may specify the portion of the time the output follows when the input is present. This gate is well suited to situations where an event can only happen in the presence of some particular state or circumstance, and it is also commonly used in representing secondary failures that depend on an enabling environment."
+ },
+ {
+  "id": "nureg-18",
+  "source": "NRC-NUREG-0492",
+  "topic": "EXCLUSIVE-OR and PRIORITY-AND gates",
+  "text": "Two further special gates refine the basic two. The EXCLUSIVE-OR gate is a special case of the OR gate whose output occurs only if exactly one input occurs, explicitly excluding the case where both inputs occur together. The PRIORITY-AND gate is a special case of the AND gate whose output occurs only if all inputs occur in a specified order, with the required sequence stated in a conditioning event drawn to the side. In practice the need for a strict sequence is seldom encountered. Likewise, for the independent, low-probability events typical of fault tree work, the numerical difference between the exclusive and inclusive OR is generally negligible, so the distinction usually need not be drawn during construction and can instead be handled, if it matters, during quantification."
+ },
+ {
+  "id": "nureg-19",
+  "source": "NRC-NUREG-0492",
+  "topic": "Ground Rule I writing fault statements",
+  "text": "Ground Rule I governs how events are written. Every statement entered in an event box must be written as a fault, stating precisely what the fault is and when it occurs. The 'what' specifies the relevant failed or operating state of the component, and the 'when' specifies the condition of the system with respect to that component that makes the stated state a fault. Such statements are often necessarily verbose, and that is acceptable: the analyst should size the box to the idea rather than trimming the idea to fit the box. Words may be abbreviated, but ideas must not be. Precise, complete fault statements are the foundation of a correct tree, since they fix exactly what each event means before any logic is attached beneath it."
+ },
+ {
+  "id": "nureg-20",
+  "source": "NRC-NUREG-0492",
+  "topic": "Ground Rule II classifying events",
+  "text": "Ground Rule II decides how each event is developed. For every boxed fault, ask whether the fault can consist of a component failure. If yes, classify it as a state-of-component fault; if no, classify it as a state-of-system fault. A state-of-component fault is developed by placing an OR gate beneath it and looking for its primary, secondary, and command contributions. A state-of-system fault is developed by seeking its minimum necessary and sufficient immediate cause or causes, which may call for an AND gate, an OR gate, an INHIBIT gate, or sometimes no gate at all. As a general guide, when the energy or stimulus originates from a point outside the component, the event is typically a state-of-system fault. This classification keeps development systematic and consistent."
+ },
+ {
+  "id": "nureg-21",
+  "source": "NRC-NUREG-0492",
+  "topic": "No Miracles rule",
+  "text": "The No Miracles rule constrains how component behavior is assumed during construction. If the normal functioning of a component would propagate a fault sequence, the analyst must assume the component functions normally, allowing the sequence to pass; one may not rely on an unexpected, fortuitous failure to block propagation. Conversely, if the normal functioning of a component would block a fault sequence, then that normal functioning must be defeated by faults for the sequence to continue up the tree. Equivalently, wherever an AND situation genuinely exists in the system, the model must represent it. The rule prevents both optimistic and pessimistic distortions: the tree captures the system's real logic instead of invoking convenient miracles to stop or to ease the flow of faults."
+ },
+ {
+  "id": "nureg-22",
+  "source": "NRC-NUREG-0492",
+  "topic": "Complete-the-Gate and No-Gate-to-Gate rules",
+  "text": "Two procedural rules enforce methodical construction. The Complete-the-Gate rule requires that all inputs to a given gate be fully and properly defined before any one of those inputs is analyzed further; the tree is developed level by level, finishing each level before descending. The No-Gate-to-Gate rule requires that gate inputs always be properly defined fault events and that gates never be connected directly to other gates. A gate-to-gate shortcut is a sign of sloppy analysis and often reveals that the analyst does not fully understand the system; while such summarization may be acceptable when condensing a finished tree for quantification, it causes confusion during construction. Both rules reflect the principle that a successful tree depends on a clear and complete understanding of the system being modeled."
+ },
+ {
+  "id": "nureg-23",
+  "source": "NRC-NUREG-0492",
+  "topic": "Boolean correspondence and equivalent trees",
+  "text": "Because OR and AND gates correspond exactly to Boolean union and intersection, every fault tree has an equivalent set of Boolean equations, with one equation written for each gate relating its output to its inputs. This correspondence lets the rules of Boolean algebra restructure a tree into equivalent forms. A given problem therefore has no single correct fault tree but many equivalent correct forms, since algebraic identities such as distribution can rearrange the structure without changing its meaning. The analyst can exploit this to simplify a tree for clearer understanding or for easier evaluation, and ultimately to transform it into the minimal cut set form used for qualitative and quantitative analysis. The underlying logical content, and in particular the minimal cut sets, is preserved across all equivalent forms."
+ },
+ {
+  "id": "nureg-24",
+  "source": "NRC-NUREG-0492",
+  "topic": "Minimal cut sets and path sets",
+  "text": "A cut set is a combination of basic events whose joint occurrence causes the top event. A minimal cut set is a smallest such combination: every event in it is necessary, so if any one of them does not occur the top event does not occur by that combination. The minimal cut sets define the failure modes of the top event and are unique to it regardless of which equivalent form of the tree is used. Single-event minimal cut sets represent single failures that alone cause the top event, while larger sets represent failures that must occur together. The complementary notion is the minimal path set, a smallest combination of basic-event non-occurrences that guarantees the top event does not occur; path sets define the success modes and can be obtained from the dual of the tree."
+ },
+ {
+  "id": "nureg-25",
+  "source": "NRC-NUREG-0492",
+  "topic": "Top-down and bottom-up reduction",
+  "text": "Minimal cut sets are obtained by translating the tree into its Boolean equations and then performing systematic substitution and expansion, removing redundancy with the distributive law and the law of absorption. Two equivalent procedures exist. The top-down method starts from the top event equation and substitutes downward, expanding until the top event is expressed purely as combinations of basic events. The bottom-up method starts at the lowest gates, successively substituting equations containing only basic events into the gates above them and reducing as it proceeds upward; it is generally more laborious but yields the minimal cut sets of every intermediate event as well as the top event. Both arrive at the same minimal cut set expression. These substitution principles also underlie the computer algorithms used for larger trees."
+ },
+ {
+  "id": "nureg-26",
+  "source": "NRC-NUREG-0492",
+  "topic": "Qualitative evaluation results",
+  "text": "Once a tree is reduced, several qualitative results follow without any probability data. The minimal cut sets give all unique combinations of basic failures that cause the top event. Ordering these sets by size yields a qualitative ranking of importance, since smaller cut sets generally dominate: single-event sets are listed first, then pairs, then larger ones, because cut set likelihood typically falls sharply as size grows. Cut sets also let design criteria be checked directly; for example, a rule that no single failure shall fail the system is equivalent to requiring no single-event minimal cut sets. Finally, minimal cut sets can be screened for common cause susceptibility by tagging each basic event with shared attributes such as location, environment, manufacturer, or human involvement, and flagging sets whose events all share a common attribute as candidates for further review."
+ },
+ {
+  "id": "arp61-01",
+  "source": "ARP4761A",
+  "topic": "Two roles of FTA in the safety process",
+  "text": "In the civil aircraft safety process fault trees serve two distinct roles. Allocation trees (top-down, used in the PASA/PSSA) apportion a failure condition's quantitative probability budget and development-assurance levels across contributors. Verification trees (bottom-up, used in the SSA/ASA) confirm the implemented design meets the allocated objectives. Keep the two purposes separate: an allocation tree distributes a target; a verification tree demonstrates the as-built architecture satisfies it."
+ },
+ {
+  "id": "arp61-02",
+  "source": "ARP4761A",
+  "topic": "Failure condition is the top event",
+  "text": "Each fault tree is anchored to one failure condition taken from the FHA, at the matching altitude: aircraft-level conditions (AFHA) drive aircraft-scope trees, system-level conditions (SFHA) drive trees scoped to the named system. The top event restates that failure condition exactly, and the tree stays at that level rather than drifting up or down."
+ },
+ {
+  "id": "arp61-03",
+  "source": "ARP4761A",
+  "topic": "Severity sets the objective and structure",
+  "text": "A failure condition's severity classification sets both a per-flight-hour probability objective and a required development-assurance level. The tree's structure must be capable of meeting that objective: a single-point failure (an order-1 minimal cut set) is unacceptable for a Catastrophic condition, which requires combinations of independent failures. Qualitative acceptability of the cut-set structure is judged before any number is computed."
+ },
+ {
+  "id": "arp61-04",
+  "source": "ARP4761A",
+  "topic": "Development-assurance allocation via independence",
+  "text": "Development-assurance levels are allocated top-down using the tree's independence structure. Where two or more genuinely independent members of an AND gate each prevent the top event, the assurance burden may be shared so each member carries a lower level than the top event alone would demand. This reduction is legitimate only when the independence is substantiated; an unsupported independence claim invalidates the allocation."
+ },
+ {
+  "id": "arp61-05",
+  "source": "ARP4761A",
+  "topic": "Common-mode analysis tests every AND",
+  "text": "Every AND-gate independence claim must be tested by common-mode analysis. Shared resources, co-location within a zone, shared physical routing, common design or software, common manufacturing lot, common maintenance or calibration action, and a common environment can each defeat the claim. Any such coupling introduces a common-cause contributor that belongs explicitly in the tree, often as a repeated event or a dedicated common-cause gate."
+ },
+ {
+  "id": "arp61-06",
+  "source": "ARP4761A",
+  "topic": "Particular-risk and zonal contributions",
+  "text": "Fault tree analysis is complemented by particular-risk analysis (external threats able to affect several systems at once) and zonal analysis (installation and co-location effects within a physical zone). When these reveal a single cause that defeats nominally independent redundancies, that cause must be reflected in the affected fault trees as a common-cause contributor rather than left out because the logical redundancy looks adequate."
+ },
+ {
+  "id": "arp61-07",
+  "source": "ARP4761A",
+  "topic": "Qualitative before quantitative",
+  "text": "A fault tree supports qualitative evaluation (minimal cut sets that expose single-point failures and common-cause vulnerabilities) and quantitative evaluation (top-event probability against the objective). Qualitative soundness comes first. Numbers are produced by the deterministic computation, never asserted from memory; the analyst's job is a correct, complete, architecture-grounded structure."
+ },
+ {
+  "id": "arp54-01",
+  "source": "ARP4754B",
+  "topic": "Architecture is the basis of the assessment",
+  "text": "ARP4754B frames development assurance at aircraft and system level: functions are defined, allocated to systems, and the resulting architecture is the basis of the safety assessment. Fault trees express how that architecture either contains or propagates failure toward a failure condition. Architecture choices — redundancy, monitoring, segregation, reconfiguration — are precisely what the tree must represent, so the tree follows the allocated architecture, never an assumed one."
+ },
+ {
+  "id": "arp54-02",
+  "source": "ARP4754B",
+  "topic": "Function-to-system allocation bounds the tree",
+  "text": "Functions are decomposed one level at a time and allocated to systems and items. That allocation defines the boundary within which each system's fault tree is built and the interfaces across which failures propagate. When converting architecture to a tree, respect these boundaries: a system-scope tree develops only that system's contributors and treats inputs from other systems as interface events."
+ },
+ {
+  "id": "arp54-03",
+  "source": "ARP4754B",
+  "topic": "FDAL and IDAL follow from classification and independence",
+  "text": "Function development-assurance levels follow from the failure-condition classifications; item development-assurance levels follow from the architecture and the independence between contributors. The fault tree's independence structure is the evidence used to assign these levels and, where justified, to lower them. Unsupported independence cannot be used to relax an assurance level."
+ },
+ {
+  "id": "arp54-04",
+  "source": "ARP4754B",
+  "topic": "Requirements close the loop with the analysis",
+  "text": "Derived safety requirements arise from the analyses, including fault trees, to control identified contributors; each must trace to the function or failure condition it mitigates and must be verifiable. A tree both consumes requirements (monitors, segregation, independence provisions appear as modeled mitigations) and generates them (new requirements are written to close gaps the tree exposes)."
+ },
+ {
+  "id": "conv-01",
+  "source": "conversion-method",
+  "topic": "Convert via the success path",
+  "text": "The disciplined way to convert any architecture representation — functional block diagram, schematic, reliability block diagram, or SDD — into a fault tree is to first identify how the architecture SUCCEEDS in delivering the function (its success path or paths), then express the top event as the logical negation of those paths. The function is lost when every success path is defeated. This keeps the tree grounded in the real architecture rather than in remembered patterns."
+ },
+ {
+  "id": "conv-02",
+  "source": "conversion-method",
+  "topic": "Functional block diagram to gate logic",
+  "text": "In a functional block diagram, trace the flow that realises the function. A series chain of required blocks (each one needed) becomes an OR gate under loss-of-function, because losing any single block loses the function. A set of redundant or parallel blocks (any one sufficient) becomes an AND gate, because the function is lost only if all of them fail. A k-of-n voting arrangement becomes a combination requiring n minus k plus one failures."
+ },
+ {
+  "id": "conv-03",
+  "source": "conversion-method",
+  "topic": "Shared feeds become repeated or common-cause events",
+  "text": "When a block diagram shows one upstream block or resource feeding several downstream paths, that block is a shared contributor. It must appear as a repeated event across the branches it feeds, or as a common-cause that defeats an apparent AND. Finding these shared feeds — shared power, data, cooling, hydraulics, references — is the highest-value step when converting a redundant architecture, because they are what turn redundancy into a single point of failure."
+ },
+ {
+  "id": "conv-04",
+  "source": "conversion-method",
+  "topic": "Schematic to component faults",
+  "text": "From a schematic, list the components and interconnections that carry the energy or signal realising the function, then for each ask what failure interrupts that flow. Classify each failure as a primary fault (the component fails within its ratings), a secondary fault (an out-of-specification environment or overstress drives it to fail), or a command fault (an upstream control or signal wrongly opens or closes it). Develop only the components the schematic actually shows."
+ },
+ {
+  "id": "conv-05",
+  "source": "conversion-method",
+  "topic": "Reliability block diagram duality",
+  "text": "A reliability block diagram converts directly to a failure fault tree by duality: blocks in series (all required for success) become an OR gate (loss if any fails), and blocks in parallel (redundant) become an AND gate (loss only if all fail). Standby and active redundancy both map to AND structures, with sequence or detection captured by priority or inhibit gates where relevant. After converting, test each AND's independence rather than assuming it."
+ },
+ {
+  "id": "conv-06",
+  "source": "conversion-method",
+  "topic": "SDD to top event and development",
+  "text": "A system design description fixes the precise top event, the functions and interfaces, the redundancy-management and reconfiguration logic, and the documented failure modes and their detection. Use it to scope the tree and to develop each branch only to the resolution the SDD provides. Where the SDD treats an item as a black box, the tree stops at that black box as a basic event until a lower-level description is supplied."
+ },
+ {
+  "id": "conv-07",
+  "source": "conversion-method",
+  "topic": "Model monitors, detection, and sequence honestly",
+  "text": "Where the architecture includes monitors, comparators, or reconfiguration, represent detection and sequence faithfully: a latent (undetected) failure differs from an annunciated one, and a protection that must act before a hazard is modelled with a priority-AND or an inhibit gate carrying the enabling condition. Do not credit a monitor, a coverage fraction, or a reconfiguration the architecture does not actually document."
+ },
+ {
+  "id": "conv-08",
+  "source": "conversion-method",
+  "topic": "Every redundancy is an independence hypothesis",
+  "text": "Converting a redundant architecture into an AND gate asserts that the redundant elements fail independently. Treat that as a hypothesis to test against shared power, shared data, shared cooling, co-location, shared routing, common software, common manufacturing, and common maintenance. Where any shared cause exists, surface it as a common-cause contributor rather than leaving a falsely optimistic AND that overstates the architecture's protection."
+ },
+ {
+  "id": "conv-09",
+  "source": "conversion-method",
+  "topic": "Conversion depth follows the architecture",
+  "text": "Stop converting where the architecture stops resolving. If a block diagram shows a system as a single box, the tree carries that system as one basic event until a lower-level architecture — sub-blocks, a schematic, or an SDD — is provided. Never invent internal structure, intermediate gates, or basic events to make a tree appear deeper than the supplied architecture supports; flag the missing detail instead."
+ },
+ {
+  "id": "app-01",
+  "source": "aerospace-convention",
+  "topic": "Phase-based top events",
+  "text": "For phased operations a separate top event is defined per phase, because the active functions, the configuration, and the effective system definition differ between phases. The overall result is assembled across phases, and the worst-case phase governs the classification. When converting an architecture, choose the configuration that is actually active in the phase being analysed."
+ },
+ {
+  "id": "app-02",
+  "source": "aerospace-convention",
+  "topic": "Interfaces are where integrated FTA pays off",
+  "text": "In integrated systems much of a fault tree's value is exposing how interactions across subsystem interfaces produce an undesired event that no single subsystem reveals on its own. When converting an architecture, give explicit attention to interface failures — wrong, missing, late, or stale data or energy crossing a boundary — not only to failures internal to each block."
+ },
+ {
+  "id": "app-03",
+  "source": "aerospace-convention",
+  "topic": "Pervasive redundancy makes independence decisive",
+  "text": "Because redundancy is pervasive in aerospace, converted trees are frequently dominated by AND gates, which makes independence the decisive engineering question and the structural importance of shared or root contributors the key qualitative output. A converted tree that is all ANDs with no examined common cause is usually incomplete rather than genuinely fault-tolerant."
+ },
+ {
+  "id": "phase-01",
+  "source": "lifecycle-method",
+  "topic": "Inputs change with the design phase",
+  "text": "Across the development lifecycle the inputs available for analysis change. Conceptual and functional phases provide functions, failure conditions, and objectives but little implementation detail. Preliminary design adds the functional architecture and allocation — functional block diagrams and redundancy intent. Detailed design adds schematics, system design descriptions, part lists, and reliability data. The analysis must use whatever set the current phase actually provides and must never assume inputs that belong to a later phase."
+ },
+ {
+  "id": "phase-02",
+  "source": "lifecycle-method",
+  "topic": "Allocation early, verification late",
+  "text": "When only the architecture and a failure-condition budget exist, build top-down allocation trees that apportion objectives and assurance across contributors, bottoming out at the level the architecture resolves. When the implementation exists, build bottom-up verification trees that reach basic events and parts and demonstrate the as-built design meets the allocated objectives. The same failure condition is modelled at coarser resolution early and finer resolution later; both are correct for their phase."
+ },
+ {
+  "id": "phase-03",
+  "source": "lifecycle-method",
+  "topic": "Depth scales with the phase's inputs",
+  "text": "Tree depth and basic-event resolution scale with the inputs the current phase provides. An early allocation tree legitimately terminates at functions or black-box systems; a later verification tree terminates at parts with failure modes and rates. Reaching part-level detail before the design provides it means inventing structure, which is not permitted. Terminate where the current input set stops resolving, and flag what a deeper analysis would require."
+ },
+ {
+  "id": "phase-04",
+  "source": "lifecycle-method",
+  "topic": "Match the analysis type to the available inputs",
+  "text": "The set of analyses that applies also changes with phase and inputs. Functional hazard assessment and preliminary aircraft-level analysis come first; system-level fault trees follow the functional architecture; item-level FMEA, detailed common-mode analysis, and verification fault trees follow the detailed design and component data. Choose the analysis and altitude the available inputs actually support rather than forcing a detailed analysis onto conceptual inputs or vice versa."
+ },
+ {
+  "id": "phase-05",
+  "source": "lifecycle-method",
+  "topic": "Carry assumptions forward as inputs mature",
+  "text": "Because inputs arrive over time, assumptions made early — an assumed redundancy, an assumed independence, a placeholder where a failure rate will go — must be logged and revisited as later-phase inputs appear. An early-phase tree is provisional: when the schematic or SDD arrives, the previously black-box branch is developed and each earlier assumption is explicitly confirmed or retired rather than silently inherited."
+ }
+]

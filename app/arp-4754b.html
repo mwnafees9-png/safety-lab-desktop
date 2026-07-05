@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="description" content="Allocate Development Assurance Levels top-down under ARP 4754B, with the §5.4 AND-gate options, external-source linkage and automatic sibling rebalancing — connected to your fault trees and requirements.">
+<meta name="keywords" content="ARP 4754B, ARP4754B software, DAL allocation, development assurance level, FDAL IDAL, function development assurance, DO-178C DO-254 objectives">
+<title>ARP 4754B Software &amp; DAL Allocation | Safety Lab Aero</title>
+<link rel="canonical" href="https://safetylabaero.com/arp-4754b">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Safety Lab Aero">
+<meta property="og:title" content="ARP 4754B Software &amp; DAL Allocation | Safety Lab Aero">
+<meta property="og:description" content="Allocate Development Assurance Levels top-down under ARP 4754B, with the §5.4 AND-gate options, external-source linkage and automatic sibling rebalancing — connected to your fault trees and requirements.">
+<meta property="og:url" content="https://safetylabaero.com/arp-4754b">
+<meta property="og:image" content="https://safetylabaero.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ARP 4754B Software &amp; DAL Allocation | Safety Lab Aero">
+<meta name="twitter:description" content="Allocate Development Assurance Levels top-down under ARP 4754B, with the §5.4 AND-gate options, external-source linkage and automatic sibling rebalancing — connected to your fault trees and requirements.">
+<meta name="twitter:image" content="https://safetylabaero.com/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://safetylabaero.com/arp-4754b#webpage",
+      "url": "https://safetylabaero.com/arp-4754b",
+      "name": "ARP 4754B Software & DAL Allocation | Safety Lab Aero",
+      "description": "Allocate Development Assurance Levels top-down under ARP 4754B, with the \u00a75.4 AND-gate options, external-source linkage and automatic sibling rebalancing \u2014 connected to your fault trees and requirements.",
+      "isPartOf": {
+        "@id": "https://safetylabaero.com/#software"
+      },
+      "about": {
+        "@id": "https://safetylabaero.com/#software"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://safetylabaero.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Resources",
+          "item": "https://safetylabaero.com/resources"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "ARP 4754B",
+          "item": "https://safetylabaero.com/arp-4754b"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Safety Lab Aero support the ARP 4754B \u00a75.4 AND-gate options?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes \u2014 Options 1, 2 and 3 are supported for AND gates, including a carrier-child designation for Option 1, with siblings rebalancing automatically to honor the parent budget."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between FDAL and IDAL?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FDAL is the functional development assurance level assigned to a function; IDAL is the item development assurance level assigned to the hardware or software item that implements it. Safety Lab Aero carries both and keeps them traceable from aircraft function to item."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/seo.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand" aria-label="Safety Lab Aero home">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="32,16 48,48 16,48" fill="#fff"/></svg></span>
+    Safety Lab Aero
+  </a>
+  <div class="nav-links">
+    <a href="/resources">Resources</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#about">About</a>
+    <a href="/app" class="nav-cta">Sign in</a>
+  </div>
+</div></nav>
+<header class="page-hero"><div class="container">
+  <p class="eyebrow">ARP 4754B</p>
+  <h1>ARP 4754B development assurance and <span class="grad-text">DAL allocation</span></h1>
+  <p class="lede">Assign and manage Development Assurance Levels from failure-condition severity down to the items that implement the function.</p>
+  <div class="related"><a href="/arp-4761a">ARP 4761A process</a><a href="/fault-tree-analysis">Fault Tree Analysis</a><a href="/resources">Resources</a></div>
+</div></header>
+<main class="container"><article>
+
+<p>ARP 4754B governs the development assurance of aircraft and systems — how rigorously each function and item must be developed and verified, expressed as a Development Assurance Level. Getting allocation right is both a safety question and a cost question: an over-conservative DAL is expensive, an under-allocated one is a finding.</p>
+
+<h2>Top-down allocation that honors the logic</h2>
+<ul>
+<li>Apportion the top-event target across gates and down to basic events, respecting gate logic.</li>
+<li>ARP 4754B §5.4 Options 1, 2 and 3 for AND gates, with a carrier-child designation for Option 1.</li>
+<li>External-source linkage so a node can inherit a value from another tree or an FHA target, with free siblings rebalancing automatically to honor the parent budget.</li>
+<li>FDAL (functional) and IDAL (item) designations carried through to the items and configuration items that realize the function.</li>
+</ul>
+
+<h2>Tied to the analysis, not a separate spreadsheet</h2>
+<p>Because DAL allocation runs on the same fault trees you quantify in <a href="/fault-tree-analysis">FTA</a>, a change to the architecture or a failure condition's severity reflows the allocation instead of silently going stale. The DAL Reference view summarizes the DO-178C and DO-254 objective counts by level so the downstream effort is explicit.</p>
+
+<h2>From function to item</h2>
+<p>ARP 4754B is a two-level story: aircraft functions realized by systems, systems realized by items. Safety Lab Aero mirrors that — system functions trace up to aircraft functions, system failure conditions trace up to aircraft failure conditions, and development-assurance allocation stays traceable from the aircraft function down to the line-replaceable unit.</p>
+
+<h2>Frequently asked questions</h2><h3>Does Safety Lab Aero support the ARP 4754B §5.4 AND-gate options?</h3><p>Yes — Options 1, 2 and 3 are supported for AND gates, including a carrier-child designation for Option 1, with siblings rebalancing automatically to honor the parent budget.</p><h3>What is the difference between FDAL and IDAL?</h3><p>FDAL is the functional development assurance level assigned to a function; IDAL is the item development assurance level assigned to the hardware or software item that implements it. Safety Lab Aero carries both and keeps them traceable from aircraft function to item.</p>
+<div class="cta-band">
+  <h2>See it on your own analysis</h2>
+  <p>Safety Lab Aero keeps functions, hazards, fault trees, FMEA, common-cause, requirements and verification in one connected model — from FHA to a certification-ready evidence package.</p>
+  <p><a href="/app" class="btn btn-primary">Start free trial</a></p>
+</div>
+</article></main>
+<footer><div class="foot-inner">
+  <div class="nav-brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><polygon points="32,16 48,48 16,48" fill="#fff"/></svg></span> Safety Lab Aero</div>
+  <div class="foot-links">
+    <a href="/fault-tree-analysis">Fault Tree Analysis</a>
+    <a href="/arp-4761a">ARP 4761A</a>
+    <a href="/arp-4754b">ARP 4754B</a>
+    <a href="/fmea-software">FMEA</a>
+    <a href="/common-cause-analysis">CMA / PRA / ZSA</a>
+    <a href="mailto:waqas.nafees@safetylabaero.com">Contact</a>
+  </div>
+</div>
+<p class="foot-copy">&copy; 2026 Safety Lab Aero, Inc. &middot; safetylabaero.com &middot; Safety Lab Aero is an integrated aerospace safety analysis workspace built on the ARP 4761A / 4754B process.</p>
+</footer>
+</body>
+</html>

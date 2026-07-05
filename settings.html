@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Lab Aero — AI &amp; Profile</title>
+<style>
+  :root{
+    --navy:#0A1F44; --blue:#007aff; --purple:#af52de; --ink:#1b1f27; --mut:#5b6270;
+    --bg:#f6f8fc; --card:#fff; --line:#e4e8f1; --grad:linear-gradient(135deg,#007aff,#af52de);
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.5}
+  .wrap{padding:20px 22px 24px}
+  h1{font-size:17px;color:var(--navy);margin:0 0 2px}
+  .sub{color:var(--mut);font-size:12.5px;margin:0 0 16px}
+  fieldset{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 16px;margin:0 0 14px}
+  legend{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);padding:0 6px}
+  label.fld{display:block;margin:0 0 10px}
+  label.fld span{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin:0 0 4px}
+  input[type=text],input[type=email],input[type=url],input[type=password],select{
+    width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;color:var(--ink);background:#fff}
+  .modes{display:flex;flex-direction:column;gap:8px}
+  .mode{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:9px;cursor:pointer}
+  .mode.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,122,255,.12)}
+  .mode input{margin-top:2px}
+  .mode b{font-size:13px;color:var(--navy)}
+  .mode small{display:block;color:var(--mut);font-size:11.5px;margin-top:1px}
+  .hint{font-size:11.5px;color:var(--mut);margin:3px 0 0}
+  .row{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+  button{font:inherit;font-size:13px;font-weight:600;border-radius:9px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+  button.primary{border:none;color:#fff;background:var(--grad)}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AI &amp; Profile Settings</h1>
+  <p class="sub">Stored locally on this machine. AI changes apply on the next app reload.</p>
+
+  <fieldset>
+    <legend>Local profile</legend>
+    <label class="fld"><span>Name</span><input id="pname" type="text" placeholder="e.g. Jane Engineer" autocomplete="off"></label>
+    <label class="fld"><span>Email</span><input id="pemail" type="email" placeholder="you@org.com" autocomplete="off"></label>
+    <p class="hint">Used to stamp provenance on AI-accepted artifacts and in saved projects.</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>AI mode</legend>
+    <div class="modes">
+      <label class="mode" id="m-cloud"><input type="radio" name="aimode" value="cloud">
+        <span><b>Cloud (hosted proxy)</b><small>Uses the Safety Lab Aero hosted AI. Requires internet + a valid Pro+ token or BYO key.</small></span></label>
+      <label class="mode" id="m-custom"><input type="radio" name="aimode" value="custom">
+        <span><b>Custom endpoint (air-gap)</b><small>Route AI to your own approved, Anthropic-Messages-compatible endpoint. No data leaves your network.</small></span></label>
+      <label class="mode" id="m-off"><input type="radio" name="aimode" value="off">
+        <span><b>AI off</b><small>Hide all AI features. The deterministic engine runs fully offline.</small></span></label>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-endpoint" class="hidden">
+    <legend>Custom endpoint</legend>
+    <label class="fld"><span>Base URL</span><input id="aiendpoint" type="url" placeholder="https://ai.internal.example.mil/v1/ai"></label>
+    <p class="hint">The app will POST to <code>&lt;base&gt;/anthropic/messages</code> with a Bearer token. Point this at a self-hosted relay or your GovCloud model gateway.</p>
+  </fieldset>
+
+  <fieldset id="fs-cred" class="hidden">
+    <legend>Credential</legend>
+    <label class="fld"><span>Token (Bearer)</span><input id="aitoken" type="password" placeholder="paste token" autocomplete="off"></label>
+    <label class="fld"><span>Model</span><input id="aimodel" type="text" placeholder="claude-sonnet-4-6"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Collaboration backend</legend>
+    <div class="modes">
+      <label class="mode" id="cm-cloud"><input type="radio" name="collabmode" value="cloud">
+        <span><b>Cloud (hosted)</b><small>Sign-in, live co-authoring, presence and comments run on the Safety Lab Aero hosted backend.</small></span></label>
+      <label class="mode" id="cm-custom"><input type="radio" name="collabmode" value="custom">
+        <span><b>Self-hosted (your Supabase)</b><small>Point auth + realtime co-authoring + the project store at your own Supabase (VPC / intranet). Project data, presence, comments and edit history stay inside your boundary. Requires the Safety Lab schema provisioned on that instance.</small></span></label>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-collab" class="hidden">
+    <legend>Self-hosted Supabase</legend>
+    <label class="fld"><span>Project URL</span><input id="collaburl" type="url" placeholder="https://supabase.internal.example.aero"></label>
+    <label class="fld"><span>Anon / publishable key</span><input id="collabkey" type="password" placeholder="paste the instance's anon key" autocomplete="off"></label>
+    <p class="hint">Both are required. Applied on the next app reload; leaving either blank falls back to the hosted backend.</p>
+  </fieldset>
+
+  <div class="row">
+    <button id="cancel" type="button">Cancel</button>
+    <button id="save" class="primary" type="button">Save &amp; apply</button>
+  </div>
+</div>
+
+<script>
+  var byId = function(id){ return document.getElementById(id); };
+  function currentMode(){ var r = document.querySelector('input[name="aimode"]:checked'); return r ? r.value : 'cloud'; }
+  function currentCollabMode(){ var r = document.querySelector('input[name="collabmode"]:checked'); return r ? r.value : 'cloud'; }
+  function refreshVis(){
+    var mode = currentMode();
+    ['cloud','custom','off'].forEach(function(m){ byId('m-'+m).classList.toggle('active', m===mode); });
+    byId('fs-endpoint').classList.toggle('hidden', mode!=='custom');
+    byId('fs-cred').classList.toggle('hidden', mode==='off');
+    var cmode = currentCollabMode();
+    ['cloud','custom'].forEach(function(m){ byId('cm-'+m).classList.toggle('active', m===cmode); });
+    byId('fs-collab').classList.toggle('hidden', cmode!=='custom');
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="aimode"], input[name="collabmode"]'), function(el){ el.addEventListener('change', refreshVis); });
+
+  (async function init(){
+    try{
+      var c = await window.slabSettings.get();
+      byId('pname').value = c.profileName || '';
+      byId('pemail').value = c.profileEmail || '';
+      var mode = c.aiMode || 'cloud';
+      var radio = document.querySelector('input[name="aimode"][value="'+mode+'"]');
+      if (radio) radio.checked = true;
+      byId('aiendpoint').value = c.aiEndpoint || '';
+      byId('aitoken').value = c.aiToken || '';
+      byId('aimodel').value = c.aiModel || 'claude-sonnet-4-6';
+      var cmode = c.collabMode || 'cloud';
+      var cradio = document.querySelector('input[name="collabmode"][value="'+cmode+'"]');
+      if (cradio) cradio.checked = true;
+      byId('collaburl').value = c.collabUrl || '';
+      byId('collabkey').value = c.collabKey || '';
+    }catch(e){ /* defaults */ }
+    refreshVis();
+  })();
+
+  byId('cancel').addEventListener('click', function(){ window.close(); });
+  byId('save').addEventListener('click', async function(){
+    var cfg = {
+      profileName: byId('pname').value.trim(),
+      profileEmail: byId('pemail').value.trim(),
+      aiMode: currentMode(),
+      aiEndpoint: byId('aiendpoint').value.trim(),
+      aiToken: byId('aitoken').value,
+      aiModel: byId('aimodel').value.trim() || 'claude-sonnet-4-6',
+      collabMode: currentCollabMode(),
+      collabUrl: byId('collaburl').value.trim(),
+      collabKey: byId('collabkey').value.trim()
+    };
+    try { await window.slabSettings.save(cfg); } catch(e){}
+    window.slabSettings.applyAndReload();
+  });
+</script>
+</body>
+</html>

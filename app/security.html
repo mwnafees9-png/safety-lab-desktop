@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trust &amp; security — your data, your AI, your certification basis | Safety Lab Aero</title>
+<meta name="description" content="How Safety Lab Aero handles your data, your AI backend, and your certification basis: a deterministic core that owns every safety number, advisory and gated AI, and on-prem / ITAR routing for controlled documents.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+    --brand-blue:#007aff; --brand-purple:#af52de;
+    --ink-navy:#0A1F44; --ink-body:#181B22; --ink-muted:#555B6B;
+    --bg:#ffffff; --bg-soft:#f7f8fb; --bg-card:#ffffff;
+    --border-hair:#e3e6ee; --border:#d4d8e3;
+    --text:#181B22; --text-strong:#0A1F44; --text-muted:#555B6B;
+    --r-md:10px; --r-lg:16px; --r-xl:24px;
+    --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px;
+    --grad:linear-gradient(135deg,var(--brand-blue) 0%,var(--brand-purple) 100%);
+    --shadow-md:0 4px 12px rgba(10,31,68,.06),0 8px 32px rgba(10,31,68,.08);
+    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font-sans);font-size:16px;line-height:1.55;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+a{color:var(--brand-blue);text-decoration:none;}
+.container{max-width:1000px;margin:0 auto;padding:0 var(--s-5);}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);-webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border-hair);}
+.nav-inner{max-width:1000px;margin:0 auto;padding:12px var(--s-5);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text-strong);font-weight:700;font-size:16px;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:inline-flex;align-items:center;justify-content:center;flex:none;}
+.brand-mark svg{width:17px;height:17px;}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;background:var(--grad);color:#fff;font-weight:600;font-size:14px;padding:8px 16px;border-radius:10px;}
+.hero{padding:var(--s-8) 0 var(--s-6);}
+.eyebrow{display:block;font-size:12px;font-weight:600;color:var(--brand-blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--s-3);}
+h1{font-size:clamp(28px,3.4vw,40px);font-weight:700;color:var(--text-strong);line-height:1.15;letter-spacing:-.015em;margin:0 0 var(--s-4);}
+.lead{font-size:17px;color:var(--text-muted);max-width:760px;margin:0;line-height:1.55;}
+.sec{padding:var(--s-5) 0;}
+h2{font-size:21px;font-weight:700;color:var(--text-strong);letter-spacing:-.01em;margin:var(--s-6) 0 var(--s-3);}
+.tcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s-4);margin:var(--s-4) 0 var(--s-6);}
+.tcard{background:var(--bg-card);border:1px solid var(--border-hair);border-radius:var(--r-lg);padding:var(--s-5);box-shadow:var(--shadow-md);}
+.tcard .ic{width:38px;height:38px;border-radius:10px;background:rgba(0,122,255,.08);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.tcard .ic svg{width:20px;height:20px;stroke:var(--brand-blue);}
+.tcard h3{font-size:16px;font-weight:700;color:var(--text-strong);margin:0 0 6px;letter-spacing:-.01em;}
+.tcard p{font-size:14px;color:var(--text-muted);margin:0;line-height:1.5;}
+table{width:100%;border-collapse:collapse;margin:var(--s-3) 0 var(--s-6);font-size:14px;}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border-hair);}
+th{background:var(--ink-navy);color:#fff;font-weight:600;font-size:13px;}
+th:first-child{border-top-left-radius:8px;} th:last-child{border-top-right-radius:8px;}
+td:first-child{font-weight:600;color:var(--text-strong);}
+.yes{color:#0a7d3c;font-weight:600;} .no{color:#9aa3b8;}
+.faq{margin:var(--s-3) 0 var(--s-6);}
+.qa{border:1px solid var(--border-hair);border-radius:var(--r-md);padding:var(--s-4);margin-bottom:10px;background:var(--bg-card);}
+.qa h4{font-size:15px;font-weight:700;color:var(--text-strong);margin:0 0 6px;}
+.qa p{font-size:14px;color:var(--text-muted);margin:0;line-height:1.55;}
+.note{font-size:12.5px;color:var(--text-muted);line-height:1.5;background:var(--bg-soft);border:1px solid var(--border-hair);border-radius:var(--r-md);padding:var(--s-4);margin:var(--s-4) 0 var(--s-6);}
+.cta-band{background:var(--bg-soft);border:1px solid var(--border-hair);border-radius:var(--r-xl);padding:var(--s-6);text-align:center;margin:var(--s-6) 0 var(--s-8);}
+.cta-band h3{font-size:22px;font-weight:700;color:var(--text-strong);margin:0 0 8px;letter-spacing:-.01em;}
+.cta-band p{font-size:15px;color:var(--text-muted);max-width:620px;margin:0 auto var(--s-4);line-height:1.55;}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:#fff;font-weight:600;font-size:15px;padding:12px 22px;border-radius:12px;}
+footer{border-top:1px solid var(--border-hair);padding:var(--s-5) 0;color:var(--text-muted);font-size:13px;}
+footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+</style>
+<style>
+/* Phase 62.6 — flight recorder identity override: Plex, paper, squared corners, spine. */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+*{border-radius:0 !important;}
+body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif !important;background:#F7F4EC !important;color:#16181D;}
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#007aff,#af52de);z-index:2000;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4 L20 19 H4 Z" fill="#fff"/></svg></span>Safety Lab Aero</a>
+    <a class="nav-cta" href="/app">Open the app</a>
+</div></nav>
+
+<section class="hero"><div class="container">
+    <span class="eyebrow">Trust &amp; security</span>
+    <h1>Your data, your AI, your certification basis</h1>
+    <p class="lead">Safety Lab Aero is built so the AI accelerates the work without ever becoming part of the safety argument. The deterministic engine owns every safety‑significant number, the AI is advisory and gated, and controlled documents are routed only where you allow them.</p>
+</div></section>
+
+<section class="sec"><div class="container">
+    <h2>How it's built</h2>
+    <div class="tcards">
+        <div class="tcard">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 4.4-3.1 7.9-8 9-4.9-1.1-8-4.6-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span>
+            <h3>The deterministic core owns the numbers</h3>
+            <p>Failure rates, probabilities, cut‑sets, and DAL allocation are computed by explicit, repeatable logic — never by the AI. The AI may draft structure, but it never sets λ, DAL, or severity as fact.</p>
+        </div>
+        <div class="tcard">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+            <h3>Advisory and gated AI</h3>
+            <p>Every AI edit is proposed, not applied: you see a before‑to‑after diff, accept what you want, and undo any turn. Nothing the AI does is silent or irreversible.</p>
+        </div>
+        <div class="tcard">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+            <h3>Your model stays yours</h3>
+            <p>The project model and the deterministic engine run in your browser or desktop app; your projects are your own files. Only an explicit AI request sends anything to your configured AI backend.</p>
+        </div>
+    </div>
+
+    <h2>AI backend &amp; controlled data</h2>
+    <p style="color:var(--text-muted);font-size:15px;max-width:760px;">You choose where AI requests are processed, to match your programme's data‑handling posture. Documents you mark <strong>controlled</strong> (ITAR or proprietary) are hard‑routed: while one is in the project, the AI is blocked unless the backend is on‑premise or ITAR‑routed.</p>
+    <table>
+        <thead><tr><th>Backend</th><th>What it is</th><th>Controlled docs</th></tr></thead>
+        <tbody>
+            <tr><td>Hosted proxy</td><td>Claude via the Pro+ hosted proxy.</td><td class="no">Not permitted</td></tr>
+            <tr><td>Bring‑your‑own key</td><td>Your provider key, used directly.</td><td class="no">Not permitted</td></tr>
+            <tr><td>ITAR (Azure Gov)</td><td>Hosted proxy routed to Azure Government.</td><td class="yes">Permitted</td></tr>
+            <tr><td>On‑premise</td><td>Self‑hosted / local backend.</td><td class="yes">Permitted</td></tr>
+        </tbody>
+    </table>
+    <p class="note">Controlled‑document routing is enforced in the application: a controlled document on file blocks every AI call — chat and batch alike — unless an on‑premise or Azure‑Government backend is configured, and where each controlled document was processed is recorded. This is a routing control, not a claim of formal accreditation; talk to us about your specific ITAR/EAR or programme‑security requirements.</p>
+
+    <h2>Frequently asked</h2>
+    <div class="faq">
+        <div class="qa"><h4>Does the AI decide λ, DAL, or severity?</h4><p>No. Those are owned by the deterministic engine and the engineer. The AI may propose a severity with rationale for you to confirm, and may build fault‑tree structure with rates left blank — but it never establishes a safety number as fact.</p></div>
+        <div class="qa"><h4>Is the AI part of the certification argument?</h4><p>No — by design. The AI drafts, traces, and connects; the deterministic engine and the engineer own the numbers, the allocation, and the safety case. Requirements are allocated by interpreting the fault‑tree logic, not by the AI.</p></div>
+        <div class="qa"><h4>Where does my data go?</h4><p>The model and engine run locally in your browser or desktop app. Only an explicit AI request sends the relevant context to your configured backend — hosted proxy, your own key, on‑premise, or Azure Government for ITAR.</p></div>
+        <div class="qa"><h4>Can I use it on ITAR or controlled programmes?</h4><p>Mark the relevant documents controlled; the AI is then restricted to an on‑premise or Azure‑Government backend, and blocked otherwise. For fully air‑gapped work, the on‑premise backend keeps everything inside your boundary.</p></div>
+        <div class="qa"><h4>Does it replace my DER or my engineers?</h4><p>No. It is a tool your engineers and DER use; the human owns every judgement and signs the safety case. The platform's job is to make the work faster and the golden thread complete and traceable.</p></div>
+        <div class="qa"><h4>What standards does it follow?</h4><p>ARP 4754B and ARP 4761A, the means of compliance for your cert basis (AC 23.1309 / AC 25.1309 / AC 27 / AC 29 / SC‑VTOL, ASTM F3230), and DO‑178C / DO‑254 development assurance.</p></div>
+    </div>
+
+    <div class="cta-band">
+        <h3>Built to be trusted on a certification programme.</h3>
+        <p>Advisory AI above a deterministic, engineer‑owned core — with the data‑handling controls a controlled programme needs. Questions about your specific security posture? We're happy to talk.</p>
+        <a class="btn" href="/app">Open the app →</a>
+    </div>
+</div></section>
+
+<footer><div class="container">
+    <span>© <span id="yr"></span> Safety Lab Aero</span>
+    <span><a href="/tools">Calculators</a> &middot; <a href="/templates">Templates</a> &middot; <a href="/">Home</a> &middot; <a href="mailto:waqas.nafees@safetylabaero.com">Contact</a></span>
+</div></footer>
+
+<script>var y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear();</script>
+</body>
+</html>
