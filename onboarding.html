@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Safety Lab Aero — Set up</title>
 <style>
@@ -27,28 +28,38 @@
   .sub{color:var(--mut);font-size:13px;margin:0 0 18px}
   label.fld{display:block;margin:0 0 12px}
   label.fld span{display:block;font-size:12.5px;font-weight:600;margin:0 0 4px}
-  input[type=text],input[type=email],input[type=password],textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13px;background:#fff}
+  input[type=text],input[type=url],input[type=password],textarea,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13px;background:#fff;color:var(--ink)}
   textarea{resize:vertical;min-height:88px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
   .row2{display:flex;gap:12px}.row2>*{flex:1}
   .btnrow{display:flex;gap:10px;align-items:center;margin-top:6px}
   button{font:inherit;font-size:13px;font-weight:600;border-radius:9px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
   button.primary{border:none;color:#fff;background:var(--grad)}
   button.primary:disabled{opacity:.45;cursor:not-allowed}
-  button.ghost{background:#fff}
   .status{margin-top:10px;font-size:12.5px;padding:9px 11px;border-radius:8px;display:none}
   .status.ok{display:block;background:#e8f7ec;color:var(--good);border:1px solid #bfe3c8}
   .status.err{display:block;background:#fdecea;color:var(--bad);border:1px solid #f3c9c4}
-  .status.info{display:block;background:#eef3ff;color:#274; color:#3257a8;border:1px solid #d4e0fb}
+  .status.info{display:block;background:#eef3ff;color:#3257a8;border:1px solid #d4e0fb}
   .agree-box{height:330px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;font-size:12.5px;line-height:1.55;color:#2a2f3a}
   .agree-box h4{margin:16px 0 4px;font-size:13px;color:var(--navy)}
   .agree-box p{margin:0 0 8px}
-  .agree-box p.sub{margin-left:16px}
   .meta{font-size:11.5px;color:var(--mut);margin:6px 0 10px}
   .chk{display:flex;gap:9px;align-items:flex-start;margin-top:12px;font-size:13px;cursor:pointer}
   .chk input{margin-top:2px;width:16px;height:16px;flex:none}
   .hint{font-size:11.5px;color:var(--mut);margin-top:3px}
   footer{border-top:1px solid var(--line);background:#fff;padding:14px 24px;display:flex;align-items:center;gap:10px}
   footer .spacer{flex:1}
+  fieldset{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 16px;margin:0 0 14px}
+  legend{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);padding:0 6px}
+  .modes{display:flex;flex-direction:column;gap:8px}
+  .mode{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:9px;cursor:pointer}
+  .mode.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,122,255,.12)}
+  .mode input{margin-top:2px}
+  .mode b{font-size:13px;color:var(--navy)}
+  .mode small{display:block;color:var(--mut);font-size:11.5px;margin-top:1px}
+  .hidden{display:none}
+  .lic-card{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;font-size:13px}
+  .lic-card b{color:var(--navy)}
+
 </style>
 </head>
 <body>
@@ -56,38 +67,21 @@
     <span class="mark"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="32,16 48,48 16,48" fill="#fff"/></svg></span>
     <span class="brand">Safety Lab Aero</span>
     <div class="steps">
-      <span class="step" id="st-0">1 · Activate</span>
-      <span class="step" id="st-1">2 · Profile</span>
-      <span class="step" id="st-2">3 · EULA</span>
-      <span class="step" id="st-3">4 · License</span>
+      <span class="step" id="st-0">1 · License</span>
+      <span class="step" id="st-1">2 · EULA</span>
+      <span class="step" id="st-2">3 · Agreement</span>
+      <span class="step" id="st-3">4 · Screen lock</span>
     </div>
   </header>
-
   <main>
-    <section id="panel-activate" style="display:none">
-      <h1>Activate your license</h1>
-      <p class="sub">Paste the license key you were issued, or load the <code>.sllic</code> file. The app validates it on this machine — no internet required.</p>
-      <label class="fld"><span>License key</span><textarea id="lickey" spellcheck="false" placeholder="SLA1.…"></textarea></label>
-      <div class="btnrow">
-        <button class="ghost" id="btn-loadfile" type="button">Load license file…</button>
-        <button class="primary" id="btn-validate" type="button">Validate</button>
-      </div>
+    <section id="panel-license" style="display:none">
+      <h1>Load your license</h1>
+      <p class="sub">Your license is a small file from Safety Lab Aero (it ends in <code>.lic</code>). It is checked on this computer and never sent anywhere. Trials use a temporary license with an end date.</p>
+      <div class="btnrow"><button class="primary" id="btn-loadfile" type="button">Choose license file…</button><span class="hint">or paste its contents below</span></div>
+      <label class="fld" style="margin-top:12px"><span>License</span><textarea id="licblob" spellcheck="false" placeholder="paste the contents of your .lic file"></textarea></label>
+      <div class="btnrow"><button id="btn-check" type="button">Check license</button></div>
       <div class="status" id="lic-status"></div>
-    </section>
-
-    <section id="panel-profile" style="display:none">
-      <h1>Create your profile</h1>
-      <p class="sub">This identifies you on AI-accepted artifacts and inside saved projects. Stored locally.</p>
-      <div class="row2">
-        <label class="fld"><span>Name</span><input id="p-name" type="text" autocomplete="off" placeholder="Jane Engineer"></label>
-        <label class="fld"><span>Email</span><input id="p-email" type="email" autocomplete="off" placeholder="jane@org.com"></label>
-      </div>
-      <label class="fld"><span>Organization</span><input id="p-org" type="text" autocomplete="off" placeholder="Your company"></label>
-      <div class="row2">
-        <label class="fld"><span>Passcode (optional)</span><input id="p-pass" type="password" autocomplete="off" placeholder="lock this install"></label>
-        <label class="fld"><span>Confirm passcode</span><input id="p-pass2" type="password" autocomplete="off"></label>
-      </div>
-      <p class="hint">If set, the passcode is required each time the app launches on this machine (min 4 characters). Leave blank to skip.</p>
+      <div class="lic-card" id="lic-card" style="display:none;margin-top:12px"></div>
     </section>
 
     <section id="panel-eula" style="display:none">
@@ -97,89 +91,89 @@
       <label class="chk"><input type="checkbox" id="eula-cb"><span>I have read and agree to the Safety Lab Aero End User License Agreement.</span></label>
     </section>
 
-    <section id="panel-license" style="display:none">
+    <section id="panel-agreement" style="display:none">
       <h1>Software License &amp; Subscription Agreement</h1>
       <p class="meta">Safety Lab Aero · <span id="lic-ver">—</span> · please review before continuing</p>
       <div class="agree-box" id="lic-body">Loading…</div>
       <label class="chk"><input type="checkbox" id="lic-cb"><span>I have read and agree to the Safety Lab Aero License Agreement.</span></label>
     </section>
-  </main>
 
+    <section id="panel-lock" style="display:none">
+      <h1>Screen lock (optional)</h1>
+      <p class="sub">You will sign in to your account inside the app, exactly as on the web, and stay signed in on this computer. A passcode adds a lock screen when the app opens. Leave both blank for no lock.</p>
+      <div class="row2">
+        <label class="fld"><span>Passcode</span><input id="p-pass" type="password" autocomplete="off" placeholder="at least 4 characters"></label>
+        <label class="fld"><span>Confirm passcode</span><input id="p-pass2" type="password" autocomplete="off"></label>
+      </div>
+      <div class="status" id="lock-status"></div>
+    </section>
+  </main>
   <footer>
-    <button class="ghost" id="btn-quit" type="button">Decline &amp; quit</button>
-    <span class="spacer"></span>
-    <button class="ghost" id="btn-back" type="button" style="visibility:hidden">Back</button>
+    <button id="btn-quit" type="button">Decline &amp; quit</button>
+    <div class="spacer"></div>
+    <button id="btn-back" type="button" style="visibility:hidden">Back</button>
     <button class="primary" id="btn-next" type="button" disabled>Next</button>
   </footer>
-
 <script>
-  const steps = ['activate','profile','eula','license'];
-  const state = { step:0, validatedKey:null };
-  const $ = id => document.getElementById(id);
-
-  function setLicStatus(msg, cls){ const el=$('lic-status'); el.textContent=msg; el.className='status '+(cls||'info'); if(!msg) el.className='status'; }
-  function passcodeOk(){ const a=$('p-pass').value, c=$('p-pass2').value; if(!a && !c) return true; return a.length>=4 && a===c; }
-  function canAdvance(){
-    if(state.step===0) return !!state.validatedKey;
-    if(state.step===1) return !!($('p-name').value.trim() && $('p-email').value.trim() && passcodeOk());
-    if(state.step===2) return $('eula-cb').checked;
-    if(state.step===3) return $('lic-cb').checked;
+  const $ = (id) => document.getElementById(id);
+  const steps = ['license', 'eula', 'agreement', 'lock'];
+  const state = { step: 0, license: '', licenseOk: false };
+  function setStatus(id, msg, cls) { const el = $(id); el.textContent = msg || ''; el.className = 'status' + (msg ? ' ' + (cls || 'info') : ''); }
+  function passcodeOk() { const a = $('p-pass').value, c = $('p-pass2').value; if (!a && !c) return true; return a.length >= 4 && a === c; }
+  function canAdvance() {
+    if (state.step === 0) return state.licenseOk;
+    if (state.step === 1) return $('eula-cb').checked;
+    if (state.step === 2) return $('lic-cb').checked;
+    if (state.step === 3) return passcodeOk();
     return false;
   }
-  function updateStepper(){ steps.forEach((s,idx)=>{ const el=$('st-'+idx); el.className='step'+(idx===state.step?' active':'')+(idx<state.step?' done':''); }); }
-  function updateNav(){
-    $('btn-back').style.visibility = state.step===0 ? 'hidden':'visible';
-    $('btn-next').textContent = state.step===steps.length-1 ? 'Agree & enter Safety Lab Aero' : 'Next';
+  function updateStepper() { steps.forEach((s, i) => { $('st-' + i).className = 'step' + (i === state.step ? ' active' : '') + (i < state.step ? ' done' : ''); }); }
+  function updateNav() {
+    $('btn-back').style.visibility = state.step > 0 ? 'visible' : 'hidden';
+    $('btn-next').textContent = state.step === steps.length - 1 ? 'Finish & open Safety Lab Aero' : 'Next';
     $('btn-next').disabled = !canAdvance();
   }
-  function showStep(i){ state.step=i; steps.forEach((s,idx)=>{ $('panel-'+s).style.display = idx===i?'block':'none'; }); updateStepper(); updateNav(); }
-
-  async function init(){
-    let b; try{ b = await window.gate.getBootstrap(); }catch(e){ return; }
-    $('eula-body').innerHTML = b.agreements.eulaHtml;
-    $('eula-ver').textContent = b.agreements.eulaVersion;
-    $('lic-body').innerHTML = b.agreements.licenseHtml;
-    $('lic-ver').textContent = b.agreements.licenseVersion;
-    if(b.existing && b.existing.profile){ $('p-name').value=b.existing.profile.name||''; $('p-email').value=b.existing.profile.email||''; $('p-org').value=b.existing.profile.org||''; }
+  function showStep(i) { state.step = i; steps.forEach((s, idx) => { $('panel-' + s).style.display = idx === i ? 'block' : 'none'; }); updateStepper(); updateNav(); }
+  function showLicense(info) {
+    const c = $('lic-card'); c.style.display = 'block';
+    c.innerHTML = '<b>' + esc(info.customer || 'Licensed') + '</b> · ' + esc(info.tier || '') + (info.seats ? ' · ' + esc(info.seats) + ' seats' : '') +
+      (info.trial ? ' · <b>Trial</b> · ' + esc(info.daysLeft) + ' days left' : ' · until ' + esc(String(info.expiresAt || '').slice(0, 10)));
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]); }
+  async function checkLicense(blob) {
+    blob = String(blob || '').trim();
+    if (!blob) { setStatus('lic-status', 'Choose a file or paste the license first.', 'info'); return; }
+    setStatus('lic-status', 'Checking…', 'info');
+    let r; try { r = await window.gate.checkLicense(blob); } catch (e) { r = { ok: false, error: 'Could not check the license.' }; }
+    if (r && r.ok) { state.license = blob; state.licenseOk = true; setStatus('lic-status', 'License accepted.', 'ok'); showLicense(r.info || {}); }
+    else { state.licenseOk = false; $('lic-card').style.display = 'none'; setStatus('lic-status', (r && r.error) || 'License invalid.', 'err'); }
+    updateNav();
+  }
+  async function init() {
+    let b; try { b = await window.gate.getBootstrap(); } catch (e) { return; }
+    $('eula-ver').textContent = b.agreements.eulaVersion; $('eula-body').innerHTML = b.agreements.eulaHtml;
+    $('lic-ver').textContent = b.agreements.licenseVersion; $('lic-body').innerHTML = b.agreements.licenseHtml;
+    const ex = b.existing && b.existing.license;
+    if (ex && ex.valid) { setStatus('lic-status', 'A valid license is already on this computer — press Next, or load a different one.', 'ok'); showLicense(ex); state.licenseOk = true; state.license = ''; }
+    else if (ex && !ex.valid) { setStatus('lic-status', ex.plain || 'The license on this computer is no longer valid.', 'err'); }
     showStep(0);
   }
-
-  $('btn-validate').onclick = async ()=>{
-    const key = $('lickey').value.trim(); if(!key){ setLicStatus('Paste a license key first.','err'); return; }
-    setLicStatus('Checking…','info');
-    let r; try{ r = await window.gate.validateLicense(key); }catch(e){ setLicStatus('Validation error.','err'); return; }
-    if(r.ok){
-      state.validatedKey = key; const i=r.info;
-      setLicStatus('Licensed to '+(i.org||i.name||i.email||'—')+'  ·  '+i.tier+'  ·  '+(i.exp?('expires '+new Date(i.exp*1000).toISOString().slice(0,10)):'perpetual'),'ok');
-      if(i.org && !$('p-org').value) $('p-org').value=i.org;
-      if(i.email && !$('p-email').value) $('p-email').value=i.email;
-      if(i.name && !$('p-name').value) $('p-name').value=i.name;
-    } else { state.validatedKey=null; setLicStatus(r.error||'Invalid license.','err'); }
-    updateNav();
+  $('btn-loadfile').onclick = async () => { const r = await window.gate.pickLicenseFile(); if (r && r.ok) { $('licblob').value = r.blob; checkLicense(r.blob); } };
+  $('btn-check').onclick = () => checkLicense($('licblob').value);
+  $('licblob').addEventListener('input', () => { state.licenseOk = false; $('lic-card').style.display = 'none'; setStatus('lic-status', ''); updateNav(); });
+  ['eula-cb', 'lic-cb'].forEach(id => $(id).addEventListener('change', updateNav));
+  ['p-pass', 'p-pass2'].forEach(id => $(id).addEventListener('input', () => { setStatus('lock-status', passcodeOk() ? '' : 'Passcodes must match and be at least 4 characters.', 'err'); updateNav(); }));
+  $('btn-back').onclick = () => showStep(Math.max(0, state.step - 1));
+  $('btn-next').onclick = async () => {
+    if (!canAdvance()) return;
+    if (state.step < steps.length - 1) { showStep(state.step + 1); return; }
+    $('btn-next').disabled = true;
+    let res;
+    try { res = await window.gate.complete({ license: state.license || undefined, acceptEula: $('eula-cb').checked, acceptLicense: $('lic-cb').checked, passcode: $('p-pass').value || '' }); }
+    catch (e) { res = { ok: false, error: String(e) }; }
+    if (!res || !res.ok) { setStatus('lock-status', (res && res.error) || 'Could not finish setup.', 'err'); $('btn-next').disabled = false; }
   };
-  $('btn-loadfile').onclick = async ()=>{ const r=await window.gate.pickLicenseFile(); if(r && r.ok){ $('lickey').value=r.key; $('btn-validate').click(); } };
-
-  $('btn-next').onclick = async ()=>{
-    if(!canAdvance()) return;
-    if(state.step < steps.length-1){ showStep(state.step+1); return; }
-    $('btn-next').disabled=true; $('btn-next').textContent='Activating…';
-    let res; try{
-      res = await window.gate.complete({
-        licenseKey: state.validatedKey,
-        profile: { name:$('p-name').value.trim(), email:$('p-email').value.trim(), org:$('p-org').value.trim() },
-        passcode: $('p-pass').value || '',
-        acceptEula:true, acceptLicense:true
-      });
-    }catch(e){ res={ok:false,error:String(e)}; }
-    if(!res || !res.ok){ alert((res&&res.error)||'Activation failed.'); $('btn-next').disabled=false; $('btn-next').textContent='Agree & enter Safety Lab Aero'; }
-    // on success the main process opens the app and closes this window.
-  };
-  $('btn-back').onclick = ()=>{ if(state.step>0) showStep(state.step-1); };
-  $('btn-quit').onclick = ()=> window.gate.quit();
-
-  ['p-name','p-email','p-pass','p-pass2'].forEach(id=>$(id).addEventListener('input', updateNav));
-  $('eula-cb').addEventListener('change', updateNav);
-  $('lic-cb').addEventListener('change', updateNav);
+  $('btn-quit').onclick = () => window.gate.quit();
   init();
 </script>
 </body>

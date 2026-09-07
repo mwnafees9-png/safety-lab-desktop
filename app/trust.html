@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trust &amp; Security — Safety Lab Aero</title>
+<meta name="description" content="How Safety Lab Aero protects certification-grade safety data: tenant isolation, encryption, access control, AI guardrails, data residency, and lifecycle.">
+<style>
+  :root{
+    --ink:#10233D; --body:#33445C; --muted:#6B7A90;
+    --line:#E6E1F2; --surf:#FFFFFF; --surf2:#F7F5FC;
+    --purple:#7E3FB8; --purpledk:#5E2E93; --bpurp:#AF52DE; --blue:#0A63CC; --bblue:#007AFF;
+    --green:#15803D; --greenbg:#EAF7EF; --amber:#B9791B; --amberbg:#FBF3E6;
+    --grad:linear-gradient(90deg,#007aff 0%,#af52de 100%);
+    --hero:linear-gradient(135deg,#1A1150 0%,#3A1D82 42%,#6E2CA8 78%,#A040C8 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--surf2)}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Calibri,Arial,sans-serif;color:var(--body);
+    font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.k,.wm{font-family:Arial,Helvetica,sans-serif}
+  .wrap{max-width:940px;margin:0 auto;padding:0 22px 64px}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+
+  /* header */
+  .hero{background:var(--hero);color:#fff;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad)}
+  .hero-in{max-width:940px;margin:0 auto;padding:34px 22px 40px}
+  .brandrow{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+  .brandrow a.brandhome{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+  .home-link{margin-left:auto;font-size:13px;color:#fff;opacity:.72;text-decoration:none;white-space:nowrap}
+  .home-link:hover{opacity:1;text-decoration:underline}
+  .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#007aff,#af52de);position:relative;flex-shrink:0;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .logo::before{content:"";position:absolute;inset:10px;background:rgba(255,255,255,.97);clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .brandrow .wm{font-size:17px;font-weight:700;color:#fff;letter-spacing:-.2px}
+  .k{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#CDB4F0;font-weight:700}
+  .hero h1{font-size:32px;color:#fff;margin:9px 0 8px;letter-spacing:-.4px;line-height:1.15}
+  .hero p{font-size:16px;color:#E7E1FA;max-width:640px}
+  .updated{margin-top:16px;font-size:12.5px;color:#C9BEE8}
+
+  /* posture band */
+  .posture{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:-22px 0 26px;
+    box-shadow:0 12px 36px rgba(30,20,70,.10);position:relative;z-index:2}
+  .posture h2{font-size:14px;color:var(--ink);margin-bottom:6px}
+  .posture p{font-size:14px;color:var(--body)}
+  .posture b{color:var(--purpledk)}
+
+  .lede{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:30px 2px 12px}
+
+  /* section cards */
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+  .card h3{font-size:17px;color:var(--ink);display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .card h3 .dot{width:9px;height:9px;border-radius:3px;background:var(--purple);flex-shrink:0}
+  .card .lead{font-size:13.5px;color:var(--muted);margin-bottom:12px}
+  ul.controls{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+  ul.controls.one{grid-template-columns:1fr}
+  ul.controls li{font-size:13.6px;color:var(--body);padding-left:22px;position:relative;line-height:1.5}
+  ul.controls li::before{content:"";position:absolute;left:0;top:6px;width:13px;height:13px;border-radius:50%;
+    background:var(--greenbg);border:1px solid #A7DDBB}
+  ul.controls li::after{content:"✓";position:absolute;left:2.5px;top:3px;font-size:9px;color:var(--green);font-weight:800}
+  ul.controls li b{color:var(--ink);font-weight:600}
+
+  /* subprocessor table */
+  table{width:100%;border-collapse:collapse;font-size:13.4px;margin-top:4px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:Arial;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700}
+  td b{color:var(--ink)}
+
+  /* roadmap */
+  .road h3 .dot{background:var(--amber)}
+  ul.road-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+  ul.road-list li{font-size:13.6px;color:var(--body);padding-left:22px;position:relative;line-height:1.5}
+  ul.road-list li::before{content:"";position:absolute;left:0;top:5px;width:13px;height:13px;border-radius:3px;
+    background:var(--amberbg);border:1px solid #E4C58A}
+  ul.road-list li::after{content:"→";position:absolute;left:2.5px;top:2px;font-size:10px;color:var(--amber);font-weight:800}
+  ul.road-list li b{color:var(--ink);font-weight:600}
+  .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.4px;border-radius:999px;padding:1px 8px;vertical-align:middle}
+  .b-live{color:var(--green);background:var(--greenbg);border:1px solid #A7DDBB}
+  .b-road{color:var(--amber);background:var(--amberbg);border:1px solid #E4C58A}
+
+  /* contact */
+  .contact{background:var(--hero);color:#fff;border-radius:12px;padding:22px 24px;margin-top:26px;display:flex;
+    justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+  .contact h3{font-size:18px;color:#fff;margin-bottom:4px}
+  .contact p{font-size:13.5px;color:#E7E1FA;max-width:440px}
+  .contact .cta{font-size:13px;color:#CDB4F0;white-space:nowrap;text-align:right}
+  .contact .cta b{display:block;color:#fff;font-size:14px}
+  .contact .cta a{color:#fff}
+
+  .foot{text-align:center;font-size:11.5px;color:var(--muted);margin-top:26px;line-height:1.7}
+
+  @media (max-width:720px){
+    ul.controls,ul.road-list{grid-template-columns:1fr}
+    .hero h1{font-size:26px}
+  }
+  @media print{
+    html,body{background:#fff}
+    .hero,.contact{background:#3A1D82 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .card,.posture{box-shadow:none;break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-in">
+      <div class="brandrow"><a class="brandhome" href="/" aria-label="Safety Lab Aero home"><span class="logo" aria-hidden="true"></span><span class="wm">Safety Lab Aero</span></a><a class="home-link" href="/">&larr; Back to safetylabaero.com</a></div>
+      <div class="k">Trust &amp; Security</div>
+      <h1>Certification-grade data, protected end to end</h1>
+      <p>Safety Lab Aero holds the safety and airworthiness evidence for uncrewed and clean-sheet aircraft programs. This page describes how that data is isolated, encrypted, governed, and — when the time comes — provably destroyed.</p>
+      <div class="updated">Last reviewed: July 2026 &nbsp;·&nbsp; Questions: <a href="mailto:waqas.nafees@safetylabaero.com" style="color:#fff;text-decoration:underline;">waqas.nafees@safetylabaero.com</a></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <div class="posture">
+      <h2>Security posture, in one line</h2>
+      <p>Every application table enforces <b>row-level security</b> in the database itself; data is <b>encrypted in transit and at rest</b>; the deterministic engine — not the AI — owns every safety number; and account deletion issues a <b>signed certificate of destruction</b>. Controls marked <span class="badge b-live">LIVE</span> are in production today; those marked <span class="badge b-road">ROADMAP</span> are in progress and dated on request.</p>
+    </div>
+
+    <div class="lede">What's in production today</div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Tenant isolation &amp; access control</h3>
+      <div class="lead">Separation is enforced by the database, not just the application — so a bug in the UI can't leak another customer's data.</div>
+      <ul class="controls">
+        <li><b>Row-level security on every table</b> — all application tables run RLS; access is filtered per row.</li>
+        <li><b>Workspace &amp; project scoping</b> — membership and role are checked in the database on every read and write.</li>
+        <li><b>Least-privilege roles</b> — owner / admin / editor / reviewer / member, evaluated server-side.</li>
+        <li><b>No shared tenancy in the client</b> — the browser only ever holds a public, anon-scoped key; privileged keys never reach it.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Encryption</h3>
+      <ul class="controls">
+        <li><b>In transit</b> — TLS 1.2+ on every connection to the application and API.</li>
+        <li><b>At rest</b> — AES-256 encryption of the database and stored objects.</li>
+        <li><b>Managed key handling</b> — encryption keys are managed by the hosting platform, not embedded in the app.</li>
+        <li><b>No secrets in the browser</b> — AI and privileged operations run behind a server-side proxy.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Authentication &amp; account security</h3>
+      <ul class="controls">
+        <li><b>Email + password with verification</b> — accounts must confirm their address before use.</li>
+        <li><b>Two-factor authentication (TOTP)</b> — optional authenticator-app second step, enforced at sign-in once enabled.</li>
+        <li><b>Microsoft Entra ID (Azure AD) SSO</b> — work-account sign-in, restricted to an approved-tenant allowlist enforced server-side.</li>
+        <li><b>Idle auto–sign-out</b> — sessions lock after 20 minutes of inactivity, every session, no exemption.</li>
+        <li><b>Forced reset on recovery</b> — a password-reset link cannot become passwordless inbox access; a new password is required.</li>
+        <li><b>Password minimums &amp; safe error handling</b> — no account-existence disclosure on failed sign-in.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>AI safety &amp; data handling</h3>
+      <div class="lead">In a domain where "the model made it up" is disqualifying, the AI is deliberately kept away from the numbers.</div>
+      <ul class="controls one">
+        <li><b>The engine owns every number</b> — safety math, allocations, and robustness claims come from a deterministic core that carries its basis and citation. The AI never authors a number, a requirement, or a verdict.</li>
+        <li><b>AI drafts within guardrails</b> — the assistant is scoped to drafting and explanation; its output is reviewable and never silently written into the safety case.</li>
+        <li><b>Server-side proxy</b> — AI calls route through a controlled gateway; the client never holds a model provider key, and requests are logged for audit.</li>
+        <li><b>Customer content may be used to improve our models</b> &mdash; content you submit, including your corrections to AI drafts, may be used to train and evaluate Safety Lab Aero&rsquo;s own models. Content from projects you flag as export-controlled is excluded entirely. We never expose one customer&rsquo;s content to another, and you can opt out at any time. A zero-data-retention addendum with our AI subprocessor is being finalized (see roadmap).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Data residency &amp; export control</h3>
+      <ul class="controls">
+        <li><b>US-region infrastructure</b> — primary data stores run in a US region (US-East).</li>
+        <li><b>ITAR-aware egress</b> — an egress control governs where flagged content may be sent for processing.</li>
+        <li><b>Subprocessor transparency</b> — the full list is below and kept current.</li>
+        <li><b>GCC High &amp; on-prem</b> — separate deployment tiers for defense programs are on the roadmap.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Data lifecycle, audit &amp; integrity</h3>
+      <ul class="controls">
+        <li><b>Self-service erasure</b> — an account owner can permanently erase their account and all analysis data.</li>
+        <li><b>Certificate of destruction</b> — every erasure issues a signed certificate with a SHA-256 manifest of what was deleted.</li>
+        <li><b>Tamper-evident sign-offs</b> — review sign-offs are chained with a verifiable hash chain; the chain can be re-verified on demand.</li>
+        <li><b>Audit logging</b> — workspace and review activity is recorded for accountability.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Infrastructure &amp; subprocessors</h3>
+      <div class="lead">The third parties that process or host data on our behalf.</div>
+      <table>
+        <thead><tr><th>Subprocessor</th><th>Purpose</th><th>Region</th></tr></thead>
+        <tbody>
+          <tr><td><b>Supabase</b> (Postgres 17)</td><td>Primary database, authentication, row-level security</td><td>US-East</td></tr>
+          <tr><td><b>Cloudflare</b></td><td>Application hosting, CDN, TLS termination</td><td>Global edge / US</td></tr>
+          <tr><td><b>Anthropic</b> (Claude)</td><td>AI drafting &amp; explanation (proxied; no training on customer data)</td><td>US</td></tr>
+          <tr><td><b>Voyage AI</b></td><td>Embeddings for knowledge retrieval</td><td>US</td></tr>
+          <tr><td><b>Microsoft Azure</b></td><td>Entra ID SSO; ITAR-flagged processing tier</td><td>US</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="lede">On the roadmap</div>
+    <div class="card road">
+      <h3><span class="dot"></span>What we're adding next</h3>
+      <div class="lead">We share this openly. Dates and current status are available to customers under evaluation on request.</div>
+      <ul class="road-list">
+        <li><b>SOC 2 Type II</b> — formal third-party audit of security controls.</li>
+        <li><b>Independent penetration test</b> — scoped; report shareable under NDA.</li>
+        <li><b>Zero-data-retention addendum &amp; DPAs</b> — signed data-processing terms with AI and cloud subprocessors.</li>
+        <li><b>On-prem / air-gapped tier</b> — a deployment where data never leaves the customer's environment, for ITAR &amp; defense programs.</li>
+        <li><b>Published trust portal</b> — self-serve access to this documentation and evidence.</li>
+        <li><b>GCC High tenancy</b> — Azure Government SSO for customers who require it.</li>
+      </ul>
+    </div>
+
+    <div class="contact">
+      <div>
+        <h3>Reviewing us for a program?</h3>
+        <p>We're glad to walk your security &amp; airworthiness team through the architecture, answer a questionnaire, or share evidence under NDA.</p>
+      </div>
+      <div class="cta">
+        <b>Let's talk</b>
+        <a href="mailto:waqas.nafees@safetylabaero.com">waqas.nafees@safetylabaero.com</a><br>
+        <a href="https://calendly.com/mwnafees9/30min">calendly.com/mwnafees9/30min</a>
+      </div>
+    </div>
+
+    <div class="foot">
+      Safety Lab Aero · This page describes controls in effect as of the review date above and is provided for evaluation purposes.<br>
+      It is not a warranty or a contract. For contractual security terms, request our DPA and security addendum.<br>
+      See also <a href="/ai-guardrails">AI guardrails</a> for how the AI is bounded, grounded and verified.
+    </div>
+
+  </div>
+</body>
+</html>

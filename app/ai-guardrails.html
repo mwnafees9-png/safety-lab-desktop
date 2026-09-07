@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Guardrails — Safety Lab Aero</title>
+<meta name="description" content="How Safety Lab Aero keeps its AI advisory, grounded and verifiable in a certification tool: a deterministic engine that owns every number, one governed gateway, source-span citation, hard gates, an independent verifier, and a standing red-team suite.">
+<style>
+  :root{
+    --ink:#10233D; --body:#33445C; --muted:#6B7A90;
+    --line:#E6E1F2; --surf:#FFFFFF; --surf2:#F7F5FC;
+    --purple:#7E3FB8; --purpledk:#5E2E93; --bpurp:#AF52DE; --blue:#0A63CC; --bblue:#007AFF;
+    --green:#15803D; --greenbg:#EAF7EF; --amber:#B9791B; --amberbg:#FBF3E6;
+    --red:#B3261E; --redbg:#FBECEA;
+    --grad:linear-gradient(90deg,#007aff 0%,#af52de 100%);
+    --hero:linear-gradient(135deg,#1A1150 0%,#3A1D82 42%,#6E2CA8 78%,#A040C8 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--surf2)}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Calibri,Arial,sans-serif;color:var(--body);
+    font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.k,.wm{font-family:Arial,Helvetica,sans-serif}
+  .wrap{max-width:940px;margin:0 auto;padding:0 22px 64px}
+  a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+
+  /* header */
+  .hero{background:var(--hero);color:#fff;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad)}
+  .hero-in{max-width:940px;margin:0 auto;padding:34px 22px 40px}
+  .brandrow{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+  .brandrow a.brandhome{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+  .home-link{margin-left:auto;font-size:13px;color:#fff;opacity:.72;text-decoration:none;white-space:nowrap}
+  .home-link:hover{opacity:1;text-decoration:underline}
+  .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#007aff,#af52de);position:relative;flex-shrink:0;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .logo::before{content:"";position:absolute;inset:10px;background:rgba(255,255,255,.97);clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .brandrow .wm{font-size:17px;font-weight:700;color:#fff;letter-spacing:-.2px}
+  .k{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#CDB4F0;font-weight:700}
+  .hero h1{font-size:32px;color:#fff;margin:9px 0 8px;letter-spacing:-.4px;line-height:1.15}
+  .hero p{font-size:16px;color:#E7E1FA;max-width:660px}
+  .updated{margin-top:16px;font-size:12.5px;color:#C9BEE8}
+
+  /* posture band */
+  .posture{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:-22px 0 26px;
+    box-shadow:0 12px 36px rgba(30,20,70,.10);position:relative;z-index:2}
+  .posture h2{font-size:14px;color:var(--ink);margin-bottom:6px}
+  .posture p{font-size:14px;color:var(--body)}
+  .posture b{color:var(--purpledk)}
+
+  .lede{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:30px 2px 12px}
+
+  /* section cards */
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+  .card h3{font-size:17px;color:var(--ink);display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .card h3 .dot{width:9px;height:9px;border-radius:3px;background:var(--purple);flex-shrink:0}
+  .card .lead{font-size:13.5px;color:var(--muted);margin-bottom:12px}
+  ul.controls{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+  ul.controls.one{grid-template-columns:1fr}
+  ul.controls li{font-size:13.6px;color:var(--body);padding-left:22px;position:relative;line-height:1.5}
+  ul.controls li::before{content:"";position:absolute;left:0;top:6px;width:13px;height:13px;border-radius:50%;
+    background:var(--greenbg);border:1px solid #A7DDBB}
+  ul.controls li::after{content:"✓";position:absolute;left:2.5px;top:3px;font-size:9px;color:var(--green);font-weight:800}
+  ul.controls li b{color:var(--ink);font-weight:600}
+
+  /* the boundary diagram */
+  .boundary{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-top:6px;
+    border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bx{padding:14px 16px;background:#fff}
+  .bx .bx-k{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+  .bx.ai .bx-k{color:var(--bpurp)} .bx.eng .bx-k{color:var(--green)}
+  .bx.ai{background:#FCFAFF} .bx.eng{background:var(--greenbg)}
+  .bx p{font-size:13px;color:var(--body)}
+  .bx b{color:var(--ink)}
+  .bwall{width:4px;background:repeating-linear-gradient(180deg,var(--purple) 0 7px,transparent 7px 14px)}
+  .bcap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+
+  /* worked examples */
+  .ex{border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-top:10px;background:#FCFBFE}
+  .ex .ex-q{font-size:14px;color:var(--ink);font-weight:600;margin-bottom:7px}
+  .ex dl{display:grid;grid-template-columns:76px 1fr;gap:4px 10px;font-size:13.2px}
+  .ex dt{font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);font-weight:700;padding-top:3px}
+  .ex dd{color:var(--body)}
+  .ex .out{color:var(--ink)}
+  .v{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.4px;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+  .v-block{color:var(--red);background:var(--redbg);border:1px solid #E9B4AE}
+  .v-pass{color:var(--green);background:var(--greenbg);border:1px solid #A7DDBB}
+  .v-hold{color:var(--amber);background:var(--amberbg);border:1px solid #E4C58A}
+
+  /* map table */
+  table{width:100%;border-collapse:collapse;font-size:13.4px;margin-top:4px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:Arial;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700}
+  td b{color:var(--ink)}
+
+  /* maintained */
+  .road h3 .dot{background:var(--amber)}
+  ul.road-list{list-style:none;display:grid;grid-template-columns:1fr;gap:8px 20px}
+  ul.road-list li{font-size:13.6px;color:var(--body);padding-left:22px;position:relative;line-height:1.5}
+  ul.road-list li::before{content:"";position:absolute;left:0;top:5px;width:13px;height:13px;border-radius:3px;
+    background:var(--amberbg);border:1px solid #E4C58A}
+  ul.road-list li::after{content:"→";position:absolute;left:2.5px;top:2px;font-size:10px;color:var(--amber);font-weight:800}
+  ul.road-list li b{color:var(--ink);font-weight:600}
+
+  /* contact */
+  .contact{background:var(--hero);color:#fff;border-radius:12px;padding:22px 24px;margin-top:26px;display:flex;
+    justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+  .contact h3{font-size:18px;color:#fff;margin-bottom:4px}
+  .contact p{font-size:13.5px;color:#E7E1FA;max-width:460px}
+  .contact .cta{font-size:13px;color:#CDB4F0;white-space:nowrap;text-align:right}
+  .contact .cta b{display:block;color:#fff;font-size:14px}
+  .contact .cta a{color:#fff}
+
+  .foot{text-align:center;font-size:11.5px;color:var(--muted);margin-top:26px;line-height:1.7}
+
+  @media (max-width:720px){
+    ul.controls{grid-template-columns:1fr}
+    .hero h1{font-size:26px}
+    .boundary{grid-template-columns:1fr}
+    .bwall{width:auto;height:4px;background:repeating-linear-gradient(90deg,var(--purple) 0 7px,transparent 7px 14px)}
+    .ex dl{grid-template-columns:1fr}
+  }
+  @media print{
+    html,body{background:#fff}
+    .hero,.contact{background:#3A1D82 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .card,.posture{box-shadow:none;break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-in">
+      <div class="brandrow"><a class="brandhome" href="/" aria-label="Safety Lab Aero home"><span class="logo" aria-hidden="true"></span><span class="wm">Safety Lab Aero</span></a><a class="home-link" href="/">&larr; Back to safetylabaero.com</a></div>
+      <div class="k">AI Guardrails</div>
+      <h1>An AI safety tool you don&rsquo;t have to trust</h1>
+      <p>Certification is earned by verifiable evidence, not by assertion. An AI that silently authors safety claims is a liability, not a feature. So the part you must trust here is not the AI — a deterministic engine owns every number, and the model is confined to proposing drafts a qualified engineer explicitly accepts.</p>
+      <div class="updated">SLA-WP-002 Rev 2.2 &nbsp;·&nbsp; Last reviewed: July 2026 &nbsp;·&nbsp; Questions: <a href="mailto:waqas.nafees@safetylabaero.com" style="color:#fff;text-decoration:underline;">waqas.nafees@safetylabaero.com</a></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <div class="posture">
+      <h2>The guardrail posture, in one line</h2>
+      <p><b>The AI proposes, the deterministic engine computes, the qualified human decides</b> — and every layer in between is grounded in the standards and the live project, routed through one governed gateway, citing its sources, calibrating its confidence, checking its own consistency, hard-gated, independently verified, recorded as evidence, and continuously red-teamed. The tool stands on its own: every analysis can be performed end to end on the deterministic core, and the AI is an <b>optional accelerator, never a dependency</b>.</p>
+    </div>
+
+    <div class="lede">The boundary</div>
+
+    <div class="card">
+      <h3><span class="dot"></span>The deterministic core — the AI never does the math</h3>
+      <div class="lead">The single most important guardrail is architectural: the numbers are never the model&rsquo;s opinion.</div>
+      <div class="boundary">
+        <div class="bx ai">
+          <div class="bx-k">AI may propose</div>
+          <p>A candidate fault-tree <b>shape</b>. A failure condition. A requirement. Narrative and justification prose. Structure and organisation — reversible, attributable, and <b>inert until a human accepts it</b>.</p>
+        </div>
+        <div class="bwall" aria-hidden="true"></div>
+        <div class="bx eng">
+          <div class="bx-k">Engine alone decides</div>
+          <p>Exact top-event probability via <b>Binary Decision Diagrams</b> (repeated-event-correct). Common-cause failure by <b>&beta; / Multiple-Greek-Letter</b>. Exposure-aware top-down <b>DAL allocation</b>. Component data from a curated reliability library.</p>
+        </div>
+      </div>
+      <div class="bcap">The model has no path to author or alter a number. The engine is cross-checked by a benchmark suite and an independent Monte-Carlo path.</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Acceleration without abdication</h3>
+      <ul class="controls one">
+        <li><b>Every AI output is a proposal</b> — reversible, attributable, and inert until a human accepts it. Nothing the AI writes enters the certified analysis on its own.</li>
+        <li><b>The AI never performs the safety mathematics</b> — it cannot compute, change, or assert a probability or a development-assurance allocation. That is the engine&rsquo;s exclusive domain.</li>
+        <li><b>The AI is kept outside the qualified-tool boundary</b> — so it accelerates the engineer without inflating the tool-qualification burden or substituting for human judgement.</li>
+      </ul>
+    </div>
+
+    <div class="lede">What's in production today</div>
+
+    <div class="card">
+      <h3><span class="dot"></span>The AI gateway — one governed path</h3>
+      <div class="lead">Every AI request, from the conversational assistant or a one-click feature, passes through a single internal gateway rather than calling a model directly.</div>
+      <ul class="controls">
+        <li><b>Policy router</b> — decides where a request may run: commercial cloud, US-only ITAR routing, or a local / on-prem model.</li>
+        <li><b>Refuses uncleared backends</b> — controlled data is never sent to a backend not cleared for it.</li>
+        <li><b>Approved-and-applicable evidence only</b> — anything obsolete, superseded, draft, or scoped to the wrong configuration or revision is filtered out before the model sees it.</li>
+        <li><b>No lower-assurance side door</b> — one governed path means the same routing, evidence and safety policy however the engineer invokes the AI.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Grounding — the golden thread and the standards</h3>
+      <div class="lead">An ungrounded model invents. Every AI feature is grounded in two things before it produces anything.</div>
+      <ul class="controls">
+        <li><b>The live project spine</b> — the aircraft and system FHAs, the PASA / PSSA / SSA / ASA assessments, and the parallel Zonal, Particular Risk and Common Mode analyses.</li>
+        <li><b>Real identifiers, real scope</b> — proposals echo identifiers from the current project, trace to the function or failure condition they address, and name the scope (aircraft-level AFHA versus a system&rsquo;s SFHA).</li>
+        <li><b>The governing standards</b> — ARP 4761A and ARP 4754B, the §__.1309 safety-objective ladder, ASTM F3230, and DO-178C / DO-254 terminology where relevant.</li>
+        <li><b>Scoped to the certification basis</b> — the project&rsquo;s own basis, not a default to Part 25. A method-only knowledge base guides <em>how</em> a tree is built; its depth and content come solely from the engineer&rsquo;s architecture.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>The guardrail stack</h3>
+      <div class="lead">Grounding reduces error. These layers catch and contain what remains — on every AI write path, assistant and one-click alike.</div>
+      <ul class="controls one">
+        <li><b>Insufficiency guard</b> — if the material an analysis needs is missing, the assistant declares the gap instead of fabricating to fill it. Fault-tree depth is bounded by the architecture provided; it will not invent contributors, levels or systems the inputs do not support.</li>
+        <li><b>Source-span citation and calibrated confidence</b> — every proposed item carries a confidence rating and a short verbatim quote identifying its supporting source. The quote is checked against the project&rsquo;s own documents, and confidence is automatically downgraded to <em>low</em> when the claim cannot be grounded.</li>
+        <li><b>Vision-derived hardening</b> — drafts extracted from a diagram image are treated as approximate, visibly flagged, and locked behind an explicit &ldquo;I have verified this against the actual model&rdquo; confirmation before they can be accepted.</li>
+        <li><b>Golden-thread consistency engine</b> — after every AI write, a deterministic checker scans for structural inconsistency: failure conditions with no parent function, severities that disagree with the allocated assurance level, AND-gates not covered by a Common Mode Analysis, requirement traces that point nowhere.</li>
+        <li><b>Hard gates and an independent verifier</b> — safety-critical drafts pass a deterministic gate set (formula, units, identifiers, configuration, citations, no autonomous conclusions) yielding a single validated / blocked verdict. Then a second model pass acts as a skeptical reviewer — <b>generator and judge are deliberately different models</b>, so the critique is genuinely independent.</li>
+        <li><b>Deterministic validators and a quality scorecard</b> — independently of any model, every AI artifact is scanned against standards-format rules, and a project-level scorecard reports the hard-gate verdict and soft review count. Quality is observable rather than assumed.</li>
+      </ul>
+    </div>
+
+    <div class="lede">The guardrails on hard cases</div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Worked examples</h3>
+      <div class="lead">Guardrails are easiest to judge not on clean inputs but on the awkward cases an experienced engineer recognises — where a proposal looks plausible and the right answer comes only from applying a published rule. Each is a standing case in the eval and red-team suites, so this behaviour is regression-protected on every build.</div>
+
+      <div class="ex">
+        <div class="ex-q">&ldquo;It is too unlikely to need evaluation.&rdquo;<span class="v v-block">Refused</span></div>
+        <dl>
+          <dt>Rule</dt><dd>Under ARP 4761A a hazard is classified by the severity of its effect, independent of its likelihood — the probability target is a consequence of the classification, not an input to it.</dd>
+          <dt>Outcome</dt><dd class="out">The consistency engine and hard gates reject the likelihood-based reclassification and hold the worst-credible-effect severity — and the engineer is shown the rule, not merely a refusal. This is the failure mode every line engineer has seen: the hazard dismissed as too unlikely is the one that later occurs.</dd>
+        </dl>
+      </div>
+
+      <div class="ex">
+        <div class="ex-q">A Catastrophic top event reached by a single path<span class="v v-block">Flagged</span></div>
+        <dl>
+          <dt>Rule</dt><dd>A Catastrophic effect must not rest on a single point of failure, and an AND-gate must genuinely require all of its inputs.</dd>
+          <dt>Outcome</dt><dd class="out">A format check alone would pass this. Only the gate-logic check catches that the structure implies an unguarded single point of failure — and it is the <em>independent verifier</em>, a different model from the one that drafted the tree, that raises it for the engineer to resolve before acceptance.</dd>
+        </dl>
+      </div>
+
+      <div class="ex">
+        <div class="ex-q">A fault tree with nothing under it<span class="v v-block">Stopped</span></div>
+        <dl>
+          <dt>Rule</dt><dd>Fault-tree depth is bounded by the architecture provided; absent inputs, the insufficiency guard declares the gap.</dd>
+          <dt>Outcome</dt><dd class="out">There is no basis from which to derive contributors, so any expansion would be fabrication. The assistant states what is missing and stops, rather than inventing intermediate events to look complete.</dd>
+        </dl>
+      </div>
+
+      <div class="ex">
+        <div class="ex-q">An approximate read, confirmed rather than rejected<span class="v v-hold">Held for confirmation</span></div>
+        <dl>
+          <dt>Rule</dt><dd>Vision-derived structure is approximate until a human confirms it.</dd>
+          <dt>Outcome</dt><dd class="out">The gate is not wrong, only unconfirmed — so the correct action is verification, not rejection. Once the engineer confirms it against the design it is accepted and stamped. The guardrail adds a checkpoint; it does not block good work.</dd>
+        </dl>
+      </div>
+
+      <div class="ex">
+        <div class="ex-q">A requirement drawn straight from the source<span class="v v-pass">Accepted</span></div>
+        <dl>
+          <dt>Rule</dt><dd>A proposed item is admissible when its supporting span resolves in an approved, in-configuration document and its confidence is not downgraded.</dd>
+          <dt>Outcome</dt><dd class="out">The citation check passes against the live project and nothing is stale or out of scope, so the proposal clears grounding and citation. It is presented at full confidence and accepted on the engineer&rsquo;s sign-off, with provenance stamped. <b>The guardrails are a filter, not a blanket no.</b></dd>
+        </dl>
+      </div>
+
+      <div class="bcap" style="margin-top:12px">None of these outcomes depends on the AI &ldquo;behaving.&rdquo; Each is a deterministic rule applied after the model proposes — which is why the same case can be replayed on every build and graded pass or fail.</div>
+    </div>
+
+    <div class="lede">Accountability and the record</div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Human in the loop — propose, review, accept, sign off</h3>
+      <ul class="controls one">
+        <li><b>Nothing enters the model until a qualified engineer accepts it</b> in a review panel.</li>
+        <li><b>Acceptance stamps provenance</b> — the model used, the timestamp, the feature, and whether the input included a diagram image.</li>
+        <li><b>A read-only audit view</b> lists every AI-drafted, human-accepted item with its model and date.</li>
+        <li><b>Written into the licence</b> — final approval of any certification artifact requires explicit human verification, and the customer&rsquo;s responsibility for the fidelity of AI-assisted outputs is contractual, not implied.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>AI Evidence Records and the correction dataset</h3>
+      <div class="lead">The DER-ready answer to &ldquo;how exactly was this produced, and who disposed of it?&rdquo;</div>
+      <ul class="controls">
+        <li><b>The request and the routing</b> — which model, which mode.</li>
+        <li><b>The evidence retrieved — and what was excluded</b>, and why.</li>
+        <li><b>The hard-gate verdict</b> and the independent critic&rsquo;s findings.</li>
+        <li><b>Any repair history</b> and the human action finally taken.</li>
+        <li><b>Persisted with the project</b>, not in a log that ages out.</li>
+        <li><b>Every accept, edit and reject</b> is recorded as a correction case, building a governed regression dataset over time.</li>
+      </ul>
+    </div>
+
+    <div class="lede">Where the regulator has landed</div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Bounded AI is now the requirement, not our preference</h3>
+      <div class="lead">For most of the AI wave, &ldquo;keep the AI advisory and the deterministic core authoritative&rdquo; was a design choice we defended on first principles. In 2026 it became regulatory direction.</div>
+      <ul class="controls one">
+        <li><b>EASA AI Concept Paper, proposed Issue 03 (June 2026)</b> — extends the framework to Level 3 advanced automation and requires oversight by an Operational Oversight System that is &ldquo;additional and independent (functionally and technologically)&rdquo; from the primary AI — while stating plainly that the methods to demonstrate that independence for AI/ML do not yet fully exist.</li>
+        <li><b>FAA Hydrogen-Fuelled Aircraft Safety and Certification Roadmap (Dec 2024)</b> — the same point in a different domain: novel systems will need Special Conditions, and the compliance methods are immature.</li>
+        <li><b>Demonstrated, not just claimed</b> — the product&rsquo;s OOS independence workflow was built for Issue 03. An engineer declares a primary-AI / oversight pair; the demonstrated / not-demonstrated verdict is computed by <b>deterministic logic</b> over the independence matrix, the interface model and the common-mode analysis. The assurance agent may draft the justification prose, but a deterministic test ignores that prose entirely: <b>a justification can never move the verdict</b>.</li>
+        <li><b>Certification posture</b> — consistent with DO-330, the AI sits outside the qualified-tool boundary while the deterministic engine carries the qualification argument. The boundary, the human-verification requirement and the allocation of responsibility for output fidelity are documented in the certification dossier and licence terms.</li>
+      </ul>
+    </div>
+
+    <div class="lede">Guardrail-to-mechanism map</div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Every risk, and the layer that catches it</h3>
+      <table>
+        <thead><tr><th>Risk</th><th>Guardrail</th><th>Where it acts</th></tr></thead>
+        <tbody>
+          <tr><td><b>The AI does the math</b></td><td>Deterministic engine owns all quantification</td><td>Every probability / allocation</td></tr>
+          <tr><td><b>Wrong backend for controlled data</b></td><td>AI gateway policy router</td><td>Every AI request</td></tr>
+          <tr><td><b>Fabrication without inputs</b></td><td>Insufficiency guard; depth bounded by architecture</td><td>All drafting features</td></tr>
+          <tr><td><b>Ungrounded claims</b></td><td>Source-span citation + calibrated confidence</td><td>Every proposed item</td></tr>
+          <tr><td><b>Stale / wrong-config evidence</b></td><td>Approved-and-applicable evidence filter</td><td>Every retrieval</td></tr>
+          <tr><td><b>Approximate diagram reads</b></td><td>Vision flag + verify-to-accept gate</td><td>Decompose, FTA synthesis, chat</td></tr>
+          <tr><td><b>Silent inconsistency</b></td><td>Golden-thread consistency engine</td><td>After every AI write</td></tr>
+          <tr><td><b>Wrong severity / gate logic</b></td><td>Hard gates + independent verifier (generator &ne; judge)</td><td>Safety-critical drafts</td></tr>
+          <tr><td><b>Format / standards drift</b></td><td>Deterministic validators + scorecard</td><td>All AI artifacts</td></tr>
+          <tr><td><b>Unattributed change</b></td><td>Provenance stamp + AI Evidence Record + human accept</td><td>On acceptance</td></tr>
+          <tr><td><b>Regression over time</b></td><td>Eval harness, red-team suite, deploy gate, correction dataset</td><td>Continuous</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="lede">How it stays true</div>
+    <div class="card road">
+      <h3><span class="dot"></span>Measured and defended on every build</h3>
+      <div class="lead">Guardrails are only credible if they are measured over time. &ldquo;Safe today&rdquo; is re-proven on every build, not inherited from the last one.</div>
+      <ul class="road-list">
+        <li><b>Eval harness</b> — a fixed golden corpus graded both deterministically and by an independent model-as-reviewer, so a prompt or model change is measured head-to-head, not by feel.</li>
+        <li><b>Hallucination red-team suite</b> — a standing battery of adversarial prompts that try to make the AI fabricate structure without inputs, inflate a benign severity, author a resource as a function, invent identifiers, or obey an injected instruction. Each attack is graded on whether the safeguard held; a drop in the hold-rate signals a regression.</li>
+        <li><b>Pre-deploy quality gate</b> — before a build ships, its AI-quality score is compared against a known-good baseline and the deploy is flagged on regression.</li>
+        <li><b>Pinned versions and re-grounding</b> — model and prompt versions change only through the same pre-deploy gate, and the method knowledge base is re-grounded when a governing standard revises.</li>
+      </ul>
+    </div>
+
+    <div class="contact">
+      <div>
+        <h3>Evaluating the AI for a certification programme?</h3>
+        <p>We&rsquo;re glad to walk your safety, software and airworthiness teams through the guardrail architecture, answer a questionnaire, or share the full white paper (SLA-WP-002) and supporting evidence under NDA.</p>
+      </div>
+      <div class="cta">
+        <b>Let&rsquo;s talk</b>
+        <a href="mailto:waqas.nafees@safetylabaero.com">waqas.nafees@safetylabaero.com</a><br>
+        <a href="https://calendly.com/mwnafees9/30min">calendly.com/mwnafees9/30min</a>
+      </div>
+    </div>
+
+    <div class="foot">
+      Safety Lab Aero · Summarised from <b>SLA-WP-002 Rev 2.2</b> (Released, 23 July 2026). This page describes the architecture in effect as of the review date above and is provided for evaluation purposes.<br>
+      It is not a warranty or a contract. See also <a href="/trust">Trust &amp; security</a> for data isolation, encryption and lifecycle controls.
+    </div>
+
+  </div>
+</body>
+</html>

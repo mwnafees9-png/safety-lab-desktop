@@ -4,3 +4,5 @@ node_modules/
  dist/
 dist/
 build/mac*/
+_to_delete/
+_bench/

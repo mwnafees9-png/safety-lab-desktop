@@ -2,148 +2,166 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Safety Lab Aero — AI &amp; Profile</title>
+<title>Safety Lab Aero — Settings</title>
 <style>
   :root{
     --navy:#0A1F44; --blue:#007aff; --purple:#af52de; --ink:#1b1f27; --mut:#5b6270;
-    --bg:#f6f8fc; --card:#fff; --line:#e4e8f1; --grad:linear-gradient(135deg,#007aff,#af52de);
+    --bg:#f6f8fc; --card:#fff; --line:#e4e8f1; --good:#1a7f37; --bad:#c0362c;
+    --grad:linear-gradient(135deg,#007aff,#af52de);
     --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Arial,sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.5}
-  .wrap{padding:20px 22px 24px}
-  h1{font-size:17px;color:var(--navy);margin:0 0 2px}
-  .sub{color:var(--mut);font-size:12.5px;margin:0 0 16px}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;display:flex;flex-direction:column}
+  header{background:var(--navy);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:12px}
+  .mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center}
+  .mark svg{width:17px;height:17px}
+  .brand{font-weight:700;font-size:16px}
+  .steps{margin-left:auto;display:flex;gap:8px}
+  .step{font-size:12px;color:#9fb0cc;padding:5px 11px;border-radius:20px;border:1px solid #24365c;white-space:nowrap}
+  .step.active{color:#fff;background:var(--grad);border-color:transparent}
+  .step.done{color:#bfe3c8;border-color:#2f5d3f}
+  main{flex:1;overflow:auto;padding:24px;max-width:760px;width:100%;margin:0 auto}
+  h1{font-size:20px;color:var(--navy);margin:0 0 4px}
+  .sub{color:var(--mut);font-size:13px;margin:0 0 18px}
+  label.fld{display:block;margin:0 0 12px}
+  label.fld span{display:block;font-size:12.5px;font-weight:600;margin:0 0 4px}
+  input[type=text],input[type=url],input[type=password],textarea,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:13px;background:#fff;color:var(--ink)}
+  textarea{resize:vertical;min-height:88px;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  .row2{display:flex;gap:12px}.row2>*{flex:1}
+  .btnrow{display:flex;gap:10px;align-items:center;margin-top:6px}
+  button{font:inherit;font-size:13px;font-weight:600;border-radius:9px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+  button.primary{border:none;color:#fff;background:var(--grad)}
+  button.primary:disabled{opacity:.45;cursor:not-allowed}
+  .status{margin-top:10px;font-size:12.5px;padding:9px 11px;border-radius:8px;display:none}
+  .status.ok{display:block;background:#e8f7ec;color:var(--good);border:1px solid #bfe3c8}
+  .status.err{display:block;background:#fdecea;color:var(--bad);border:1px solid #f3c9c4}
+  .status.info{display:block;background:#eef3ff;color:#3257a8;border:1px solid #d4e0fb}
+  .agree-box{height:330px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;font-size:12.5px;line-height:1.55;color:#2a2f3a}
+  .agree-box h4{margin:16px 0 4px;font-size:13px;color:var(--navy)}
+  .agree-box p{margin:0 0 8px}
+  .meta{font-size:11.5px;color:var(--mut);margin:6px 0 10px}
+  .chk{display:flex;gap:9px;align-items:flex-start;margin-top:12px;font-size:13px;cursor:pointer}
+  .chk input{margin-top:2px;width:16px;height:16px;flex:none}
+  .hint{font-size:11.5px;color:var(--mut);margin-top:3px}
+  footer{border-top:1px solid var(--line);background:#fff;padding:14px 24px;display:flex;align-items:center;gap:10px}
+  footer .spacer{flex:1}
   fieldset{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 16px;margin:0 0 14px}
   legend{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);padding:0 6px}
-  label.fld{display:block;margin:0 0 10px}
-  label.fld span{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin:0 0 4px}
-  input[type=text],input[type=email],input[type=url],input[type=password],select{
-    width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;color:var(--ink);background:#fff}
   .modes{display:flex;flex-direction:column;gap:8px}
   .mode{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:9px;cursor:pointer}
   .mode.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,122,255,.12)}
   .mode input{margin-top:2px}
   .mode b{font-size:13px;color:var(--navy)}
   .mode small{display:block;color:var(--mut);font-size:11.5px;margin-top:1px}
-  .hint{font-size:11.5px;color:var(--mut);margin:3px 0 0}
-  .row{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
-  button{font:inherit;font-size:13px;font-weight:600;border-radius:9px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
-  button.primary{border:none;color:#fff;background:var(--grad)}
   .hidden{display:none}
+  .lic-card{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;font-size:13px}
+  .lic-card b{color:var(--navy)}
+
 </style>
 </head>
-<body>
-<div class="wrap">
-  <h1>AI &amp; Profile Settings</h1>
-  <p class="sub">Stored locally on this machine. AI changes apply on the next app reload.</p>
+<body style="display:block">
+<div style="padding:20px 22px 24px">
+  <h1>Settings</h1>
+  <p class="sub">Stored on this computer only. Changes apply when the app reloads.</p>
 
   <fieldset>
-    <legend>Local profile</legend>
-    <label class="fld"><span>Name</span><input id="pname" type="text" placeholder="e.g. Jane Engineer" autocomplete="off"></label>
-    <label class="fld"><span>Email</span><input id="pemail" type="email" placeholder="you@org.com" autocomplete="off"></label>
-    <p class="hint">Used to stamp provenance on AI-accepted artifacts and in saved projects.</p>
-  </fieldset>
-
-  <fieldset>
-    <legend>AI mode</legend>
+    <legend>Where your data lives</legend>
     <div class="modes">
-      <label class="mode" id="m-cloud"><input type="radio" name="aimode" value="cloud">
-        <span><b>Cloud (hosted proxy)</b><small>Uses the Safety Lab Aero hosted AI. Requires internet + a valid Pro+ token or BYO key.</small></span></label>
-      <label class="mode" id="m-custom"><input type="radio" name="aimode" value="custom">
-        <span><b>Custom endpoint (air-gap)</b><small>Route AI to your own approved, Anthropic-Messages-compatible endpoint. No data leaves your network.</small></span></label>
-      <label class="mode" id="m-off"><input type="radio" name="aimode" value="off">
-        <span><b>AI off</b><small>Hide all AI features. The deterministic engine runs fully offline.</small></span></label>
+      <label class="mode" id="b-safetylab"><input type="radio" name="backend" value="safetylab"><span><b>Safety Lab Aero trial cloud</b><small>For trials and demos only. Needs a trial license from Safety Lab.</small></span></label>
+      <label class="mode" id="b-own"><input type="radio" name="backend" value="own"><span><b>My organization's server</b><small>Your own Safety Lab Aero server. Nothing reaches Safety Lab — the app refuses to start if anything still points there.</small></span></label>
+      <label class="mode" id="b-files"><input type="radio" name="backend" value="files"><span><b>Files only</b><small>No server at all. Projects are files on this computer (or your OneDrive / SharePoint).</small></span></label>
+    </div>
+    <div id="own-fields" class="hidden" style="margin-top:12px">
+      <label class="fld"><span>Server address</span><input id="backendUrl" type="url" placeholder="https://safety-db.yourcompany.com" autocomplete="off"></label>
+      <label class="fld"><span>Server key (publishable)</span><input id="backendKey" type="password" placeholder="from your server's setup page" autocomplete="off"></label>
+      <label class="fld"><span>Web address (for “Open this project on the web”)</span><input id="webAppUrl" type="url" placeholder="https://safety.yourcompany.com/app" autocomplete="off"></label>
     </div>
   </fieldset>
 
-  <fieldset id="fs-endpoint" class="hidden">
-    <legend>Custom endpoint</legend>
-    <label class="fld"><span>Base URL</span><input id="aiendpoint" type="url" placeholder="https://ai.internal.example.mil/v1/ai"></label>
-    <p class="hint">The app will POST to <code>&lt;base&gt;/anthropic/messages</code> with a Bearer token. Point this at a self-hosted relay or your GovCloud model gateway.</p>
-  </fieldset>
-
-  <fieldset id="fs-cred" class="hidden">
-    <legend>Credential</legend>
-    <label class="fld"><span>Token (Bearer)</span><input id="aitoken" type="password" placeholder="paste token" autocomplete="off"></label>
-    <label class="fld"><span>Model</span><input id="aimodel" type="text" placeholder="claude-sonnet-4-6"></label>
-  </fieldset>
-
   <fieldset>
-    <legend>Collaboration backend</legend>
+    <legend>AI</legend>
     <div class="modes">
-      <label class="mode" id="cm-cloud"><input type="radio" name="collabmode" value="cloud">
-        <span><b>Cloud (hosted)</b><small>Sign-in, live co-authoring, presence and comments run on the Safety Lab Aero hosted backend.</small></span></label>
-      <label class="mode" id="cm-custom"><input type="radio" name="collabmode" value="custom">
-        <span><b>Self-hosted (your Supabase)</b><small>Point auth + realtime co-authoring + the project store at your own Supabase (VPC / intranet). Project data, presence, comments and edit history stay inside your boundary. Requires the Safety Lab schema provisioned on that instance.</small></span></label>
+      <label class="mode" id="a-safetylab"><input type="radio" name="ai" value="safetylab"><span><b>Safety Lab Aero AI (trial cloud only)</b><small>Only available with the trial cloud above.</small></span></label>
+      <label class="mode" id="a-own"><input type="radio" name="ai" value="own"><span><b>My organization's AI endpoint</b><small>Your own Claude (Bedrock / GovCloud), Azure OpenAI / Azure Government, or on-prem model behind your organization's AI gateway.</small></span></label>
+      <label class="mode" id="a-off"><input type="radio" name="ai" value="off"><span><b>Off</b><small>No AI features. Everything else works.</small></span></label>
+    </div>
+    <div id="ai-fields" class="hidden" style="margin-top:12px">
+      <label class="fld"><span>AI endpoint</span><input id="aiEndpoint" type="url" placeholder="https://ai.yourcompany.com/v1/ai" autocomplete="off"></label>
     </div>
   </fieldset>
 
-  <fieldset id="fs-collab" class="hidden">
-    <legend>Self-hosted Supabase</legend>
-    <label class="fld"><span>Project URL</span><input id="collaburl" type="url" placeholder="https://supabase.internal.example.aero"></label>
-    <label class="fld"><span>Anon / publishable key</span><input id="collabkey" type="password" placeholder="paste the instance's anon key" autocomplete="off"></label>
-    <p class="hint">Both are required. Applied on the next app reload; leaving either blank falls back to the hosted backend.</p>
+  <fieldset>
+    <legend>License</legend>
+    <div class="lic-card" id="lic-card">Checking…</div>
+    <div class="btnrow" style="margin-top:10px"><button id="btn-license" type="button">Replace license file…</button><span class="hint" id="lic-msg"></span></div>
   </fieldset>
 
-  <div class="row">
-    <button id="cancel" type="button">Cancel</button>
-    <button id="save" class="primary" type="button">Save &amp; apply</button>
+  <fieldset>
+    <legend>Screen lock</legend>
+    <p class="hint" id="lock-state" style="margin:0 0 8px"></p>
+    <div class="row2">
+      <label class="fld"><span>New passcode (blank = no lock)</span><input id="p-pass" type="password" autocomplete="off"></label>
+      <label class="fld"><span>Confirm</span><input id="p-pass2" type="password" autocomplete="off"></label>
+    </div>
+    <label class="chk" style="margin-top:0"><input type="checkbox" id="p-change"><span>Change the screen lock</span></label>
+  </fieldset>
+
+  <div class="status" id="msg"></div>
+  <div class="btnrow" style="justify-content:flex-end;margin-top:10px">
+    <span class="hint" id="ver" style="margin-right:auto"></span>
+    <button id="btn-cancel" type="button">Cancel</button>
+    <button class="primary" id="btn-save" type="button">Save &amp; reload</button>
   </div>
 </div>
-
 <script>
-  var byId = function(id){ return document.getElementById(id); };
-  function currentMode(){ var r = document.querySelector('input[name="aimode"]:checked'); return r ? r.value : 'cloud'; }
-  function currentCollabMode(){ var r = document.querySelector('input[name="collabmode"]:checked'); return r ? r.value : 'cloud'; }
-  function refreshVis(){
-    var mode = currentMode();
-    ['cloud','custom','off'].forEach(function(m){ byId('m-'+m).classList.toggle('active', m===mode); });
-    byId('fs-endpoint').classList.toggle('hidden', mode!=='custom');
-    byId('fs-cred').classList.toggle('hidden', mode==='off');
-    var cmode = currentCollabMode();
-    ['cloud','custom'].forEach(function(m){ byId('cm-'+m).classList.toggle('active', m===cmode); });
-    byId('fs-collab').classList.toggle('hidden', cmode!=='custom');
+  const $ = (id) => document.getElementById(id);
+  function radio(name) { const r = document.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : ''; }
+  function setRadio(name, v) { const r = document.querySelector('input[name="' + name + '"][value="' + v + '"]'); if (r) r.checked = true; }
+  function refresh() {
+    const b = radio('backend'), a = radio('ai');
+    document.querySelectorAll('.mode').forEach(m => m.classList.toggle('active', m.querySelector('input').checked));
+    $('own-fields').classList.toggle('hidden', b !== 'own');
+    $('ai-fields').classList.toggle('hidden', a !== 'own');
+    $('a-safetylab').style.opacity = (b === 'safetylab') ? '1' : '.45';
   }
-  Array.prototype.forEach.call(document.querySelectorAll('input[name="aimode"], input[name="collabmode"]'), function(el){ el.addEventListener('change', refreshVis); });
-
-  (async function init(){
-    try{
-      var c = await window.slabSettings.get();
-      byId('pname').value = c.profileName || '';
-      byId('pemail').value = c.profileEmail || '';
-      var mode = c.aiMode || 'cloud';
-      var radio = document.querySelector('input[name="aimode"][value="'+mode+'"]');
-      if (radio) radio.checked = true;
-      byId('aiendpoint').value = c.aiEndpoint || '';
-      byId('aitoken').value = c.aiToken || '';
-      byId('aimodel').value = c.aiModel || 'claude-sonnet-4-6';
-      var cmode = c.collabMode || 'cloud';
-      var cradio = document.querySelector('input[name="collabmode"][value="'+cmode+'"]');
-      if (cradio) cradio.checked = true;
-      byId('collaburl').value = c.collabUrl || '';
-      byId('collabkey').value = c.collabKey || '';
-    }catch(e){ /* defaults */ }
-    refreshVis();
-  })();
-
-  byId('cancel').addEventListener('click', function(){ window.close(); });
-  byId('save').addEventListener('click', async function(){
-    var cfg = {
-      profileName: byId('pname').value.trim(),
-      profileEmail: byId('pemail').value.trim(),
-      aiMode: currentMode(),
-      aiEndpoint: byId('aiendpoint').value.trim(),
-      aiToken: byId('aitoken').value,
-      aiModel: byId('aimodel').value.trim() || 'claude-sonnet-4-6',
-      collabMode: currentCollabMode(),
-      collabUrl: byId('collaburl').value.trim(),
-      collabKey: byId('collabkey').value.trim()
-    };
-    try { await window.slabSettings.save(cfg); } catch(e){}
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]); }
+  async function showLicense() {
+    let l; try { l = await window.slabSettings.licenseInfo(); } catch (_) { l = null; }
+    const c = $('lic-card');
+    if (l && l.valid) c.innerHTML = '<b>' + esc(l.customer || 'Licensed') + '</b> · ' + esc(l.tier) + (l.seats ? ' · ' + esc(l.seats) + ' seats' : '') + (l.trial ? ' · <b>Trial</b> · ' + esc(l.daysLeft) + ' days left' : ' · until ' + esc(String(l.expiresAt || '').slice(0, 10)));
+    else c.innerHTML = '<span style="color:var(--bad)">' + esc((l && l.plain) || 'No valid license.') + '</span>';
+  }
+  async function init() {
+    const c = await window.slabSettings.get();
+    setRadio('backend', c.backend || 'safetylab'); setRadio('ai', c.ai || 'safetylab');
+    $('backendUrl').value = c.backendUrl || ''; $('backendKey').value = c.backendKey || ''; $('webAppUrl').value = c.webAppUrl || ''; $('aiEndpoint').value = c.aiEndpoint || '';
+    $('lock-state').textContent = c.hasPasscode ? 'A screen lock is set.' : 'No screen lock.';
+    refresh(); showLicense();
+    try { const v = await window.slabSettings.version(); $('ver').textContent = 'Desktop ' + v.app + (v.web && v.web.webCommit ? ' · web build ' + String(v.web.webCommit).slice(0, 10) : ''); } catch (_) {}
+  }
+  document.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener('change', refresh));
+  $('btn-license').onclick = async () => {
+    $('lic-msg').textContent = '';
+    const r = await window.slabSettings.replaceLicense();
+    if (r && r.ok) { $('lic-msg').textContent = 'License replaced.'; showLicense(); }
+    else if (r && r.error) { $('lic-msg').textContent = r.error; }
+  };
+  $('btn-cancel').onclick = () => window.close();
+  $('btn-save').onclick = async () => {
+    const payload = { backend: radio('backend'), ai: radio('ai'), backendUrl: $('backendUrl').value, backendKey: $('backendKey').value, webAppUrl: $('webAppUrl').value, aiEndpoint: $('aiEndpoint').value };
+    if ($('p-change').checked) {
+      const a = $('p-pass').value, b = $('p-pass2').value;
+      if (a !== b || (a && a.length < 4)) { $('msg').className = 'status err'; $('msg').textContent = 'Passcodes must match and be at least 4 characters.'; return; }
+      payload.passcode = a;
+    }
+    const r = await window.slabSettings.save(payload);
+    if (!r || !r.ok) { $('msg').className = 'status err'; $('msg').textContent = (r && r.error) || 'Could not save.'; return; }
     window.slabSettings.applyAndReload();
-  });
+  };
+  init();
 </script>
 </body>
 </html>

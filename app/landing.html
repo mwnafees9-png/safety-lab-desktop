@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#F7F4EC" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#F7F4EC" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#F7F4EC">
+<meta name="theme-color" content="#14224A" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#14224A" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14224A">
 <meta name="description" content="Safety Lab Aero is an integrated aerospace safety analysis workspace. AFHA, PSSA, SSA, fault tree analysis, and DO-178C/DO-254 compliance in one tool — built for engineers, certified by math.">
 <meta name="keywords" content="ARP 4761A, ARP 4754B, AC 25.1309, fault tree analysis, FTA software, DO-178C, DO-254, DAL allocation, aerospace certification, safety analysis, AAM, eVTOL safety, SC-VTOL">
 <meta property="og:type" content="website">
@@ -25,7 +25,7 @@
 <meta name="twitter:image" content="https://safetylabaero.com/og.png">
 <title>Safety Lab Aero — Aerospace safety analysis, integrated</title>
 <link rel="canonical" href="https://safetylabaero.com/">
-<!-- Phase 62 — Flight recorder identity: IBM Plex Sans + Mono -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -198,23 +198,47 @@ a:hover { text-decoration: underline; }
    dark :root defaults + the prefers-color-scheme blocks, so it wins for every visitor
    regardless of their OS dark/light setting. */
 :root {
-    color-scheme: light;
-    /* Phase 62 — paper + ink (flight recorder identity). Gradient stays as the
-       brand spine + hero + logo; working accent is the deepened brand blue. */
-    --bg:          #F7F4EC;
-    --bg-soft:     #F1EDE2;
-    --bg-card:     #FFFFFF;
-    --border-hair: #E4DFD1;
-    --border:      #CFC9B8;
-    --text:        #16181D;
-    --text-strong: #0A1F44;
-    --text-muted:  #565B66;
-    --accent:      #0A63CC;
-    --shadow-sm: 0 1px 2px rgba(16, 18, 22, 0.05), 0 1px 3px rgba(16, 18, 22, 0.06);
-    --shadow-md: 0 4px 12px rgba(16, 18, 22, 0.06), 0 8px 32px rgba(16, 18, 22, 0.08);
-    --shadow-lg: 0 12px 32px rgba(16, 18, 22, 0.09), 0 24px 64px rgba(16, 18, 22, 0.11);
+    color-scheme: dark;
+    /* Phase 63 — THE GRADIENT IDENTITY: one continuous deep blue→purple wash
+       across the whole page (the approved Lovable-concept direction, ported
+       in-house). Light-on-dark; surfaces are translucent glass. */
+    --bg:          #14224A;
+    --bg-soft:     rgba(255, 255, 255, 0.045);
+    --bg-card:     rgba(255, 255, 255, 0.07);
+    --border-hair: rgba(255, 255, 255, 0.14);
+    --border:      rgba(255, 255, 255, 0.20);
+    --text:        rgba(255, 255, 255, 0.80);
+    --text-strong: #F2F5FC;
+    --text-muted:  rgba(255, 255, 255, 0.56);
+    --accent:      #9DC6FF;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.22);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.22), 0 8px 32px rgba(0, 0, 0, 0.28);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.28), 0 24px 64px rgba(0, 0, 0, 0.36);
 }
-.nav { background: rgba(247, 244, 236, 0.88) !important; }
+html { background: #14224A; }
+body {
+    background: linear-gradient(180deg, #14224A 0%, #3457A2 45%, #7247B1 85%, #9B55BE 100%);
+    background-attachment: fixed;
+}
+.nav { background: rgba(16, 26, 56, 0.72) !important; -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px); }
+/* glass surfaces: anything that was a white card is now translucent glass */
+.pricing-card, .feature-card, .tst-card, .process-card-prev, .about-card, .nav-more-menu {
+    background: var(--bg-card) !important;
+    border-color: var(--border-hair) !important;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+/* primary CTA inverts: solid white, ink-navy text; gradient CTAs keep gradient */
+.btn-primary { color: #fff; }
+.btn-secondary { background: transparent !important; color: var(--text-strong) !important; border: 1px solid var(--border) !important; }
+/* text-clipped gradient headlines get a light fallback sheen on dark */
+a { color: var(--accent); }
+/* the dots rail on dark */
+/* clipped gradient text needs a LIGHT gradient on the dark wash */
+.hero h1 .grad-text { background: linear-gradient(135deg, #BFDBFF 0%, #EBC6FF 100%); -webkit-background-clip: text; background-clip: text; }
+/* one continuous wash: sections never paint over the page gradient */
+.hero, .process-preview, .features, .pricing, .about, .cta-strip, .tst-section, .golden-thread, footer { background: transparent !important; }
+.pgdots a { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.45); }
+.pgdots a .pgtip { background: rgba(16,26,56,0.92); color: #F2F5FC; border-color: rgba(255,255,255,0.22); }
 /* Phase 62.6 — zero radii site-wide; inline-styled circles stay round. */
 body *, body *::before, body *::after { border-radius: 0 !important; }
 [style*="border-radius: 50%"], [style*="border-radius:50%"] { border-radius: 50% !important; }
@@ -276,6 +300,19 @@ a { color: var(--accent); }
 .nav-more:focus-within .nav-more-menu { display: block; }
 .nav-more-menu a { display: block; padding: 8px 12px; border-radius: 6px; }
 .nav-more-menu a:hover { background: rgba(26,28,34,0.05); }
+/* Phase 63.1 — TESTER REPORT, 13 Aug 2026: the glass rule above applied
+   --bg-card (7% white) to this menu, so a small overlay sitting on top of the
+   saturated wash was effectively transparent and its items were unreadable.
+   Big cards can be glass; a dropdown over content cannot. Opaque surface,
+   strong text, visible hover. */
+.nav-more-menu {
+    background: rgba(11, 20, 46, 0.97) !important;
+    border-color: rgba(255, 255, 255, 0.22) !important;
+    -webkit-backdrop-filter: saturate(150%) blur(16px);
+    backdrop-filter: saturate(150%) blur(16px);
+}
+.nav-more-menu a { color: var(--text-strong); }
+.nav-more-menu a:hover { background: rgba(255, 255, 255, 0.10); text-decoration: none; }
 .nav-cta {
     background: var(--grad);
     color: #fff !important;
@@ -348,7 +385,7 @@ a { color: var(--accent); }
     margin: 0 0 var(--s-4);
 }
 .hero h1 .grad-text {
-    background: var(--grad);
+    background: linear-gradient(135deg, #BFDBFF 0%, #EBC6FF 100%); /* light clip on the dark wash */
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -763,11 +800,6 @@ footer {
 /* ── Golden thread interactive graphic ───────────────────────────────── */
 .gt-hint { display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); margin-top:var(--s-4); }
 .gt-hint-dot { width:8px; height:8px; border-radius:50%; background:var(--brand-blue); box-shadow:0 0 0 4px rgba(0,122,255,0.18); }
-#gt-svg .gt-nd { cursor:pointer; transition:opacity .12s; }
-#gt-svg .gt-nd:hover { stroke:#ffffff; stroke-width:1.6; }
-#gt-svg rect.gt-fn { stroke:rgba(255,255,255,0.55); stroke-width:1; }
-#gt-svg rect.gt-fn:hover { stroke:#ffffff; stroke-width:2; }
-#gt-svg .gt-lbl { cursor:pointer; }
 .gt-modal { position:fixed; inset:0; background:rgba(4,8,16,0.68); display:none; align-items:center; justify-content:center; z-index:2000; padding:20px; }
 .gt-modal.show { display:flex; }
 .gt-modal-panel { position:relative; background:#0f1726; border:1px solid #22324e; border-radius:16px; max-width:780px; width:100%; max-height:86vh; overflow:auto; padding:24px 26px; box-shadow:0 24px 64px rgba(0,0,0,0.5); }
@@ -786,6 +818,145 @@ footer {
 .gt-m-cid { font-family:var(--font-mono); color:#9aa3b8; }
 .gt-m-meta { color:#737d92; font-size:11px; margin-left:3px; }
 .gt-m-cta { display:inline-block; margin-top:18px; background:var(--grad); color:#fff; font-weight:600; font-size:13px; padding:10px 18px; border-radius:8px; text-decoration:none; }
+
+/* ── the golden thread, as the workspace renders it ────────────────────────
+   The panel is the app's own surface colour (--color-surface-1 = #FAF7F0 in
+   safety_lab.css) with its hairline border.  That is not a styling whim: the
+   display is a grid of white cards with 8-9px ink-on-white text, and it can
+   only be read on an opaque light surface.  It also retires this section's
+   contrast ceiling -- small light text on the page gradient could not reach
+   AA 4.5 anywhere on it.
+   The graph is 1862px wide at 8 columns, exactly as in the workspace, so the
+   panel breaks out of the 1100px content column and pans for the remainder --
+   again, the same as the workspace. */
+.discipline-cta {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-3);
+    flex-wrap: wrap;
+    margin-top: var(--s-5);
+}
+.gt-panel {
+    /* Default: exactly the width of the surrounding text column. The renderer
+       emits a fixed-size SVG and .gt-host scrolls it, so narrowing the frame
+       crops the viewport, never the diagram — drag-to-pan already covers it.
+       Expand restores the full-bleed breakout this used to be by default. */
+    position: relative;
+    width: 100%;
+    margin: var(--s-3) 0 0;
+    transform: none;
+    background: #FAF7F0;
+    border: 1px solid #D9DFE8;
+    box-shadow: var(--shadow-md);
+    padding: 14px 0 6px;
+    transition: width .28s ease, margin-left .28s ease;
+}
+.gt-panel.is-wide {
+    width: min(1900px, 96vw);
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+.gt-expand {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 11px; font: inherit; font-size: 11.5px; letter-spacing: .04em;
+    text-transform: uppercase; color: #3A4756; background: #F1EDE4;
+    border: 1px solid #D9DFE8; border-radius: 999px; cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.gt-expand:hover { background: #E7E2D6; border-color: #C3CCD8; color: #16202B; }
+.gt-expand:focus-visible { outline: 2px solid #2E6BD6; outline-offset: 2px; }
+.gt-expand .gt-expand-ic { font-size: 13px; line-height: 1; }
+@media (prefers-reduced-motion: reduce) { .gt-panel { transition: none; } }
+@media (max-width: 900px) { .gt-expand { display: none; } }
+.gt-chrome {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+    padding: 0 16px 12px;
+    font-size: 12px; color: #586472;
+}
+.gt-chrome-lbl { font-weight: 600; color: #586472; }
+.gt-chrome-pick {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #fff; border: 1px solid #D9DFE8; color: #101216;
+    font-family: var(--font-mono); font-size: 12px; padding: 5px 10px;
+}
+.gt-chrome-caret { color: #8A94A2; }
+.gt-chrome-note { color: #8A94A2; }
+.gt-legend {
+    display: flex; flex-wrap: wrap; gap: 6px 16px;
+    padding: 0 16px 12px;
+    border-bottom: 1px solid #E8EAEF;
+    font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #586472;
+}
+.gt-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.gt-legend i { width: 10px; height: 10px; flex: none; display: inline-block; }
+.gt-legend .gt-lg-pill { padding: 1px 7px; color: #fff; font-weight: 700; font-size: 9px; letter-spacing: 0.08em; }
+.gt-host { overflow: auto; cursor: grab; padding: 10px 0 4px; }
+.gt-host.gt-grabbing { cursor: grabbing; }
+.gt-host svg { max-width: none; }
+.gt-host g[data-key] { transition: opacity .12s; }
+/* The eyebrow sits on the page gradient, not on the panel.  Measured on
+   rendered pixels, the brightest stop of that gradient is rgb(161,77,218),
+   against which even pure white reaches only 4.58:1 -- so for 12px/600 text
+   white is not a preference here, it is the only value that clears AA at all.
+   (#007aff measures 3.69:1 and the same is true of every other section's
+   eyebrow on this page, which is a separate decision.) */
+#golden-thread .section-eyebrow { color: #FFFFFF; }
+/* The interaction hint moved onto the panel: ink on an opaque cream surface is
+   5.6:1 and fixed, instead of 13px light text over a gradient that moves under
+   it as the page scrolls. It also puts the instruction on the thing it describes. */
+#golden-thread .gt-hint {
+    margin: 0; padding: 9px 16px 3px; font-size: 12px; color: #586472;
+}
+#golden-thread .gt-hint-dot { box-shadow: 0 0 0 3px rgba(0,122,255,0.14); }
+
+/* ─── FOCAL POINT — tester report, 13 Aug 2026: "nothing visually shouts look
+   here first". Every section on this page is background:transparent, so a live
+   interactive demonstration reads exactly like a paragraph of claims. This is
+   one reusable treatment — a spotlight wash plus hairline rails — applied to
+   the golden thread because it is the only section here that PROVES rather
+   than asserts. Add class="section-spotlight" to promote a second section. */
+.section-spotlight { position: relative; isolation: isolate; }
+.section-spotlight::before {
+    content: ''; position: absolute; z-index: -1; inset: -1.5% -6% -3%;
+    background: radial-gradient(72% 62% at 50% 30%,
+        rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.065) 44%, transparent 74%);
+    pointer-events: none;
+}
+.section-spotlight::after {
+    content: ''; position: absolute; z-index: -1; left: 50%; top: 0;
+    transform: translateX(-50%); width: min(1180px, 94%); height: 100%;
+    border-top: 1px solid rgba(255,255,255,0.26);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    pointer-events: none;
+}
+/* the eyebrow becomes a live badge, so the eye lands on the word "live" */
+#golden-thread .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 6px 14px 6px 11px; border-radius: 0;
+    border: 1px solid rgba(255,255,255,0.30);
+    background: rgba(255,255,255,0.10);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+#golden-thread .section-eyebrow::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%; flex: none;
+    background: #7FE7C4; animation: gt-live 2.4s ease-out infinite;
+}
+@keyframes gt-live {
+    0%   { box-shadow: 0 0 0 0 rgba(127,231,196,0.55); }
+    70%  { box-shadow: 0 0 0 9px rgba(127,231,196,0); }
+    100% { box-shadow: 0 0 0 0 rgba(127,231,196,0); }
+}
+/* the drag instruction earns its place — and pulses until it has been used */
+#golden-thread .gt-hint { font-size: 13px; font-weight: 600; color: #33404F; padding: 11px 16px 4px; }
+#golden-thread .gt-hint b { color: #0A1F44; }
+#golden-thread .gt-hint-dot { animation: gt-live 2.4s ease-out infinite; }
+#gt-panel-frame.gt-touched .gt-hint-dot,
+#gt-panel-frame.gt-touched ~ * .gt-hint-dot { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+    #golden-thread .section-eyebrow::before, #golden-thread .gt-hint-dot { animation: none; }
+}
+
 
 /* ─── Testimonials / social proof (sits after the golden thread) */
 .tst-section{ background:var(--bg-soft); padding:var(--s-8) 0; border-top:1px solid var(--border-hair); border-bottom:1px solid var(--border-hair); }
@@ -806,7 +977,7 @@ footer {
 .tst-byline{ display:flex; align-items:center; gap:12px; }
 .tst-avatar{ width:40px; height:40px; border-radius:50%; background:var(--grad); display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:15px; flex:none; }
 .tst-who{ font-weight:600; color:var(--text-strong); font-size:15px; }
-.tst-tag{ display:inline-block; margin-left:8px; font-size:11px; font-weight:600; color:#0a7d3c; background:rgba(16,160,72,.10); border:1px solid rgba(16,160,72,.22); border-radius:999px; padding:2px 9px; vertical-align:middle; letter-spacing:.02em; }
+.tst-tag{ display:inline-block; margin-left:8px; font-size:11px; font-weight:600; color:#7CF0C4; background:rgba(5,46,33,.42); border:1px solid rgba(124,240,196,.34); border-radius:999px; padding:2px 9px; vertical-align:middle; letter-spacing:.02em; }
 .tst-themelabel{ font-size:13px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; margin:0 0 var(--s-4); }
 .tst-themes{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s-4); }
 .tst-card{ background:var(--bg-card); border:1px solid var(--border-hair); border-radius:var(--r-lg); padding:var(--s-5); }
@@ -816,12 +987,50 @@ footer {
 .tst-card p{ margin:0; font-size:14px; color:var(--text-muted); line-height:1.5; }
 @media (max-width:820px){ .tst-themes{ grid-template-columns:1fr; } }
 </style>
+<style>
+/* Paginated sections (desktop): each top-level section presents as a page.
+   proximity snapping (never mandatory) so long sections still scroll freely
+   instead of trapping the reader - pagination as a feel, not a cage. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+    html { scroll-snap-type: y proximity; }
+    body > section, body > footer {
+        scroll-snap-align: start;
+        scroll-margin-top: 56px;
+    }
+    body > section {
+        min-height: calc(100svh - 56px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    body > footer { scroll-snap-align: end; }
+    .pgdots {
+        position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
+        display: flex; flex-direction: column; gap: 10px; z-index: 1500;
+    }
+    .pgdots a {
+        width: 9px; height: 9px; border-radius: 50% !important;
+        background: rgba(10, 31, 68, 0.18); border: 1px solid rgba(10, 31, 68, 0.28);
+        display: block; transition: transform .15s ease, background .15s ease;
+        position: relative;
+    }
+    .pgdots a:hover { transform: scale(1.4); }
+    .pgdots a.on { background: var(--grad); border-color: transparent; transform: scale(1.35); }
+    .pgdots a .pgtip {
+        position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+        white-space: nowrap; font-family: var(--font-mono); font-size: 10.5px;
+        color: var(--text-strong); background: var(--bg-card);
+        border: 1px solid var(--border); padding: 3px 8px; box-shadow: var(--shadow-sm);
+        opacity: 0; pointer-events: none; transition: opacity .12s ease;
+    }
+    .pgdots a:hover .pgtip { opacity: 1; }
+}
+@media (max-width: 899px) { .pgdots { display: none; } }
+</style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     Navigation
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <nav class="nav">
     <div class="nav-inner">
         <a href="/" class="nav-brand" aria-label="Safety Lab Aero home">
@@ -840,10 +1049,13 @@ footer {
                 <button class="nav-more-btn" aria-haspopup="true" aria-expanded="false">More <span aria-hidden="true">▾</span></button>
                 <div class="nav-more-menu" role="menu">
                     <a href="#ram" role="menuitem">R&amp;M suite</a>
+                    <a href="#hf" role="menuitem">Human factors</a>
                     <a href="/tools" role="menuitem">Tools</a>
                     <a href="/templates" role="menuitem">Templates</a>
                     <a href="/resources" role="menuitem">Resources</a>
                     <a href="/roi" role="menuitem">ROI</a>
+                    <a href="/ai-guardrails" role="menuitem">AI guardrails</a>
+                    <a href="/trust" role="menuitem">Trust &amp; security</a>
                     <a href="#about" role="menuitem">About</a>
                 </div>
             </div>
@@ -852,9 +1064,7 @@ footer {
     </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     Hero
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="hero" style="border-top: none;">
     <div class="container hero-inner">
         <h1>Aerospace safety analysis,<br><span class="grad-text">integrated.</span></h1>
@@ -871,9 +1081,7 @@ footer {
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     ARP 4761A process preview
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="process-preview">
     <div class="container">
         <span class="section-eyebrow">The full safety spine</span>
@@ -895,22 +1103,43 @@ footer {
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     The golden thread (interactive)
-     ═══════════════════════════════════════════════════════════════════════ -->
-<section class="golden-thread" id="golden-thread">
+
+<section class="golden-thread section-spotlight" id="golden-thread">
     <div class="container">
-        <span class="section-eyebrow">The golden thread</span>
+        <span class="section-eyebrow">The golden thread &middot; live</span>
         <h2 class="section-title">&ldquo;Integrated&rdquo; isn&rsquo;t a layout. It&rsquo;s one connected thread.</h2>
         <p class="section-sub">
-            The promise at the top of this page is a single model, not a bundle of tools. Every aircraft function flows down to a system, a failure condition, a fault tree, the common-cause analyses &mdash; PRA, ZSA, CMA &mdash; that test its independence, the safety requirement that controls it, and the verification that closes it. That unbroken line is the golden thread, and it&rsquo;s what &ldquo;integrated&rdquo; actually buys you: move the design and the whole thread moves with it, because there is only one source of truth to drift from.
+            The promise at the top of this page is a single model, not a bundle of tools. One aircraft function flows down to its systems, its STPA hazards, a failure condition, a fault tree, the common-cause analyses &mdash; PRA, ZSA, CMA &mdash; that test its independence, the safety requirements that control it, and the verification that closes each one. Reliability and human factors run beneath as feeder lanes, wired into the exact artifact they inform rather than parked in a separate tool. That unbroken line is the golden thread, and it&rsquo;s what &ldquo;integrated&rdquo; actually buys you: move the design and the whole thread moves with it, because there is only one source of truth to drift from.
         </p>
-        <div class="gt-hint"><span class="gt-hint-dot"></span> Click a function in the left column to open its live trace.</div>
-        <div class="gt-graphic" style="margin-top: var(--s-3); background: #0c1a33; border: 1px solid #20304e; border-radius: var(--r-lg); padding: 22px 20px; overflow-x: auto; box-shadow: var(--shadow-md);">
-            <svg id="gt-svg" viewBox="0 0 1180 500" xmlns="http://www.w3.org/2000/svg" width="100%" role="img" aria-label="Interactive golden thread. Click a function to open its trace." style="display:block;min-width:780px;height:auto;font-family:'Inter',sans-serif;"><text x="14.0" y="22" fill="#3E8FE6" font-size="12.5" font-weight="600">Function</text><text x="205.7" y="22" fill="#25C08E" font-size="12.5" font-weight="600">System</text><text x="397.3" y="22" fill="#9D95F2" font-size="12.5" font-weight="600">Failure condition</text><text x="589.0" y="22" fill="#ED7B43" font-size="12.5" font-weight="600">Fault tree</text><text x="780.7" y="22" fill="#E0A93E" font-size="12.5" font-weight="600">Common cause</text><text x="972.3" y="22" fill="#EA6E9C" font-size="12.5" font-weight="600">Requirement</text><text x="1164.0" y="22" fill="#84C23F" font-size="12.5" font-weight="600">V&V evidence</text><g fill="none"><path d="M26.0,74.8C115.8,74.8 115.8,74.8 205.7,74.8" stroke="#3E8FE6" stroke-width="69.7" stroke-opacity="0.4"/><path d="M26.0,134.3C115.8,134.3 115.8,273.2 205.7,273.2" stroke="#3E8FE6" stroke-width="49.2" stroke-opacity="0.4"/><path d="M26.0,226.2C115.8,226.2 115.8,197.6 205.7,197.6" stroke="#3E8FE6" stroke-width="69.7" stroke-opacity="0.4"/><path d="M26.0,285.6C115.8,285.6 115.8,322.4 205.7,322.4" stroke="#3E8FE6" stroke-width="49.2" stroke-opacity="0.4"/><path d="M26.0,377.5C115.8,377.5 115.8,443.0 205.7,443.0" stroke="#3E8FE6" stroke-width="69.7" stroke-opacity="0.4"/><path d="M26.0,436.9C115.8,436.9 115.8,371.6 205.7,371.6" stroke="#3E8FE6" stroke-width="49.2" stroke-opacity="0.4"/><path d="M217.7,67.7C307.5,67.7 307.5,67.7 397.3,67.7" stroke="#25C08E" stroke-width="55.4" stroke-opacity="0.4"/><path d="M217.7,123.0C307.5,123.0 307.5,430.9 397.3,430.9" stroke="#25C08E" stroke-width="55.4" stroke-opacity="0.4"/><path d="M217.7,199.6C307.5,199.6 307.5,167.7 397.3,167.7" stroke="#25C08E" stroke-width="73.8" stroke-opacity="0.4"/><path d="M217.7,287.9C307.5,287.9 307.5,351.8 397.3,351.8" stroke="#25C08E" stroke-width="78.8" stroke-opacity="0.4"/><path d="M217.7,445.1C307.5,445.1 307.5,258.5 397.3,258.5" stroke="#25C08E" stroke-width="73.8" stroke-opacity="0.4"/><path d="M409.3,79.4C499.2,79.4 499.2,79.4 589.0,79.4" stroke="#9D95F2" stroke-width="78.8" stroke-opacity="0.4"/><path d="M409.3,440.1C499.2,440.1 499.2,187.4 589.0,187.4" stroke="#9D95F2" stroke-width="73.9" stroke-opacity="0.4"/><path d="M409.3,167.7C499.2,167.7 499.2,273.3 589.0,273.3" stroke="#9D95F2" stroke-width="73.9" stroke-opacity="0.4"/><path d="M409.3,351.8C499.2,351.8 499.2,361.6 589.0,361.6" stroke="#9D95F2" stroke-width="78.8" stroke-opacity="0.4"/><path d="M409.3,246.2C499.2,246.2 499.2,457.4 589.0,457.4" stroke="#9D95F2" stroke-width="49.3" stroke-opacity="0.4"/><path d="M601.0,56.4C690.8,56.4 690.8,150.6 780.7,150.6" stroke="#ED7B43" stroke-width="32.8" stroke-opacity="0.4"/><path d="M601.0,88.3C690.8,88.3 690.8,329.5 780.7,329.5" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,117.4C690.8,117.4 690.8,53.7 780.7,53.7" stroke="#ED7B43" stroke-width="27.4" stroke-opacity="0.4"/><path d="M601.0,165.9C690.8,165.9 690.8,360.4 780.7,360.4" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,195.0C690.8,195.0 690.8,81.1 780.7,81.1" stroke="#ED7B43" stroke-width="27.4" stroke-opacity="0.4"/><path d="M601.0,254.8C690.8,254.8 690.8,459.4 780.7,459.4" stroke="#ED7B43" stroke-width="36.9" stroke-opacity="0.4"/><path d="M601.0,288.7C690.8,288.7 690.8,255.9 780.7,255.9" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,338.7C690.8,338.7 690.8,203.8 780.7,203.8" stroke="#ED7B43" stroke-width="32.8" stroke-opacity="0.4"/><path d="M601.0,370.5C690.8,370.5 690.8,286.7 780.7,286.7" stroke="#ED7B43" stroke-width="30.8" stroke-opacity="0.4"/><path d="M601.0,399.6C690.8,399.6 690.8,108.5 780.7,108.5" stroke="#ED7B43" stroke-width="27.4" stroke-opacity="0.4"/><path d="M601.0,453.3C690.8,453.3 690.8,408.3 780.7,408.3" stroke="#ED7B43" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,154.8C882.5,154.8 882.5,248.7 972.3,248.7" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,64.6C882.5,64.6 882.5,64.6 972.3,64.6" stroke="#E0A93E" stroke-width="49.3" stroke-opacity="0.4"/><path d="M792.7,338.7C882.5,338.7 882.5,408.1 972.3,408.1" stroke="#E0A93E" stroke-width="49.3" stroke-opacity="0.4"/><path d="M792.7,265.1C882.5,265.1 882.5,457.4 972.3,457.4" stroke="#E0A93E" stroke-width="49.3" stroke-opacity="0.4"/><path d="M792.7,207.9C882.5,207.9 882.5,109.8 972.3,109.8" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,461.4C882.5,461.4 882.5,171.1 972.3,171.1" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M792.7,408.3C882.5,408.3 882.5,326.4 972.3,326.4" stroke="#E0A93E" stroke-width="41.1" stroke-opacity="0.4"/><path d="M984.3,80.6C1074.2,80.6 1074.2,80.6 1164.0,80.6" stroke="#EA6E9C" stroke-width="81.2" stroke-opacity="0.4"/><path d="M984.3,261.0C1074.2,261.0 1074.2,340.4 1164.0,340.4" stroke="#EA6E9C" stroke-width="65.7" stroke-opacity="0.4"/><path d="M984.3,424.1C1074.2,424.1 1074.2,161.8 1164.0,161.8" stroke="#EA6E9C" stroke-width="81.2" stroke-opacity="0.4"/><path d="M984.3,183.3C1074.2,183.3 1074.2,247.2 1164.0,247.2" stroke="#EA6E9C" stroke-width="65.7" stroke-opacity="0.4"/><path d="M984.3,338.7C1074.2,338.7 1074.2,433.6 1164.0,433.6" stroke="#EA6E9C" stroke-width="65.7" stroke-opacity="0.4"/></g><rect class="gt-nd gt-fn" data-id="AF-01" x="14.0" y="40.0" width="12" height="139.3" rx="2.5" fill="#3E8FE6"/><text class="gt-lbl" data-id="AF-01" x="31.0" y="109.7" dy="0.35em" font-size="11.5" fill="#C7D0E3">AF-01 Lift &amp; thrust</text><rect class="gt-nd gt-fn" data-id="AF-02" x="14.0" y="191.3" width="12" height="139.3" rx="2.5" fill="#3E8FE6"/><text class="gt-lbl" data-id="AF-02" x="31.0" y="261.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">AF-02 Flight path</text><rect class="gt-nd gt-fn" data-id="AF-03" x="14.0" y="342.7" width="12" height="139.3" rx="2.5" fill="#3E8FE6"/><text class="gt-lbl" data-id="AF-03" x="31.0" y="412.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">AF-03 Crew awareness</text><rect class="gt-nd" data-id="SYS-01" x="205.7" y="40.0" width="12" height="110.7" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-01" x="222.7" y="95.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Propulsion</text><rect class="gt-nd" data-id="SYS-02" x="205.7" y="162.7" width="12" height="73.8" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-02" x="222.7" y="199.6" dy="0.35em" font-size="11.5" fill="#C7D0E3">Flight control</text><rect class="gt-nd" data-id="SYS-03" x="205.7" y="248.5" width="12" height="147.6" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-03" x="222.7" y="322.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Electrical power</text><rect class="gt-nd" data-id="SYS-04" x="205.7" y="408.2" width="12" height="73.8" rx="2.5" fill="#25C08E"/><text class="gt-lbl" data-id="SYS-04" x="222.7" y="445.1" dy="0.35em" font-size="11.5" fill="#C7D0E3">Avionics</text><rect class="gt-nd" data-id="FC-01" x="397.3" y="40.0" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-01" x="414.3" y="79.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Loss of thrust</text><rect class="gt-nd" data-id="FC-02" x="397.3" y="130.8" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-02" x="414.3" y="170.2" dy="0.35em" font-size="11.5" fill="#C7D0E3">Loss of control</text><rect class="gt-nd" data-id="FC-03" x="397.3" y="221.6" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-03" x="414.3" y="261.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">Misleading display</text><rect class="gt-nd" data-id="FC-04" x="397.3" y="312.4" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-04" x="414.3" y="351.8" dy="0.35em" font-size="11.5" fill="#C7D0E3">Loss of all power</text><rect class="gt-nd" data-id="FC-05" x="397.3" y="403.2" width="12" height="78.8" rx="2.5" fill="#9D95F2"/><text class="gt-lbl" data-id="FC-05" x="414.3" y="442.6" dy="0.35em" font-size="11.5" fill="#C7D0E3">Asymmetric thrust</text><rect class="gt-nd" data-id="FTA-01" x="589.0" y="40.0" width="12" height="98.5" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-01" x="606.0" y="89.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · thrust</text><rect class="gt-nd" data-id="FTA-02" x="589.0" y="150.5" width="12" height="73.9" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-02" x="606.0" y="187.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · asym thrust</text><rect class="gt-nd" data-id="FTA-03" x="589.0" y="236.4" width="12" height="73.9" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-03" x="606.0" y="273.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · control</text><rect class="gt-nd" data-id="FTA-04" x="589.0" y="322.3" width="12" height="98.5" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-04" x="606.0" y="371.5" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · power</text><rect class="gt-nd" data-id="FTA-05" x="589.0" y="432.8" width="12" height="49.3" rx="2.5" fill="#ED7B43"/><text class="gt-lbl" data-id="FTA-05" x="606.0" y="457.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">FT · display</text><rect class="gt-nd" data-id="CMA-01" x="780.7" y="40.0" width="12" height="82.2" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="CMA-01" x="797.7" y="81.1" dy="0.35em" font-size="11.5" fill="#C7D0E3">CMA shared power</text><rect class="gt-nd" data-id="PRA-02" x="780.7" y="134.2" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="PRA-02" x="797.7" y="154.8" dy="0.35em" font-size="11.5" fill="#C7D0E3">PRA rotor burst</text><rect class="gt-nd" data-id="PRA-04" x="780.7" y="187.3" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="PRA-04" x="797.7" y="207.9" dy="0.35em" font-size="11.5" fill="#C7D0E3">PRA battery</text><rect class="gt-nd" data-id="ZSA-200" x="780.7" y="240.4" width="12" height="61.7" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="ZSA-200" x="797.7" y="271.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">ZSA power zone</text><rect class="gt-nd" data-id="ZSA-300" x="780.7" y="314.1" width="12" height="61.7" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="ZSA-300" x="797.7" y="344.9" dy="0.35em" font-size="11.5" fill="#C7D0E3">ZSA aft bay</text><rect class="gt-nd" data-id="ZSA-100" x="780.7" y="387.8" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="ZSA-100" x="797.7" y="408.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">ZSA fwd bay</text><rect class="gt-nd" data-id="CMA-02" x="780.7" y="440.9" width="12" height="41.1" rx="2.5" fill="#E0A93E"/><text class="gt-lbl" data-id="CMA-02" x="797.7" y="461.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">CMA FCS sw</text><rect class="gt-nd" data-id="SR-014" x="972.3" y="40.0" width="12" height="98.5" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-014" x="989.3" y="89.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">Redundant power</text><rect class="gt-nd" data-id="SR-022" x="972.3" y="150.5" width="12" height="65.7" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-022" x="989.3" y="183.3" dy="0.35em" font-size="11.5" fill="#C7D0E3">Independent lanes</text><rect class="gt-nd" data-id="SR-031" x="972.3" y="228.2" width="12" height="65.7" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-031" x="989.3" y="261.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">Thrust monitoring</text><rect class="gt-nd" data-id="SR-045" x="972.3" y="305.8" width="12" height="65.7" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-045" x="989.3" y="338.7" dy="0.35em" font-size="11.5" fill="#C7D0E3">Display integrity</text><rect class="gt-nd" data-id="SR-071" x="972.3" y="383.5" width="12" height="98.5" rx="2.5" fill="#EA6E9C"/><text class="gt-lbl" data-id="SR-071" x="989.3" y="432.8" dy="0.35em" font-size="11.5" fill="#C7D0E3">Power routing</text><rect class="gt-nd" data-id="VV-01" x="1164.0" y="40.0" width="12" height="162.4" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-01" x="1181.0" y="121.2" dy="0.35em" font-size="11.5" fill="#C7D0E3">Power redund. test</text><rect class="gt-nd" data-id="VV-02" x="1164.0" y="214.4" width="12" height="81.2" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-02" x="1181.0" y="255.0" dy="0.35em" font-size="11.5" fill="#C7D0E3">Lane dissimilarity</text><rect class="gt-nd" data-id="VV-03" x="1164.0" y="307.6" width="12" height="81.2" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-03" x="1181.0" y="348.2" dy="0.35em" font-size="11.5" fill="#C7D0E3">Thrust isolation</text><rect class="gt-nd" data-id="VV-04" x="1164.0" y="400.8" width="12" height="81.2" rx="2.5" fill="#84C23F"/><text class="gt-lbl" data-id="VV-04" x="1181.0" y="441.4" dy="0.35em" font-size="11.5" fill="#C7D0E3">Display integ. test</text></svg>
+        <div class="gt-panel" id="gt-panel-frame">
+            <div class="gt-chrome">
+                <span class="gt-chrome-lbl">Function</span>
+                <span class="gt-chrome-pick">AF-2.1 &middot; Thrust <span class="gt-chrome-caret">&#9662;</span></span>
+                <span class="gt-chrome-note">One function, one thread &mdash; there is no all-functions firehose.</span>
+                <button type="button" class="gt-expand" id="gt-expand" aria-expanded="false" aria-controls="gt-panel-frame"><span class="gt-expand-ic" aria-hidden="true">&#10530;</span><span class="gt-expand-lbl">Expand</span></button>
+            </div>
+            <div class="gt-legend">
+                <span><i style="background:#2E6FB0"></i>FUNCTION</span>
+                <span><i style="background:#1D9E75"></i>SYSTEM</span>
+                <span><i style="background:#6D28D9"></i>STPA</span>
+                <span><i style="background:#7F77DD"></i>FAILURE CONDITION</span>
+                <span><i style="background:#D85A30"></i>FAULT TREE</span>
+                <span><i style="background:#BA7517"></i>COMMON CAUSE</span>
+                <span><i style="background:#D4537E"></i>REQUIREMENT</span>
+                <span><i style="background:#12A150"></i>VERIFICATION</span>
+                <span><i style="background:#C88A00"></i>RAM</span>
+                <span><i style="background:#7A3EA8"></i>HUMAN FACTORS</span>
+                <span><i style="background:#C0231D"></i>Compromised</span>
+                <span><i style="background:#C88A00"></i>Stale</span>
+                <span class="gt-lg-pill" style="background:#2E6BD6">Human</span>
+                <span class="gt-lg-pill" style="background:#7A3EA8">AI</span>
+                <span class="gt-lg-pill" style="background:#0E7490">Engine</span>
+            </div>
+            <div class="gt-host" id="gt-thread-host" role="img" aria-label="The golden thread for aircraft function AF-2.1, thrust: a safety-assessment swim lane of function, systems, STPA hazards, failure conditions, fault trees, common-cause analyses, requirements and verification, with reliability and human-factors feeder lanes beneath it."></div>
+            <div class="gt-hint"><span class="gt-hint-dot"></span> <b>This is live &mdash; drag it.</b> Pan the thread, hover a card to isolate it, click any card to open its trace.</div>
         </div>
         <p class="section-sub" style="margin-top: var(--s-5);">
-            In the workspace the thread is live on your own project: click any node to lay out its ecosystem &mdash; every linked failure condition, analysis, requirement and verification &mdash; then generate its full trace report in one click. The same deterministic model the whole workspace runs on.
+            That is the workspace&rsquo;s own renderer above, running on a worked example. On your project it runs on your data: every card carries who authored it &mdash; engineer, AI, or a deterministic engine &mdash; and every stale, compromised or obsolete artifact is surfaced as a named finding rather than a silent gap. Click any card to lay out its ecosystem, then generate its full trace report in one click.
         </p>
     </div>
 
@@ -920,53 +1149,446 @@ footer {
             <div id="gt-modal-body"></div>
         </div>
     </div>
+    <script>
+    /* Stop the "drag it" pulse the moment the panel has been used — a hint that
+       keeps pulsing after you have obeyed it is noise. */
+    (function () {
+        var f = document.getElementById('gt-panel-frame'); if (!f) return;
+        var stop = function () {
+            f.classList.add('gt-touched');
+            ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(function (e) {
+                f.removeEventListener(e, stop, true);
+            });
+        };
+        ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(function (e) {
+            f.addEventListener(e, stop, true);
+        });
+    })();
+    </script>
 </section>
 
-<script>window.GT_DATA = {"color":{"func":"#3E8FE6","sys":"#25C08E","fc":"#9D95F2","fta":"#ED7B43","cca":"#E0A93E","req":"#EA6E9C","vv":"#84C23F"},"lname":{"func":"Function","sys":"System","fc":"Failure condition","fta":"Fault tree","cca":"Common cause","req":"Requirement","vv":"V&V evidence"},"nodes":{"AF-01":{"kind":"func","name":"Provide lift & thrust","sev":null,"dal":null},"AF-02":{"kind":"func","name":"Control flight path","sev":null,"dal":null},"AF-03":{"kind":"func","name":"Inform the crew","sev":null,"dal":null},"SYS-01":{"kind":"sys","name":"Propulsion","sev":null,"dal":null},"SYS-02":{"kind":"sys","name":"Flight control","sev":null,"dal":null},"SYS-03":{"kind":"sys","name":"Electrical power","sev":null,"dal":null},"SYS-04":{"kind":"sys","name":"Avionics & displays","sev":null,"dal":null},"FC-01":{"kind":"fc","name":"Loss of thrust","sev":"Catastrophic","dal":null},"FC-02":{"kind":"fc","name":"Loss of flight control","sev":"Catastrophic","dal":null},"FC-03":{"kind":"fc","name":"Misleading display","sev":"Hazardous","dal":null},"FC-04":{"kind":"fc","name":"Loss of all power","sev":"Catastrophic","dal":null},"FC-05":{"kind":"fc","name":"Asymmetric thrust","sev":"Hazardous","dal":null},"FTA-01":{"kind":"fta","name":"Fault tree · loss of thrust","sev":null,"dal":null},"FTA-02":{"kind":"fta","name":"Fault tree · asymmetric thrust","sev":null,"dal":null},"FTA-03":{"kind":"fta","name":"Fault tree · loss of control","sev":null,"dal":null},"FTA-04":{"kind":"fta","name":"Fault tree · loss of power","sev":null,"dal":null},"FTA-05":{"kind":"fta","name":"Fault tree · misleading display","sev":null,"dal":null},"CMA-01":{"kind":"cca","name":"Shared power supply","sev":null,"dal":null},"PRA-02":{"kind":"cca","name":"Rotor / blade burst","sev":null,"dal":null},"PRA-04":{"kind":"cca","name":"Battery thermal runaway","sev":null,"dal":null},"ZSA-200":{"kind":"cca","name":"Center power zone","sev":null,"dal":null},"ZSA-300":{"kind":"cca","name":"Aft propulsion bay","sev":null,"dal":null},"ZSA-100":{"kind":"cca","name":"Fwd avionics bay","sev":null,"dal":null},"CMA-02":{"kind":"cca","name":"Common FCS software","sev":null,"dal":null},"SR-014":{"kind":"req","name":"Redundant power channels","sev":null,"dal":"A"},"SR-022":{"kind":"req","name":"Independent control lanes","sev":null,"dal":"A"},"SR-031":{"kind":"req","name":"Thrust monitoring & isolation","sev":null,"dal":"B"},"SR-045":{"kind":"req","name":"Display integrity monitor","sev":null,"dal":"B"},"SR-071":{"kind":"req","name":"Power routing segregation","sev":null,"dal":"B"},"VV-01":{"kind":"vv","name":"Power redundancy test","sev":null,"dal":null},"VV-02":{"kind":"vv","name":"Lane dissimilarity analysis","sev":null,"dal":null},"VV-03":{"kind":"vv","name":"Thrust isolation test","sev":null,"dal":null},"VV-04":{"kind":"vv","name":"Display integrity test","sev":null,"dal":null}},"links":[["AF-01","SYS-01"],["AF-01","SYS-03"],["AF-02","SYS-02"],["AF-02","SYS-03"],["AF-03","SYS-04"],["AF-03","SYS-03"],["SYS-01","FC-01"],["SYS-01","FC-05"],["SYS-02","FC-02"],["SYS-03","FC-04"],["SYS-04","FC-03"],["FC-01","FTA-01"],["FC-05","FTA-02"],["FC-02","FTA-03"],["FC-04","FTA-04"],["FC-03","FTA-05"],["FTA-01","PRA-02"],["FTA-01","ZSA-300"],["FTA-01","CMA-01"],["FTA-02","ZSA-300"],["FTA-02","CMA-01"],["FTA-03","CMA-02"],["FTA-03","ZSA-200"],["FTA-04","PRA-04"],["FTA-04","ZSA-200"],["FTA-04","CMA-01"],["FTA-05","ZSA-100"],["PRA-02","SR-031"],["CMA-01","SR-014"],["ZSA-300","SR-071"],["ZSA-200","SR-071"],["PRA-04","SR-014"],["CMA-02","SR-022"],["ZSA-100","SR-045"],["SR-014","VV-01"],["SR-031","VV-03"],["SR-071","VV-01"],["SR-022","VV-02"],["SR-045","VV-04"]]};</script>
+
 <script>
-(function(){
-    var D = window.GT_DATA; if(!D) return;
-    var order = ["func","sys","fc","fta","cca","req","vv"];
-    var GN = {func:"Functions", sys:"Systems", fc:"Failure conditions", fta:"Fault trees", cca:"Common-cause analyses (PRA / ZSA / CMA)", req:"Safety requirements", vv:"V&V evidence"};
-    var out = {}, inc = {};
-    Object.keys(D.nodes).forEach(function(id){ out[id]=[]; inc[id]=[]; });
-    D.links.forEach(function(L){ out[L[0]].push(L[1]); inc[L[1]].push(L[0]); });
-    function closure(start, adj){ var seen={}, st=(adj[start]||[]).slice(), o=[]; while(st.length){ var x=st.pop(); if(seen[x]) continue; seen[x]=1; o.push(x); (adj[x]||[]).forEach(function(y){ if(!seen[y]) st.push(y); }); } return o; }
-    var overlay = document.getElementById("gt-modal");
-    var body = document.getElementById("gt-modal-body");
-    function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
-    function openNode(id){
-        var n = D.nodes[id]; if(!n) return;
-        var reach = {}; reach[id]=1;
-        closure(id,out).forEach(function(k){ reach[k]=1; });
-        closure(id,inc).forEach(function(k){ reach[k]=1; });
-        var groups = {}; order.forEach(function(l){ groups[l]=[]; });
-        Object.keys(reach).forEach(function(k){ if(k!==id) groups[D.nodes[k].kind].push(k); });
-        var h = '<div class="gt-m-head"><span class="gt-m-pill" style="background:'+D.color[n.kind]+'">'+D.lname[n.kind]+'</span><span class="gt-m-name">'+esc(n.name)+'</span><span class="gt-m-id">'+esc(id)+'</span></div>';
-        h += '<div class="gt-m-sub">Threads through '+(Object.keys(reach).length-1)+' linked items</div>';
-        order.forEach(function(l){
-            if(!groups[l].length) return;
-            h += '<div class="gt-m-sec"><div class="gt-m-sectitle">'+GN[l]+' ('+groups[l].length+')</div><div class="gt-m-chips">';
-            h += groups[l].map(function(k){ var m=D.nodes[k]; var meta = m.sev ? '<span class="gt-m-meta">'+esc(m.sev)+'</span>' : (m.dal ? '<span class="gt-m-meta">DAL '+esc(m.dal)+'</span>' : ''); return '<span class="gt-m-chip"><span class="gt-m-dot" style="background:'+D.color[m.kind]+'"></span><span class="gt-m-cid">'+esc(k)+'</span> '+esc(m.name)+meta+'</span>'; }).join('');
-            h += '</div></div>';
-        });
-        if(n.kind==="func"){ h += '<a class="gt-m-cta" href="/app">Open full trace report for '+esc(id)+' &#8599;</a>'; }
-        body.innerHTML = h;
-        overlay.classList.add("show"); overlay.setAttribute("aria-hidden","false");
-    }
-    function close(){ overlay.classList.remove("show"); overlay.setAttribute("aria-hidden","true"); }
-    document.querySelectorAll("#gt-svg [data-id]").forEach(function(el){ el.addEventListener("click", function(){ openNode(el.getAttribute("data-id")); }); });
-    overlay.addEventListener("click", function(e){ if(e.target===overlay) close(); });
-    document.getElementById("gt-modal-x").addEventListener("click", close);
-    document.addEventListener("keydown", function(e){ if(e.key==="Escape") close(); });
+(function () {
+    'use strict';
+    var panel = document.getElementById('gt-panel-frame');
+    var btn   = document.getElementById('gt-expand');
+    if (!panel || !btn) return;
+    var lbl = btn.querySelector('.gt-expand-lbl');
+    var ic  = btn.querySelector('.gt-expand-ic');
+    btn.addEventListener('click', function () {
+        var wide = panel.classList.toggle('is-wide');
+        btn.setAttribute('aria-expanded', wide ? 'true' : 'false');
+        if (lbl) lbl.textContent = wide ? 'Collapse' : 'Expand';
+        if (ic) ic.innerHTML = wide ? '&#10529;' : '&#10530;';
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && panel.classList.contains('is-wide')) btn.click();
+    });
 })();
 </script>
 
 
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     Testimonials / social proof
-     ═══════════════════════════════════════════════════════════════════════ -->
+
+<script>
+// ============================================================================
+// gt_thread.js — v0.3 — the Golden Thread as three interconnected swim lanes.
+//
+// SAFETY ASSESSMENT lane on top (owns the columns: FUNCTION · SYSTEM · FAILURE
+// CONDITION · FAULT TREE · COMMON CAUSE · REQUIREMENT · VERIFICATION). RAM and
+// HUMAN FACTORS run beneath as feeder lanes, each card positioned under the
+// safety node it feeds and connecting straight up into it. Independence is a
+// requirement (folded into the REQUIREMENT column — no separate column).
+// Fault-tree bus connectors: centre ports, one bus at the mid-gap for a
+// fan-out/fan-in, skip-links drop below the row. Every stale / compromised /
+// obsolete artifact is a named finding.
+//
+// DATA-DRIVEN off window._gtvBuildGraph → {nodes, links}. No new libraries
+// (emits an SVG string). No RNG, no Date, no eval.
+// ============================================================================
+(function () {
+    'use strict';
+
+    // Safety-lane columns, left → right. HF and RAM are NOT columns here — they
+    // are feeder lanes below. 'ip' (independence) folds into the REQUIREMENT column.
+    const SAFE_COLS = ['func', 'sys', 'stpa', 'fc', 'fta', 'cca', 'req', 'vv'];
+    const CNAME = {
+        func: 'FUNCTION', sys: 'SYSTEM', stpa: 'STPA', fc: 'FAILURE CONDITION',
+        fta: 'FAULT TREE', cca: 'COMMON CAUSE', req: 'REQUIREMENT', vv: 'VERIFICATION',
+        ram: 'RAM', hf: 'HUMAN FACTORS'
+    };
+    const ACCENT = {
+        func: '#2E6FB0', sys: '#1D9E75', stpa: '#6D28D9', fc: '#7F77DD', fta: '#D85A30',
+        cca: '#BA7517', req: '#D4537E', vv: '#12A150', ip: '#D4537E', ram: '#C88A00', hf: '#7A3EA8'
+    };
+    function colKind(k) { return k === 'ip' ? 'req' : k; }          // independence renders in the requirement column
+    const IS_FEEDER = { ram: 1, hf: 1 };
+
+    const SAF_C = '#586472', RAM_C = '#C88A00', HF_C = '#7A3EA8';
+    const INK = '#101216', INK3 = '#586472', MUTE = '#8A94A2', HAIR = '#D9DFE8';
+    const RED = '#C0231D', GREEN = '#0E7A3C', AMBER = '#C88A00', BLUE = '#2E6BD6';
+    const FLAG = { compromised: RED, stale: AMBER, obsolete: INK3 };
+    const PROVC = { human: '#2E6BD6', ai: '#7A3EA8', engine: '#0E7490' };
+    const PROVL = { human: 'Human', ai: 'AI', engine: 'Engine' };
+
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function _clip(str, n) { str = String(str == null ? '' : str); return str.length > n ? str.slice(0, n - 1) + '…' : str; }
+
+    // Provenance — engine-computed for the deterministic engines (trees, reliability);
+    // AI where the underlying row was AI-sourced and not engineer-edited; else human.
+    function provOf(n) {
+        const k = n.kind;
+        if (k === 'fta' || k === 'ram') return 'engine';
+        try {
+            const r = n.ref;
+            if (r && typeof window !== 'undefined') {
+                const it = _lookupItem(r);
+                if (it && (it.aiModel || (it.reqSource && it.reqSource.aiModel)) && !it.aiEdited) return 'ai';
+            }
+        } catch (_) {}
+        return 'human';
+    }
+    function _lookupItem(r) {
+        try {
+            const g = (typeof window !== 'undefined') ? window : {};
+            const sys = (id) => (g.systemsData || []).find(s => String(s.id) === String(id));
+            switch (r.kind) {
+                case 'acFha': return (g.acFhaData || []).find(f => f.internalId === r.id);
+                case 'sysFha': { const s = sys(r.systemId); return s && (s.fha || []).find(f => f.internalId === r.id); }
+                case 'acReq': return (g.acReqData || []).find(x => x.internalId === r.id);
+                case 'sysReq': { const s = sys(r.systemId); return s && (s.req || []).find(x => x.internalId === r.id); }
+                case 'ftaPage': return (g.ftaPages || []).find(p => String(p.id) === String(r.id));
+                case 'item': return (typeof g.itemsData !== 'undefined' ? g.itemsData : []).find(x => x.internalId === r.id);
+                case 'assumption': return { aiModel: 1 };   // HF assumptions are AI-drafted by default
+            }
+        } catch (_) {}
+        return null;
+    }
+
+    function statusDot(node) {
+        const s = (node.sub || '') + ' ' + (node.label || '');
+        if (/verified|closed|complete|pass/i.test(s)) return GREEN;
+        if (/review|progress|pending/i.test(s)) return AMBER;
+        if (/scheduled|planned|open|draft/i.test(s)) return BLUE;
+        return null;
+    }
+    function borderFor(node) {
+        if (node.flag) return FLAG[node.flag] || RED;
+        if (node.kind === 'vv' && /verified|closed|complete/i.test((node.sub || '') + (node.label || ''))) return GREEN;
+        return HAIR;
+    }
+
+    // geometry
+    const CW = 176, CH = 54, GAP = 22, COLP = CW + GAP, PAD_L = 150;
+    const HEAD_Y = 30, SAF_TOP = 42, THREAD_TOP = 52, RP = 66, LANE_H = 84, LANE_GAP = 10;
+
+    function render(host, graph) {
+        if (!host) return;
+        if (!graph || !graph.nodes || !graph.nodes.length) {
+            host.innerHTML = '<div style="padding:48px;text-align:center;color:' + MUTE + ';font-size:13px;">'
+                + 'Select an aircraft function above — its golden thread (failure conditions, trees, requirements, verification, plus the reliability and human-factors feeder lanes) renders here.</div>';
+            return;
+        }
+        const byKey = {}; graph.nodes.forEach(n => byKey[n.key] = n);
+        graph.nodes.forEach(n => { n._prov = provOf(n); });
+
+        // Split: safety-lane nodes vs feeder nodes. Bucket safety by column-kind.
+        const buckets = {}; SAFE_COLS.forEach(k => buckets[k] = []);
+        const feeders = [];
+        graph.nodes.forEach(n => {
+            if (IS_FEEDER[n.kind]) { feeders.push(n); return; }
+            const ck = colKind(n.kind);
+            if (buckets[ck]) buckets[ck].push(n);
+        });
+        SAFE_COLS.forEach(k => buckets[k].sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0)));
+        const cols = SAFE_COLS.filter(k => buckets[k].length);
+        const colIndex = {}; cols.forEach((k, i) => colIndex[k] = i);
+        const colX = k => PAD_L + colIndex[k] * COLP;
+
+        // Position safety cards.
+        const pos = {}; let rowsMax = 1;
+        cols.forEach(k => {
+            const x = colX(k);
+            buckets[k].forEach((n, ri) => { pos[n.key] = { x: x, y: THREAD_TOP + ri * RP, w: CW, h: CH }; });
+            if (buckets[k].length > rowsMax) rowsMax = buckets[k].length;
+        });
+        const threadBottom = THREAD_TOP + rowsMax * RP;               // safety cards bottom
+        const safBandBottom = threadBottom + 6;
+
+        // Which feeder targets which safety node → the feeder sits in that node's
+        // column. Group feeders by (lane, column) and stack them within the band.
+        const primaryTarget = {};    // feederKey → target safety node key
+        graph.links.forEach(L => {
+            const s = byKey[L.s], t = byKey[L.t];
+            if (s && IS_FEEDER[s.kind] && t && !IS_FEEDER[t.kind] && !primaryTarget[s.key]) primaryTarget[s.key] = t.key;
+        });
+        const feederByCol = { ram: {}, hf: {} };
+        feeders.forEach(f => {
+            const tk = primaryTarget[f.key]; const tgt = tk && byKey[tk];
+            const ck = tgt ? colKind(tgt.kind) : (buckets.fc.length ? 'fc' : cols[0]);
+            const bin = feederByCol[f.kind][ck] || (feederByCol[f.kind][ck] = []);
+            f._targetKey = tk; f._col = ck; f._gi = bin.length; bin.push(f);
+        });
+        const laneRows = lane => { let m = 0; Object.keys(feederByCol[lane]).forEach(ck => { if (feederByCol[lane][ck].length > m) m = feederByCol[lane][ck].length; }); return m; };
+        const ramRows = laneRows('ram'), hfRows = laneRows('hf');
+        const laneH = rows => 15 + rows * (CH + 8) + 4;
+        const ramH = ramRows ? laneH(ramRows) : 0, hfH = hfRows ? laneH(hfRows) : 0;
+        const ramBandTop = safBandBottom + LANE_GAP;
+        const hfBandTop = ramBandTop + (ramRows ? ramH + LANE_GAP : 0);
+        const laneTopOf = lane => lane === 'ram' ? ramBandTop : hfBandTop;
+        Object.keys(feederByCol).forEach(lane => {
+            Object.keys(feederByCol[lane]).forEach(ck => {
+                feederByCol[lane][ck].forEach((f, ri) => {
+                    pos[f.key] = { x: colX(ck), y: laneTopOf(lane) + 15 + ri * (CH + 8), w: CW, h: CH };
+                });
+            });
+        });
+
+        const W = PAD_L + cols.length * CW + (cols.length - 1) * GAP + PAD_L;
+        const bottomBand = hfRows ? (hfBandTop + hfH) : (ramRows ? (ramBandTop + ramH) : safBandBottom);
+        const H = bottomBand + 34;
+
+        let s = '';
+        s += '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" style="display:block;font-family:var(--font-mono,ui-monospace,SFMono-Regular,Menlo,monospace);max-width:none;">';
+
+        // ---- lane bands (Safety on top, RAM, HF) --------------------------------
+        function band(y, h, c, label) {
+            let b = '<rect x="6" y="' + y + '" width="' + (W - 12) + '" height="' + h + '" fill="' + c + '" opacity="0.06"/>';
+            b += '<rect x="6" y="' + y + '" width="4" height="' + h + '" fill="' + c + '"/>';
+            b += '<text x="14" y="' + (y + 14) + '" font-size="10" font-weight="700" letter-spacing="1" fill="' + c + '">' + label + '</text>';
+            return b;
+        }
+        s += band(SAF_TOP, safBandBottom - SAF_TOP, SAF_C, 'SAFETY ASSESSMENT');
+        if (ramRows) s += band(ramBandTop, ramH, RAM_C, 'RAM');
+        if (hfRows) s += band(hfBandTop, hfH, HF_C, 'HUMAN FACTORS');
+
+        // ---- column headers (atop the safety lane) ------------------------------
+        s += '<g font-size="9.5" font-weight="700" letter-spacing="1.4">';
+        cols.forEach(k => {
+            s += '<text x="' + (colX(k) + CW / 2) + '" y="' + HEAD_Y + '" text-anchor="middle" fill="' + (ACCENT[k] || MUTE) + '">' + CNAME[k]
+                + ' <tspan fill="' + MUTE + '">(' + buckets[k].length + ')</tspan></text>';
+        });
+        s += '</g>';
+
+        // ---- safety flow connectors: fault-tree buses ---------------------------
+        // centre ports; one bus at the mid-gap for adjacent edges; skip-links drop
+        // below the row and run clear underneath the intervening cards.
+        function span(a, b) { return Math.max(1, Math.round((b.x - (a.x + a.w)) / COLP)); }
+        graph.links.forEach(L => {
+            const sN = byKey[L.s], tN = byKey[L.t];
+            if (!sN || !tN || IS_FEEDER[sN.kind] || IS_FEEDER[tN.kind]) return;   // feeders drawn separately
+            let a = pos[L.s], b = pos[L.t]; if (!a || !b) return;
+            // orient left→right
+            if (b.x < a.x) { const t = a; a = b; b = t; }
+            const x0 = a.x + a.w, y0 = a.y + a.h / 2, x1 = b.x, y1 = b.y + b.h / 2;
+            const sp = span(a, b);
+            const flagged = tN.flag || sN.flag;
+            const col = flagged ? RED : 'rgba(26,28,34,.6)', wd = flagged ? 2 : 1.4;
+            let d;
+            if (sp >= 2) {
+                const sxb = a.x + a.w / 2, syb = a.y + a.h, chanY = Math.max(y0, y1) + a.h / 2 + 10, rx = x1 - 14;
+                d = 'M' + sxb + ',' + syb + ' L' + sxb + ',' + chanY + ' L' + rx + ',' + chanY + ' L' + rx + ',' + y1 + ' L' + x1 + ',' + y1;
+            } else if (Math.abs(y0 - y1) < 1) {
+                d = 'M' + x0 + ',' + y0 + ' L' + x1 + ',' + y1;
+            } else {
+                const busX = (x0 + x1) / 2; d = 'M' + x0 + ',' + y0 + ' L' + busX + ',' + y0 + ' L' + busX + ',' + y1 + ' L' + x1 + ',' + y1;
+            }
+            s += '<path data-s="' + esc(L.s) + '" data-t="' + esc(L.t) + '" d="' + d + '" fill="none" stroke="' + col + '" stroke-width="' + wd + '" stroke-linejoin="round"/>';
+        });
+
+        // ---- feeder connectors: RAM/HF up into the target's bottom-centre --------
+        feeders.forEach(f => {
+            const tk = f._targetKey; if (!tk) return;
+            const p = pos[f.key], t = pos[tk]; if (!p || !t) return;
+            const tN = byKey[tk];
+            const chain = f.flag === 'compromised' || (tN && tN.flag === 'compromised');
+            const stroke = chain ? RED : (f.kind === 'hf' ? HF_C : RAM_C);
+            const gi = f._gi || 0;
+            // leave the feeder's side-centre, run up the gutter, land on the target's side-centre
+            const fmy = p.y + p.h / 2, tmy = t.y + t.h / 2, gx = t.x - 12 - gi * 6;
+            const d = 'M' + p.x + ',' + fmy + ' L' + gx + ',' + fmy + ' L' + gx + ',' + tmy + ' L' + t.x + ',' + tmy;
+            s += '<path data-s="' + esc(f.key) + '" data-t="' + esc(tk) + '" d="' + d + '" fill="none" stroke="' + stroke + '" stroke-width="' + (chain ? 2 : 1.4) + '" stroke-dasharray="' + (chain ? '' : '4,3') + '" stroke-linejoin="round"/>';
+        });
+
+        // ---- cards --------------------------------------------------------------
+        let findings = 0;
+        function drawCard(n) {
+            const p = pos[n.key]; if (!p) return '';
+            const acc = ACCENT[n.kind] || INK3;
+            const bc = borderFor(n);
+            const idc = n.flag ? bc : (bc === GREEN ? '#0E7A3C' : INK);
+            if (n.flag) findings++;
+            let c = '<g data-key="' + esc(n.key) + '" style="cursor:pointer;">';
+            c += '<rect x="' + p.x + '" y="' + p.y + '" width="' + p.w + '" height="' + p.h + '" rx="6" fill="#fff" stroke="' + bc + '" stroke-width="' + (n.flag ? 1.6 : (bc === HAIR ? 1 : 1.4)) + '"/>';
+            c += '<rect x="' + p.x + '" y="' + (p.y + 6) + '" width="3" height="' + (p.h - 12) + '" rx="1.5" fill="' + acc + '"/>';
+            c += '<text x="' + (p.x + 11) + '" y="' + (p.y + 18) + '" font-size="11" font-weight="700" fill="' + idc + '">' + esc(_clip(n.label, 22)) + '</text>';
+            c += '<text x="' + (p.x + 11) + '" y="' + (p.y + 33) + '" font-size="8.6" fill="' + INK3 + '">' + esc(_clip(n.sub, 27)) + '</text>';
+            // provenance badge (bottom-right)
+            const pv = n._prov || 'human', pw = PROVL[pv].length * 5.2 + 11, px = p.x + p.w - 6 - pw, py = p.y + p.h - 15;
+            c += '<rect x="' + px + '" y="' + py + '" width="' + pw + '" height="12" rx="6" fill="' + PROVC[pv] + '"/>';
+            c += '<text x="' + (px + pw / 2) + '" y="' + (py + 8.7) + '" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">' + PROVL[pv] + '</text>';
+            // bottom-left chip: flag OR role
+            let bl = null;
+            if (n.flag) bl = { t: n.flag.toUpperCase(), c: (n.flag === 'stale' ? AMBER : n.flag === 'obsolete' ? INK3 : RED) };
+            else if (n.kind === 'sys' && n.role) { const base = n.role === 'primary' ? 'PRIMARY' : 'RESOURCE'; bl = { t: (n.role === 'resource' && (n.hops || 1) > 1) ? base + ' ·' + n.hops : base, c: n.role === 'primary' ? '#12A150' : AMBER }; }
+            if (bl) {
+                const rw = bl.t.length * 5.1 + 10, rx = p.x + 11, ry = p.y + p.h - 15;
+                c += '<rect x="' + rx + '" y="' + ry + '" width="' + rw + '" height="12" rx="6" fill="' + bl.c + '"/><text x="' + (rx + rw / 2) + '" y="' + (ry + 8.7) + '" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">' + esc(bl.t) + '</text>';
+            }
+            const dot = statusDot(n);
+            if (dot && !bl) c += '<circle cx="' + (p.x + 16) + '" cy="' + (p.y + p.h - 9) + '" r="3.5" fill="' + dot + '"/>';
+            c += '<title>' + esc(n.label + (n.sub ? ' — ' + n.sub : '') + (n.flag ? '  [' + n.flag.toUpperCase() + (n.flagReason ? ': ' + n.flagReason : '') + ']' : '')) + '</title>';
+            c += '</g>';
+            return c;
+        }
+        cols.forEach(k => buckets[k].forEach(n => { s += drawCard(n); }));
+        feeders.forEach(f => { s += drawCard(f); });
+
+        const cap = findings
+            ? findings + ' NAMED FINDING' + (findings === 1 ? '' : 'S') + ' ON THIS THREAD · A BROKEN OR STALE LINK IS SURFACED, NEVER A SILENT GAP · EVERY LINK MACHINE-CHECKED'
+            : 'EVERY LINK MACHINE-CHECKED · A BROKEN OR STALE LINK IS A NAMED FINDING, NEVER A SILENT GAP · ONE CAUSE → MANY HAZARDS · ONE MITIGATION → MANY REQUIREMENTS';
+        s += '<text x="' + (W / 2) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="9" letter-spacing="1" fill="' + (findings ? RED : MUTE) + '">' + esc(cap) + '</text>';
+        s += '</svg>';
+
+        host.innerHTML = s;
+        wireInteractivity(host, graph);
+    }
+
+    function wireInteractivity(host, graph) {
+        const svg = host.querySelector('svg');
+        if (!svg) return;
+        const nodeEls = svg.querySelectorAll('g[data-key]');
+        const linkEls = svg.querySelectorAll('path[data-s]');
+        const call = (name, key) => { try { if (typeof window !== 'undefined' && typeof window[name] === 'function') window[name](key, graph); } catch (_) {} };
+        function highlight(key) {
+            let set; try { set = (typeof window !== 'undefined' && window._gtvThreadSet) ? window._gtvThreadSet(graph, key) : null; } catch (_) { set = null; }
+            if (!set) set = new Set([key]);
+            nodeEls.forEach(n => { n.style.opacity = set.has(n.getAttribute('data-key')) ? '1' : '0.22'; });
+            linkEls.forEach(p => { p.style.opacity = (set.has(p.getAttribute('data-s')) && set.has(p.getAttribute('data-t'))) ? '1' : '0.06'; });
+        }
+        function clearHl() { nodeEls.forEach(n => { n.style.opacity = '1'; }); linkEls.forEach(p => { p.style.opacity = ''; }); }
+        nodeEls.forEach(el => {
+            const key = el.getAttribute('data-key');
+            el.addEventListener('click', () => call('_gtvShowEco', key));
+            el.addEventListener('dblclick', ev => { try { ev.preventDefault(); ev.stopPropagation(); } catch (_) {} call('_gtvShowEcoModal', key); });
+            el.addEventListener('mouseenter', () => highlight(key));
+            el.addEventListener('mouseleave', clearHl);
+        });
+    }
+
+    if (typeof window !== 'undefined') window.GT_THREAD = { render: render, ORDER: SAFE_COLS };
+    if (typeof module !== 'undefined') module.exports = { render: render, ORDER: SAFE_COLS };
+})();
+</script>
+
+
+
+<script>window.GT_GRAPH = {"nodes":[{"key":"func:AF-2.1","kind":"func","id":"AF-2.1","label":"AF-2.1 · Thrust","sub":"Function","ref":{"kind":"acFunc","id":"AF-2.1"},"deg":5},{"key":"sys:PROP","kind":"sys","id":"PROP","label":"Propulsion","sub":"System","ref":{"kind":"system","id":"PROP"},"deg":3,"role":"primary"},{"key":"sys:ELEC","kind":"sys","id":"ELEC","label":"Electrical power","sub":"System","ref":{"kind":"system","id":"ELEC"},"deg":2,"role":"resource","via":"28V DC bus","hops":1},{"key":"sys:EIND","kind":"sys","id":"EIND","label":"Engine indication","sub":"System","ref":{"kind":"system","id":"EIND"},"deg":2,"role":"resource","via":"ARINC 429","hops":2},{"key":"stpa:H-1","kind":"stpa","id":"H-1","label":"H-1","sub":"STPA hazard · thrust","ref":{"kind":"stpaHazard","id":"H-1"},"deg":2},{"key":"stpa:H-5","kind":"stpa","id":"H-5","label":"H-5","sub":"STPA hazard · asymmetry","ref":{"kind":"stpaHazard","id":"H-5"},"deg":1,"flag":"stale","flagReason":"STPA hazard not yet traced to a loss"},{"key":"fc:AC:101","kind":"fc","id":"AC:101","label":"FC-101","sub":"AFHA · Catastrophic","ref":{"kind":"acFha","id":101},"deg":10},{"key":"fc:AC:105","kind":"fc","id":"AC:105","label":"FC-105","sub":"AFHA · Hazardous","ref":{"kind":"acFha","id":105},"deg":7},{"key":"fta:11","kind":"fta","id":"11","label":"Loss of thrust","sub":"Fault tree","ref":{"kind":"ftaPage","id":11},"deg":5},{"key":"fta:12","kind":"fta","id":"12","label":"Asymmetric thrust","sub":"Fault tree","ref":{"kind":"ftaPage","id":12},"deg":3},{"key":"cca:cma:4","kind":"cca","id":"cma:4","label":"CMA C-04","sub":"Shared 28V DC supply","ref":{"kind":"cma","id":4},"deg":2,"flag":"compromised","flagReason":"Independence compromised — FADEC A ⊥ FADEC B"},{"key":"cca:pra:2","kind":"cca","id":"pra:2","label":"PRA P-02","sub":"Rotor burst","ref":{"kind":"pra","id":2},"deg":1},{"key":"cca:zsa:300","kind":"cca","id":"zsa:300","label":"ZSA 300","sub":"Aft propulsion bay","ref":{"kind":"zsa","id":300},"deg":2},{"key":"ip:fadec-ab","kind":"ip","id":"fadec-ab","label":"FADEC A ⊥ FADEC B","sub":"Independence · verified","ref":{"kind":"principle","id":"fadec-ab"},"deg":2},{"key":"req:acReq:14","kind":"req","id":"acReq:14","label":"SR-014","sub":"Redundancy","ref":{"kind":"acReq","id":14},"deg":3},{"key":"req:acReq:31","kind":"req","id":"acReq:31","label":"SR-031","sub":"Monitoring & isolation","ref":{"kind":"acReq","id":31},"deg":2},{"key":"req:sysReq:71","kind":"req","id":"sysReq:71","label":"SR-071","sub":"Segregation","ref":{"kind":"sysReq","id":71,"systemId":"ELEC"},"deg":2,"flag":"stale","flagReason":"Upstream source changed since this requirement was generated."},{"key":"req:acReq:88","kind":"req","id":"acReq:88","label":"STPA · UCA-04","sub":"Requirement","ref":{"kind":"acReq","id":88},"deg":2},{"key":"vv:st:Verified","kind":"vv","id":"st:Verified","label":"Verified","sub":"Verification","ref":null,"deg":1},{"key":"vv:st:In review","kind":"vv","id":"st:In review","label":"In review","sub":"Verification","ref":null,"deg":1},{"key":"vv:st:Planned","kind":"vv","id":"st:Planned","label":"Planned","sub":"Verification","ref":null,"deg":2},{"key":"ram:item:IT-204","kind":"ram","id":"item:IT-204","label":"IT-204","sub":"FADEC channel A · DAL A","ref":{"kind":"item","id":204,"systemId":"PROP"},"deg":1},{"key":"ram:item:IT-209","kind":"ram","id":"item:IT-209","label":"IT-209","sub":"FADEC channel B · DAL A","ref":{"kind":"item","id":209,"systemId":"PROP"},"deg":1},{"key":"hf:hf:ASM-07","kind":"hf","id":"hf:ASM-07","label":"ASM-07","sub":"HF · validated","ref":{"kind":"assumption","id":"ASM-07"},"deg":2},{"key":"hf:hf:ASM-12","kind":"hf","id":"hf:ASM-12","label":"ASM-12","sub":"HF · assumption","ref":{"kind":"assumption","id":"ASM-12"},"deg":2,"flag":"stale","flagReason":"HF assumption not yet validated"}],"links":[{"s":"func:AF-2.1","t":"sys:PROP"},{"s":"func:AF-2.1","t":"sys:ELEC"},{"s":"func:AF-2.1","t":"sys:EIND"},{"s":"sys:PROP","t":"fc:AC:101"},{"s":"sys:PROP","t":"fc:AC:105"},{"s":"sys:ELEC","t":"fc:AC:101"},{"s":"sys:EIND","t":"fc:AC:105"},{"s":"stpa:H-1","t":"fc:AC:101"},{"s":"stpa:H-1","t":"fta:11"},{"s":"stpa:H-5","t":"fc:AC:105"},{"s":"fc:AC:101","t":"fta:11"},{"s":"fc:AC:105","t":"fta:12"},{"s":"fta:11","t":"cca:cma:4"},{"s":"fta:12","t":"cca:cma:4"},{"s":"fc:AC:101","t":"cca:zsa:300"},{"s":"fc:AC:101","t":"cca:pra:2"},{"s":"fc:AC:105","t":"cca:zsa:300"},{"s":"fta:11","t":"ip:fadec-ab"},{"s":"ip:fadec-ab","t":"req:acReq:14"},{"s":"fc:AC:101","t":"req:acReq:14"},{"s":"fc:AC:101","t":"req:acReq:31"},{"s":"fc:AC:101","t":"req:sysReq:71"},{"s":"fc:AC:105","t":"req:acReq:88"},{"s":"req:acReq:14","t":"vv:st:Verified"},{"s":"req:acReq:31","t":"vv:st:In review"},{"s":"req:sysReq:71","t":"vv:st:Planned"},{"s":"req:acReq:88","t":"vv:st:Planned"},{"s":"ram:item:IT-204","t":"fta:11"},{"s":"ram:item:IT-209","t":"fta:12"},{"s":"func:AF-2.1","t":"hf:hf:ASM-07"},{"s":"hf:hf:ASM-07","t":"fc:AC:105"},{"s":"func:AF-2.1","t":"hf:hf:ASM-12"},{"s":"hf:hf:ASM-12","t":"fc:AC:101"}]};</script>
+
+<script>
+(function(){
+    var host = document.getElementById('gt-thread-host');
+    var G = window.GT_GRAPH;
+    if(!host || !G || !window.GT_THREAD) return;
+
+    var CNAME = { func:'Function', sys:'System', stpa:'STPA hazard', fc:'Failure condition',
+        fta:'Fault tree', cca:'Common cause (PRA / ZSA / CMA)', ip:'Independence principle',
+        req:'Safety requirement', vv:'Verification', ram:'Reliability item', hf:'Human-factors assumption' };
+    var CPLURAL = { func:'Functions', sys:'Systems', stpa:'STPA hazards', fc:'Failure conditions',
+        fta:'Fault trees', cca:'Common-cause analyses (PRA / ZSA / CMA)', ip:'Independence principles',
+        req:'Safety requirements', vv:'Verification', ram:'Reliability items', hf:'Human-factors assumptions' };
+    var ACCENT = { func:'#2E6FB0', sys:'#1D9E75', stpa:'#6D28D9', fc:'#7F77DD', fta:'#D85A30',
+        cca:'#BA7517', req:'#D4537E', vv:'#12A150', ip:'#D4537E', ram:'#C88A00', hf:'#7A3EA8' };
+    var ORDER = ['func','sys','stpa','fc','fta','cca','ip','req','vv','ram','hf'];
+    var FLAGC = { compromised:'#C0231D', stale:'#C88A00', obsolete:'#586472' };
+
+    // verbatim from the app (misc_fn_modules.js) -- the renderer calls this on
+    // hover to dim everything that is not on the hovered card's thread.
+    window._gtvThreadSet = function (graph, key) {
+        const down = {}, up = {};
+        (graph.links || []).forEach(L => { (down[L.s] = down[L.s] || []).push(L.t); (up[L.t] = up[L.t] || []).push(L.s); });
+        const set = new Set([key]);
+        const walk = (k, map) => { (map[k] || []).forEach(n => { if (!set.has(n)) { set.add(n); walk(n, map); } }); };
+        walk(key, down); walk(key, up);
+        return set;
+    };
+
+    var byKey = {}; G.nodes.forEach(function(n){ byKey[n.key] = n; });
+    var overlay = document.getElementById('gt-modal');
+    var body = document.getElementById('gt-modal-body');
+    function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+    // The workspace opens a real ecosystem panel here; on the landing page the
+    // same click opens the section's existing modal with the same closure.
+    function openNode(key){
+        var n = byKey[key]; if(!n || !overlay) return;
+        var reach = window._gtvThreadSet(G, key);
+        var groups = {}; ORDER.forEach(function(k){ groups[k] = []; });
+        reach.forEach(function(k){ if(k === key) return; var m = byKey[k]; if(m && groups[m.kind]) groups[m.kind].push(m); });
+
+        var h = '<div class="gt-m-head"><span class="gt-m-pill" style="background:' + (ACCENT[n.kind]||'#586472') + '">'
+              + esc(CNAME[n.kind] || n.kind) + '</span><span class="gt-m-name">' + esc(n.label) + '</span>'
+              + '<span class="gt-m-id">' + esc(n.sub) + '</span></div>';
+        h += '<div class="gt-m-sub">Threads through ' + (reach.size - 1) + ' linked items'
+           + (n.flag ? ' &middot; <span style="color:' + (FLAGC[n.flag]||'#C0231D') + '">' + esc(n.flag.toUpperCase())
+              + (n.flagReason ? ': ' + esc(n.flagReason) : '') + '</span>' : '') + '</div>';
+        ORDER.forEach(function(k){
+            if(!groups[k].length) return;
+            h += '<div class="gt-m-sec"><div class="gt-m-sectitle">' + esc(CPLURAL[k]) + ' (' + groups[k].length + ')</div><div class="gt-m-chips">';
+            h += groups[k].map(function(m){
+                var meta = m.flag ? '<span class="gt-m-meta" style="color:' + (FLAGC[m.flag]||'#C0231D') + '">' + esc(m.flag.toUpperCase()) + '</span>'
+                                  : (m.sub ? '<span class="gt-m-meta">' + esc(m.sub) + '</span>' : '');
+                return '<span class="gt-m-chip"><span class="gt-m-dot" style="background:' + (ACCENT[m.kind]||'#586472')
+                     + '"></span><span class="gt-m-cid">' + esc(m.label) + '</span>' + meta + '</span>';
+            }).join('');
+            h += '</div></div>';
+        });
+        h += '<a class="gt-m-cta" href="/app">Open this thread in the workspace &#8599;</a>';
+        body.innerHTML = h;
+        overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false');
+    }
+    function close(){ if(!overlay) return; overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); }
+    if(overlay){
+        overlay.addEventListener('click', function(e){ if(e.target === overlay) close(); });
+        var x = document.getElementById('gt-modal-x');
+        if(x) x.addEventListener('click', close);
+        document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+    }
+
+    // the renderer calls these two by name
+    window._gtvShowEco = function(key){ openNode(key); };
+    window._gtvShowEcoModal = function(key){ openNode(key); };
+
+    // grab-to-pan, the same affordance _gtEnablePan() gives the workspace host
+    function enablePan(el){
+        var down = false, x0 = 0, l0 = 0;
+        el.addEventListener('mousedown', function(e){
+            if(e.button !== 0) return;
+            down = true; x0 = e.clientX; l0 = el.scrollLeft; el.classList.add('gt-grabbing');
+        });
+        window.addEventListener('mouseup', function(){ down = false; el.classList.remove('gt-grabbing'); });
+        el.addEventListener('mousemove', function(e){
+            if(!down) return;
+            var dx = e.clientX - x0;
+            if(Math.abs(dx) > 2) e.preventDefault();
+            el.scrollLeft = l0 - dx;
+        });
+    }
+
+    GT_THREAD.render(host, G);
+    enablePan(host);
+    // Open at the left edge, always.  The three lane names live in the left
+    // gutter and the thread reads left-to-right from the function, so any
+    // initial offset hides both the subject and the first card.
+    host.scrollLeft = 0;
+})();
+</script>
+
+
+
+
+
 <section class="features" id="mbsa">
     <div class="container">
         <span class="section-eyebrow">The deterministic MBSA core</span>
@@ -1036,8 +1658,62 @@ footer {
             <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
             <blockquote>Very powerful and highly visual — better than some of the tools I&rsquo;ve used with previous clients, including very large aeronautical companies. Its strongest points are document export and full traceability of the whole process, from requirements V&amp;V through to the safety CCAs. Really impressed.</blockquote>
             <figcaption class="tst-byline">
+                <span class="tst-avatar" aria-hidden="true">SC</span>
+                <span class="tst-who">Safety Consultant<span class="tst-tag">Anzen</span></span>
+            </figcaption>
+        </figure>
+
+        <figure class="tst-quote">
+            <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>Absolutely love the golden thread.</blockquote>
+            <figcaption class="tst-byline">
+                <span class="tst-avatar" aria-hidden="true">CI</span>
+                <span class="tst-who">Certification Instructor, System Safety<span class="tst-tag">USC Viterbi · ISSS</span></span>
+            </figcaption>
+        </figure>
+
+        <figure class="tst-quote">
+            <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>I&rsquo;ve worked with three major OEMs, and I haven&rsquo;t seen anything this comprehensively interconnected. Very impressive.</blockquote>
+            <figcaption class="tst-byline">
                 <span class="tst-avatar" aria-hidden="true">SE</span>
-                <span class="tst-who">Safety engineer<span class="tst-tag">Verified beta tester</span></span>
+                <span class="tst-who">Safety Engineer<span class="tst-tag">Embraer</span></span>
+            </figcaption>
+        </figure>
+
+        <figure class="tst-quote">
+            <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>One of the most complete safety tools I&rsquo;ve seen.</blockquote>
+            <figcaption class="tst-byline">
+                <span class="tst-avatar" aria-hidden="true">DER</span>
+                <span class="tst-who">Designated Engineering Representative<span class="tst-tag">Verified</span></span>
+            </figcaption>
+        </figure>
+
+        <figure class="tst-quote">
+            <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>I love how you can see how everything affects each other — and that there&rsquo;s a path to qualifying the tool per DO-330 and measuring compliance against ARP4754A. Being able to link PRs to the affected items and track them is a biggie for me on the software side. Seriously well done.</blockquote>
+            <figcaption class="tst-byline">
+                <span class="tst-avatar" aria-hidden="true">SW</span>
+                <span class="tst-who">Software Safety Engineer<span class="tst-tag">Verified beta tester</span></span>
+            </figcaption>
+        </figure>
+
+        <figure class="tst-quote">
+            <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>You&rsquo;re solving a big problem with certification that the big corporate players haven&rsquo;t — and probably won&rsquo;t — figure out. The hard part is getting them to recognize it and act. Keep it up.</blockquote>
+            <figcaption class="tst-byline">
+                <span class="tst-avatar" aria-hidden="true">SE</span>
+                <span class="tst-who">Safety Engineer<span class="tst-tag">Boeing</span></span>
+            </figcaption>
+        </figure>
+
+        <figure class="tst-quote">
+            <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
+            <blockquote>Overall, it is an incredibly robust, modern workspace built specifically for the reality of modern, complex aircraft architecture. It treats safety as a live, evolving system rather than a static stack of paperwork to be filed at the end of a design cycle.</blockquote>
+            <figcaption class="tst-byline">
+                <span class="tst-avatar" aria-hidden="true">IS</span>
+                <span class="tst-who">ISSS member<span class="tst-tag">Verified</span></span>
             </figcaption>
         </figure>
 
@@ -1063,9 +1739,7 @@ footer {
 </section>
 
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     How it works / Features
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="features" id="how">
     <div class="container">
         <span class="section-eyebrow">What's inside</span>
@@ -1109,9 +1783,7 @@ footer {
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     R&M suite — the complete reliability & maintainability program
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="features" id="ram">
     <div class="container">
         <span class="section-eyebrow">Reliability &amp; Maintainability · Pro+</span>
@@ -1161,9 +1833,57 @@ footer {
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     Connectivity — plays well with the tools you already run
-     ═══════════════════════════════════════════════════════════════════════ -->
+
+<section class="features" id="hf">
+    <div class="container">
+        <span class="section-eyebrow">Human Factors</span>
+        <h2 class="section-title">The crew is a component. Model it like one.</h2>
+        <p class="section-sub">
+            Most safety cases credit the pilot in prose — &ldquo;crew detects and reverts&rdquo; — and never say how long that takes, whether anyone measured it, or what else the crew was doing at the time. Safety Lab makes the human claim a typed, cited, checkable record on the same golden thread as the fault trees, so an unearned credit fails an invariant instead of surviving review.
+        </p>
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">📖</div>
+                <h3>298 page-cited reference values</h3>
+                <p>Reaction times, detection thresholds, reach and workload data drawn from the NASA Human Integration Design Handbook — each carrying its section, author-year, the printed page, and a verbatim quote containing the number. Every value is tagged <em>aircraft</em>, <em>spaceflight</em>, or <em>general</em>, because HIDH is a spaceflight handbook and pretending otherwise is how a bad number gets credited. A preset seeds a field; it never fills one, and never marks anything validated.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Two lanes: credited and uncredited</h3>
+                <p>Every human-factors assumption can carry both the value you hope to credit and the conservative value you must use until someone proves it. The credited lane applies only once the assumption is Validated or Verified. A Catastrophic or Hazardous claim resting on an unvalidated credit is a hard invariant failure — not a comment, not a warning.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⏱</div>
+                <h3>Workload saturation, arithmetic not vibes</h3>
+                <p>Per crewmember, per flight phase, across the five HIDH channels — visual, auditory, cognitive, psychomotor, verbal — declared co-active tasks are summed against the 80% time-occupancy red line. Ledger arithmetic: no solver, no pilot model, no simulation. And an exposure duration is never silently reused as a response window; if the phase declares no window, the check declines to run rather than invent one.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚖️</div>
+                <h3>Severity reconciled against workload</h3>
+                <p>AC 25.1309 writes severity in workload language, so the two can be compared. A task the model says drives excessive workload sitting under a Minor severity classification is a two-band gap, and the FHA row says so on its face. Advisory — it flags the contradiction for an engineer to resolve, and never overrides your classification.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧪</div>
+                <h3>Trials enter as evidence, not as truth</h3>
+                <p>Sim campaigns, flight test, bench trials and literature ingest with metric, value, sample size and a real source — uncited evidence is rumor, so the source field is mandatory. Measured worse than assumed reads CONTRADICTS; at or better reads SUPPORTS. Nothing self-validates: a human validates in the register, and a Validated assumption whose own evidence contradicts it gets flagged until someone answers for it.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📏</div>
+                <h3>Ergonomics on the standards spine</h3>
+                <p>ISO 9241 and MIL-STD-1472 sit on the spine by designation, title and role — cite-and-point, never a word of licensed text stored. A Fitts&rsquo; Law movement-time calculator in the Shannon formulation that <em>requires</em> cited coefficients, because a borrowed coefficient without a citation is a guess wearing a suit. Seven-factor human-performance taxonomy for STPA causal factors, with NASA-HFACS nanocodes as the deep layer.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
 <section class="features" id="connect">
     <div class="container">
         <span class="section-eyebrow">Connectivity</span>
@@ -1214,9 +1934,7 @@ footer {
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     The discipline — sell the refusals
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="features" id="you">
     <div class="container">
         <span class="section-eyebrow">The story</span>
@@ -1300,12 +2018,15 @@ footer {
             </div>
 
         </div>
+
+        <div class="discipline-cta">
+            <a href="/ai-guardrails" class="btn btn-secondary">Read the AI guardrails &rarr;</a>
+            <a href="/trust" class="btn btn-secondary">Trust &amp; security &rarr;</a>
+        </div>
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     Pricing
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="pricing" id="pricing">
     <div class="container">
         <span class="section-eyebrow">Pricing</span>
@@ -1331,7 +2052,7 @@ footer {
 
             <div class="tier-card">
                 <div class="tier-name">Pro</div>
-                <div class="tier-price">$500 <small>/ seat &middot; month</small></div>
+                <div class="tier-price">$1,500 <small>/ seat &middot; month</small></div>
                 <div class="tier-desc">Working safety engineers — the full classical toolset, no AI assist.</div>
                 <ul class="tier-features">
                     <li>Everything in Education</li>
@@ -1346,14 +2067,14 @@ footer {
 
             <div class="tier-card featured">
                 <div class="tier-name">Pro+</div>
-                <div class="tier-price">$1,000 <small>/ seat &middot; month</small></div>
+                <div class="tier-price">$2,500 <small>/ seat &middot; month</small></div>
                 <div class="tier-desc">AI-assisted authoring + DO-330 tool-qualification kit.</div>
                 <ul class="tier-features">
                     <li>Everything in Pro</li>
                     <li>AI Assistant (hosted)</li>
                     <li>DO-330 dossier (9 docs)</li>
                     <li>Priority support</li>
-                    <li>ITAR-aware routing</li>
+                    <li>ITAR-aware AI blocking (self-hosted / air-gap)</li>
                 </ul>
                 <a href="/app" class="tier-btn">Start 10-day trial</a>
             </div>
@@ -1361,13 +2082,14 @@ footer {
             <div class="tier-card">
                 <div class="tier-name">Enterprise</div>
                 <div class="tier-price">Custom</div>
-                <div class="tier-desc">Multi-seat teams, on-prem deployment, custom integrations.</div>
+                <div class="tier-desc">Organizations running certification programs — teams, controlled environments, qualification support.</div>
                 <ul class="tier-features">
-                    <li>Everything in Pro+</li>
+                    <li>Everything in Pro+, multi-seat</li>
+                    <li>Independent review &amp; sign-off chains, gates &amp; evidence packages</li>
+                    <li>RM integration — Jama live + ReqIF (DOORS / Polarion / Codebeamer)</li>
                     <li>SSO &amp; user provisioning</li>
-                    <li>On-prem / private cloud</li>
-                    <li>Dedicated success engineer</li>
-                    <li>Custom report templates</li>
+                    <li>On-prem / air-gap deployment (ITAR &amp; non-US regimes)</li>
+                    <li>DO-330 tool-qualification support &middot; support SLA</li>
                 </ul>
                 <a href="mailto:waqas.nafees@safetylabaero.com?subject=Safety%20Lab%20Aero%20Enterprise%20-%20Inquiry" class="tier-btn">Contact sales</a>
             </div>
@@ -1375,14 +2097,12 @@ footer {
         </div>
 
         <p class="pricing-note">
-            Pro and Pro+ are priced per seat, billed monthly — cancel anytime. Education is free for verified academic use. Multi-seat and volume pricing — <a href="mailto:waqas.nafees@safetylabaero.com?subject=Multi-seat%20%26%20volume%20pricing">ask us</a>.
+            Pro and Pro+ are <strong>individual licenses</strong>, priced per seat and billed monthly — cancel anytime. Use by an organization on an active type-certification program requires an <strong>Enterprise</strong> license. Education is free for verified academic use.
         </p>
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     About / Founder
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="about" id="about">
     <div class="container">
         <span class="section-eyebrow">About</span>
@@ -1414,9 +2134,7 @@ footer {
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     Closing CTA
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <section class="cta-strip">
     <div class="container">
         <h2>Stop reconciling. Start certifying.</h2>
@@ -1428,9 +2146,7 @@ footer {
     </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     Footer
-     ═══════════════════════════════════════════════════════════════════════ -->
+
 <footer>
     <div class="foot-inner">
         <div class="foot-brand">
@@ -1442,12 +2158,13 @@ footer {
         <div class="foot-links">
             <a href="#how">How it works</a>
             <a href="#ram">R&amp;M suite</a>
+            <a href="#hf">Human factors</a>
             <a href="#connect">Integrations</a>
             <a href="#mbsa">MBSA</a>
             <a href="#you">The Story</a>
             <a href="/tools">Calculators</a>
             <a href="/templates">Templates</a>
-            <a href="/security">Trust &amp; security</a>
+            <a href="/trust">Trust &amp; security</a>
             <a href="/resources">Resources</a>
             <a href="/roi">ROI calculator</a>
             <a href="/fault-tree-analysis">Fault Tree Analysis</a>
@@ -1456,6 +2173,7 @@ footer {
             <a href="#about">About</a>
             <a href="/app">Sign in</a>
             <a href="mailto:waqas.nafees@safetylabaero.com">Contact</a>
+            <a href="/legal">Legal</a>
         </div>
     </div>
     <p class="foot-copy">
@@ -1464,5 +2182,36 @@ footer {
 </footer>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 
+<script>
+/* Paginated-section dots: built from the real sections, labeled from their own
+   headings - the rail can never drift from the page. Desktop only. */
+(function () {
+    if (window.matchMedia('(max-width: 899px)').matches) return;
+    var secs = Array.prototype.slice.call(document.querySelectorAll('body > section'));
+    if (secs.length < 3) return;
+    secs.forEach(function (s, i) { if (!s.id) s.id = 'pg-' + i; });
+    var rail = document.createElement('nav');
+    rail.className = 'pgdots';
+    rail.setAttribute('aria-label', 'Page sections');
+    rail.innerHTML = secs.map(function (s) {
+        var h = s.querySelector('h1, h2');
+        var label = h ? h.textContent.trim().replace(/\s+/g, ' ').slice(0, 44) : s.id;
+        return '<a href="#' + s.id + '" data-pg="' + s.id + '" aria-label="' + label.replace(/"/g, '&quot;') + '">' +
+               '<span class="pgtip">' + label.replace(/</g, '&lt;') + '</span></a>';
+    }).join('');
+    document.body.appendChild(rail);
+    var dots = {};
+    Array.prototype.forEach.call(rail.querySelectorAll('a[data-pg]'), function (a) { dots[a.getAttribute('data-pg')] = a; });
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+            if (e.isIntersecting && dots[e.target.id]) {
+                Object.keys(dots).forEach(function (k) { dots[k].classList.remove('on'); });
+                dots[e.target.id].classList.add('on');
+            }
+        });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    secs.forEach(function (s) { io.observe(s); });
+})();
+</script>
 </body>
 </html>

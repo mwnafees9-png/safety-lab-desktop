@@ -1,59 +1,41 @@
-// Safety Lab Aero — desktop preload (main app window).
-// Runs before any page script. With contextIsolation:false it shares the page's window,
-// so it can (1) flag the desktop build, (2) optionally override the AI endpoint for
-// air-gap deployments, and (3) seed a local profile + license so the offline app clears
-// the hosted auth/paywall gate. Real on-prem licensing (license file / local model) is a
-// follow-on — see task #56.
+// Safety Lab Aero — desktop preload for the MAIN app window. REBUILT 6 Sep 2026.
+//
+// Runs before any page script. With contextIsolation:false it shares the page's window, and its
+// ONLY job is to hand the web bundle the addresses and the license through the one config
+// surface (window.__SLAB_* — read by app/slab_config.js and app/slab_license.js). It seeds NO
+// identity, NO tier, NO token: the signed license decides the tier and the real sign-in decides
+// who you are — the same two things that decide them on the web.
+'use strict';
 const fs = require('fs');
+const R = require('./shell_rules.js');
 
 (function () {
   function arg(prefix) {
     const a = (process.argv || []).find(function (x) { return x.indexOf(prefix) === 0; });
     return a ? a.slice(prefix.length) : '';
   }
+  let cfg = {}, act = {};
+  try { const p = arg('--slab-config-path='); if (p && fs.existsSync(p)) cfg = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (_) {}
+  try { const p = arg('--slab-activation-path='); if (p && fs.existsSync(p)) act = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (_) {}
+  cfg = Object.assign({ backend: 'safetylab', ai: 'safetylab' }, cfg || {});
 
-  let cfg = {};
-  try {
-    const p = arg('--slab-config-path=');
-    if (p && fs.existsSync(p)) cfg = JSON.parse(fs.readFileSync(p, 'utf8'));
-  } catch (e) { /* fall back to defaults below */ }
+  const o = R.overridesFor(cfg, act && act.license, arg('--slab-version='));
+  try { Object.keys(o).forEach(function (k) { window[k] = o[k]; }); } catch (_) {}
 
-  const aiMode = cfg.aiMode || 'cloud';
-  const endpoint = (aiMode === 'custom' && cfg.aiEndpoint)
-    ? String(cfg.aiEndpoint).replace(/\/+$/, '')
-    : '';
-
-  // Collaboration backend override (auth + realtime co-authoring + the project_crdt store). Only
-  // applied when the operator selects a custom self-hosted Supabase AND supplies BOTH its URL and
-  // its anon key — a half-config falls back to the hosted backend rather than a broken client.
-  const collabCustom = (cfg.collabMode === 'custom' && cfg.collabUrl && cfg.collabKey);
-  const collabUrl = collabCustom ? String(cfg.collabUrl).replace(/\/+$/, '') : '';
-  const collabKey = collabCustom ? String(cfg.collabKey) : '';
-
-  // (1) + (2) — flag the desktop build and (optionally) override the AI + collaboration endpoints
-  // BEFORE the SPA evaluates them (const AI_PROXY_BASE_URL / SUPABASE_PROJECT_URL = window.__SLAB_*__ || <hosted>).
-  try {
-    window.__SLAB_DESKTOP__ = true;
-    if (endpoint) window.__SLAB_AI_ENDPOINT__ = endpoint;
-    if (collabUrl) window.__SLAB_SUPABASE_URL__ = collabUrl;
-    if (collabKey) window.__SLAB_SUPABASE_KEY__ = collabKey;
-    window.slabDesktop = { isDesktop: true, aiMode: aiMode, endpoint: endpoint, collabMode: cfg.collabMode || 'cloud', collabUrl: collabUrl };
-  } catch (_) {}
-
-  // (3) — seed the LICENSED tier + local identity so the SPA's paywall/AI gating matches the
-  // license activated at the gate. The Electron gate already enforced authorization, so this
-  // just mirrors the license tier into the app. Profile flows from the onboarding step (config).
-  const RANK = { edu: 0, pro: 1, 'pro-plus': 2, enterprise: 3 };
-  const licensedTier = arg('--slab-tier=') || 'pro-plus';
-  try {
-    const LS = window.localStorage;
-    let tier = licensedTier;
-    if (aiMode === 'off' && (RANK[tier] || 0) >= RANK['pro-plus']) tier = 'pro'; // AI turned off -> hide AI UI
-    LS.setItem('safetyLab.license.tier', tier);
-    if (aiMode === 'off') LS.removeItem('safetyLab.license.token');
-    else LS.setItem('safetyLab.license.token', cfg.aiToken || 'desktop-local');
-    LS.setItem('safetyLab.signup.email', cfg.profileEmail || 'desktop@local');
-    LS.setItem('safetyLab.signup.name', cfg.profileName || 'Desktop User');
-    if (!LS.getItem('safetyLab.signup.signupDate')) LS.setItem('safetyLab.signup.signupDate', String(Date.now()));
-  } catch (_) {}
+  // SSO return: the shell receives safetylab://auth-callback?code=… (PKCE) from the system browser
+  // and forwards the URL here; supabase-js exchanges the code for a session and fires SIGNED_IN,
+  // which the auth gate handles exactly as on the web.
+  window.__slabAuthCallback = async function (url) {
+    try {
+      const u = new URL(String(url));
+      const code = u.searchParams.get('code');
+      const sb = (typeof window.getSupabaseClient === 'function') ? window.getSupabaseClient() : null;
+      if (!sb || !sb.auth) return false;
+      if (code && typeof sb.auth.exchangeCodeForSession === 'function') { const r = await sb.auth.exchangeCodeForSession(code); return !r.error; }
+      const h = new URLSearchParams(String(u.hash || '').replace(/^#/, ''));
+      const at = h.get('access_token'), rt = h.get('refresh_token');
+      if (at && rt && typeof sb.auth.setSession === 'function') { const r = await sb.auth.setSession({ access_token: at, refresh_token: rt }); return !r.error; }
+    } catch (_) {}
+    return false;
+  };
 })();

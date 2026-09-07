@@ -1,67 +1,95 @@
-// Safety Lab Aero — Electron main process.
-// Thin native shell around the existing single-file SPA, with an OFFLINE licensing +
-// onboarding gate. The main app window only opens after (a) a valid signed license key
-// and (b) acceptance of the EULA + License Agreement. Unauthorized users never reach the app.
+// Safety Lab Aero — Electron main process. REBUILT 6 Sep 2026 (desktop parity, "works like Office").
 //
-// SECURITY NOTE (v1): the MAIN APP window runs with contextIsolation:false because it loads
-// only our own first-party bundle from disk. The GATE windows (onboarding/signin) run with
-// contextIsolation:true. Harden the app window before customer ship.
+// The shell does FOUR things and nothing else:
+//   1. GATE — the app window opens only after a signed LICENSE FILE verifies (the SAME verifier
+//      the web app ships, app/slab_license.js, loaded here in Node) and the EULA + License
+//      Agreement are accepted. No profile step: identity comes from the real sign-in inside the
+//      app, exactly as on the web. An optional local passcode is a SCREEN LOCK, not an identity.
+//   2. CONFIG — hands the web bundle its backend/AI/web addresses and the license through the
+//      ONE config surface (window.__SLAB_* overrides read by app/slab_config.js). It never seeds
+//      a tier, a token, or a name: the license and the sign-in decide those.
+//   3. EGRESS — enforces at the network layer what slab_config.js decides at boot: the app
+//      window may only reach the hosts its configuration names. A customer install cannot
+//      contact Safety Lab even if a script tried (Waqas: "not on our cloud, at any point").
+//   4. LINKS — registers safetylab:// so "Open in desktop" from the web and the SSO return
+//      address work; offers "Open on the web" for the current cloud project.
+//
+// What is GONE from the previous shell (deleted, not disabled): license.js (a second, older
+// license format with its own key), the seeded 'Desktop User'/'desktop@local' identity, the
+// seeded 'pro-plus' tier + 'desktop-local' token, the profile step, DevTools in packaged builds.
+//
+// SECURITY NOTE: the app window still runs with contextIsolation:false because the bundle is
+// ~230 classic scripts sharing window globals and the preload must set window.__SLAB_* before
+// they run. It loads only our own first-party bundle from disk; the egress allowlist below
+// bounds what that bundle can reach. Gate/lock/settings windows are isolated.
 
-const { app, BrowserWindow, Menu, dialog, ipcMain, shell } = require('electron');
+'use strict';
+const { app, BrowserWindow, Menu, dialog, ipcMain, shell, session } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const crypto = require('crypto');
-const { validateLicense } = require('./license.js');
+const R = require('./shell_rules.js');   // the pure rules (egress, config sanity, overrides, verifier loader, deep links)
 
 const WEBSITE = 'https://safetylabaero.com';
+const HOSTED_WEB_APP = 'https://safetylabaero.com/app';
+const PROTOCOL = 'safetylab';
 
-// Optional auto-updater (electron-updater). Wrapped so a missing module never breaks the app.
-// Feed is configured in package.json > build.publish (generic provider → your Cloudflare URL).
-// NOTE: on macOS, updates only INSTALL once the app is code-signed + notarized. Until then this
-// stays dormant — check errors are logged, never shown to the user (unless a manual check).
-let autoUpdater = null;
-try { autoUpdater = require('electron-updater').autoUpdater; } catch (_) { autoUpdater = null; }
-let _updaterWired = false, _manualCheck = false;
-function initAutoUpdater(manual) {
-  _manualCheck = !!manual;
-  if (!autoUpdater) { if (manual) dialog.showMessageBox({ type: 'info', message: 'Updates unavailable', detail: 'The updater module is not installed in this build (run npm install).' }); return; }
-  if (!app.isPackaged && !manual) return; // skip background checks during `npm start` dev runs
-  try {
-    autoUpdater.autoDownload = true;
-    autoUpdater.autoInstallOnAppQuit = true;
-    if (!_updaterWired) {
-      _updaterWired = true;
-      autoUpdater.on('update-downloaded', (info) => {
-        dialog.showMessageBox({
-          type: 'info', buttons: ['Restart now', 'Later'], defaultId: 0, cancelId: 1,
-          message: 'Update ready',
-          detail: 'Safety Lab Aero ' + (info && info.version ? info.version : '') + ' has been downloaded. Restart to apply it.'
-        }).then((r) => { if (r.response === 0) autoUpdater.quitAndInstall(); });
-      });
-      autoUpdater.on('update-not-available', () => { if (_manualCheck) dialog.showMessageBox({ type: 'info', message: "You're up to date", detail: 'No newer version is available right now.' }); });
-      autoUpdater.on('error', (e) => { console.log('[updater]', (e && e.message) || e); if (_manualCheck) dialog.showMessageBox({ type: 'info', message: 'Update check failed', detail: 'Could not check for updates right now. (On macOS, auto-update activates once the app is code-signed.)' }); });
-    }
-    autoUpdater.checkForUpdates();
-  } catch (e) { console.log('[updater] init failed:', e); }
+// ---- V8 heap ceiling (measured engineering — kept verbatim in spirit from the 7 Aug work) ----
+// Sized from real system memory, applied before the app becomes ready (a js-flags switch set after ready
+// is silently ignored). Capped at 4096 because Chromium builds V8 with pointer compression, which
+// reserves a ~4 GB heap cage — asking for more than the cage buys nothing. The GRANTED ceiling is
+// MEASURED in the renderer (reportHeapCeiling) rather than assumed. SLAB_HEAP_MB=<n> overrides, 0 skips.
+//
+// CORRECTION, recorded so a false measured claim never outlives the truth: the 4096 cap is
+// PRECAUTIONARY, NOT a measured failure threshold. The 7 Aug `Electron exited with signal SIGKILL`
+// on launch was macOS XProtect blocking the Electron binary ("Malware Blocked"), NOT this switch —
+// the bisect (SLAB_HEAP_MB=0) failed identically. Do not read 4096 as a crash boundary.
+const HEAP_ENV = process.env.SLAB_HEAP_MB;
+const HEAP_MB = HEAP_ENV != null && HEAP_ENV !== ''
+  ? Math.max(0, parseInt(HEAP_ENV, 10) || 0)
+  : Math.max(2048, Math.min(4096, Math.floor((os.totalmem() / 1048576) * 0.6)));
+// ---- V8 call-stack size — THE one thing a browser tab cannot do, and the whole desktop scale story.
+// Measured 7 Aug: memory is NOT the wall on a large tree (peak heap at 2,000,000 basic events was
+// ~1.4 GB of the ~4 GB cage). STACK DEPTH is: the fault-tree walk and the BDD apply are recursive,
+// so at V8's default (~1 MB) a tree of roughly 400,000 basic events dies with `RangeError: Maximum
+// call stack size exceeded`. A 4000 KB stack cleared it and carried 2,000,000 events /
+// ~3,000,000 canvas nodes to an exact answer. This single flag IS the browser-vs-desktop ceiling
+// gap the scalability assessment quotes (~300,000 events in a browser tab against >= 2,000,000 on
+// the desktop) — a browser tab cannot set it, so it cannot close that gap by any means.
+// SLAB_STACK_KB=<n> overrides, 0 skips.
+const STACK_ENV = process.env.SLAB_STACK_KB;
+const STACK_KB = STACK_ENV != null && STACK_ENV !== '' ? Math.max(0, parseInt(STACK_ENV, 10) || 0) : 4000;
+// ONE js-flags switch (appendSwitch twice REPLACES, it does not concatenate).
+const JS_FLAGS = [];
+if (HEAP_MB > 0) JS_FLAGS.push('--max-old-space-size=' + HEAP_MB);
+if (STACK_KB > 0) JS_FLAGS.push('--stack-size=' + STACK_KB);
+if (JS_FLAGS.length) app.commandLine.appendSwitch('js-flags', JS_FLAGS.join(' '));
+console.log('[slab] js-flags → ' + (JS_FLAGS.join(' ') || '(none)'));
+
+function reportHeapCeiling(win) {
+  if (!win || !win.webContents) return;
+  win.webContents.executeJavaScript('(function(){try{var m=performance&&performance.memory;return m?Math.round(m.jsHeapSizeLimit/1048576):null;}catch(e){return null;}})()')
+    .then(function (mb) { console.log('[slab] heap ceiling — requested ' + HEAP_MB + ' MB, renderer reports ' + (mb == null ? 'unknown' : mb + ' MB') + ' · stack ' + (STACK_KB > 0 ? STACK_KB + ' KB' : 'V8 default') + ' · RAM ' + Math.round(os.totalmem() / 1073741824) + ' GB'); })
+    .catch(function () {});
 }
 
-// ---- paths + config --------------------------------------------------------------
+// ---- paths + config ----------------------------------------------------------------------
 function configPath() { return path.join(app.getPath('userData'), 'config.json'); }
 function activationPath() { return path.join(app.getPath('userData'), 'activation.json'); }
 
+// The desktop's THREE backend cases map onto the web's config modes:
+//   'safetylab' → Safety Lab's demo cloud (TRIAL / demo / internal ONLY; the trial license is bound to it)
+//   'own'       → the customer's own server (mode self-hosted; the leak check applies)
+//   'files'     → files only, no backend at all (mode browser-only)
 const DEFAULT_CONFIG = {
-  profileName: 'Desktop User',
-  profileEmail: 'desktop@local',
-  aiMode: 'cloud',          // 'cloud' | 'custom' | 'off'
-  aiEndpoint: '',
-  aiToken: '',
-  aiModel: 'claude-sonnet-4-6',
-  // Collaboration backend (auth + realtime co-authoring + the project store). 'cloud' = the hosted
-  // Safety Lab Aero backend; 'custom' = a customer's own self-hosted Supabase (VPC / intranet), so
-  // project data, presence, comments and CRDT history stay inside their boundary.
-  collabMode: 'cloud',      // 'cloud' | 'custom'
-  collabUrl: '',            // e.g. https://supabase.internal.electra.aero
-  collabKey: ''             // that instance's publishable / anon key
+  backend: 'safetylab',      // 'safetylab' | 'own' | 'files'
+  backendUrl: '',            // own: https://<their supabase host>
+  backendKey: '',            // own: that server's publishable (anon) key
+  ai: 'safetylab',           // 'safetylab' | 'own' | 'off'   (own = the customer's AI endpoint: Claude/Bedrock, Azure or their own LLM behind the packaged proxy)
+  aiEndpoint: '',            // own: https://<their AI proxy>/v1/ai
+  webAppUrl: '',             // own: where "Open on the web" goes (blank = hidden); safetylab: our site
+  passcodeHash: null         // optional screen lock (scrypt salt:hash)
 };
 function readConfig() {
   try { return Object.assign({}, DEFAULT_CONFIG, JSON.parse(fs.readFileSync(configPath(), 'utf8'))); }
@@ -71,15 +99,14 @@ function writeConfig(c) {
   try { fs.mkdirSync(path.dirname(configPath()), { recursive: true }); fs.writeFileSync(configPath(), JSON.stringify(c, null, 2), 'utf8'); }
   catch (e) { console.error('[slab] config write failed:', e); }
 }
-
-// ---- activation state (license + profile + acceptances) --------------------------
+// activation.json: { license: <blob>, acceptances: {eula:{version,at}, license:{version,at}}, maxIssuedSeen, activatedAt }
 function loadActivation() { try { return JSON.parse(fs.readFileSync(activationPath(), 'utf8')) || {}; } catch (_) { return {}; } }
 function saveActivation(a) {
   try { fs.mkdirSync(path.dirname(activationPath()), { recursive: true }); fs.writeFileSync(activationPath(), JSON.stringify(a, null, 2), 'utf8'); }
   catch (e) { console.error('[slab] activation write failed:', e); }
 }
 
-// ---- agreements (read once from disk) --------------------------------------------
+// ---- agreements --------------------------------------------------------------------------
 function readAgreement(name, def) { try { return fs.readFileSync(path.join(__dirname, 'agreements', name), 'utf8'); } catch (_) { return def || ''; } }
 const AGREEMENTS = {
   eulaVersion: (readAgreement('eula.version', 'SL-EULA-0001-A') || '').trim(),
@@ -88,79 +115,144 @@ const AGREEMENTS = {
   licenseHtml: readAgreement('license-agreement.html', '<p>License agreement text unavailable.</p>')
 };
 
-// ---- passcode (optional local lock) ----------------------------------------------
+// ---- the ONE license verifier: app/slab_license.js, loaded in Node (see shell_rules.loadVerifier) ----
+let _verifier = null;
+function verifier() { if (!_verifier) _verifier = R.loadVerifier(path.join(__dirname, 'app')); return _verifier; }
+// Verify the stored (or a candidate) license against THIS install's backend. Email/tenant are
+// checked again by the app at sign-in (auth_gate → SLLicenseCheckIdentity); here we bind to the
+// backend and the clock only.
+async function verifyLicense(blob, cfg) {
+  const a = loadActivation();
+  return R.verifyLicenseBlob(verifier(), blob, cfg || readConfig(), a.maxIssuedSeen);
+}
+function licenseSummary(r) {
+  if (!r || !r.valid) return null;
+  return { customer: r.customer, tier: r.tier, seats: r.seats, trial: !!r.trial, daysLeft: r.daysLeft, expiresAt: r.expiresAt, id: r.id, bind: r.bind };
+}
+
+// ---- passcode (optional screen lock) --------------------------------------------------------
 function hashPasscode(pw) { const salt = crypto.randomBytes(16); const h = crypto.scryptSync(String(pw), salt, 32); return salt.toString('hex') + ':' + h.toString('hex'); }
 function verifyPasscode(pw, stored) {
   try { const [s, h] = String(stored).split(':'); const calc = crypto.scryptSync(String(pw), Buffer.from(s, 'hex'), 32); return crypto.timingSafeEqual(calc, Buffer.from(h, 'hex')); }
   catch (_) { return false; }
 }
-function sanitize(p) { return p ? { org: p.org, name: p.name, email: p.email, tier: p.tier, seats: p.seats, exp: p.exp, id: p.id } : null; }
 
-// ---- window state ----------------------------------------------------------------
+// ---- egress allowlist + config sanity: shell_rules.js (pure, executed by the desktop test wall) ----
+const { allowedHosts, egressAllowed, configProblem, backendHostFor, hostOf } = R;
+
+// ---- window state -------------------------------------------------------------------------
 let mainWindow = null, settingsWindow = null, gateWindow = null, currentProjectPath = null;
+let _pendingDeepLink = null;
 
-// ---- startup routing -------------------------------------------------------------
-function activationStatus() {
-  const a = loadActivation();
-  const lic = (a && a.licenseKey) ? validateLicense(a.licenseKey) : { ok: false };
+// ---- startup routing ----------------------------------------------------------------------
+async function activationStatus() {
+  const a = loadActivation(), cfg = readConfig();
+  const lic = a.license ? await verifyLicense(a.license, cfg) : { valid: false, reason: 'no license', plain: 'No license has been loaded on this computer yet.' };
   const okEula = a.acceptances && a.acceptances.eula && a.acceptances.eula.version === AGREEMENTS.eulaVersion;
   const okLic = a.acceptances && a.acceptances.license && a.acceptances.license.version === AGREEMENTS.licenseVersion;
-  if (lic.ok && okEula && okLic && a.profile) return { state: 'signin', a, lic };
-  return { state: 'onboard', a, lic };
+  if (lic.valid && okEula && okLic) return { state: cfg.passcodeHash ? 'lock' : 'app', a, lic, cfg };
+  return { state: 'onboard', a, lic, cfg };
 }
-function routeStartup() {
+async function routeStartup() {
   if (mainWindow) { mainWindow.focus(); return; }
-  const s = activationStatus();
-  if (s.state === 'signin') openSignin(); else openOnboarding();
+  const s = await activationStatus();
+  if (s.state === 'app') openMainApp();
+  else if (s.state === 'lock') openLock();
+  else openOnboarding();
 }
 
-// ---- gate windows ----------------------------------------------------------------
+// ---- gate windows (isolated) ----------------------------------------------------------------
 function createGateWindow(file, w, h) {
   buildGateMenu();
   const win = new BrowserWindow({
     width: w, height: h, resizable: false, fullscreenable: false, maximizable: false,
-    backgroundColor: '#0A1F44', title: 'Safety Lab Aero',
-    icon: path.join(__dirname, 'build', 'icon.png'), show: false,
-    webPreferences: { preload: path.join(__dirname, 'preload-onboarding.js'), contextIsolation: true, nodeIntegration: false, sandbox: false }
+    backgroundColor: '#0A1F44', title: 'Safety Lab Aero', icon: path.join(__dirname, 'build', 'icon.png'), show: false,
+    webPreferences: { preload: path.join(__dirname, 'preload-gate.js'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   win.setMenuBarVisibility(false);
   win.loadFile(path.join(__dirname, file));
   win.once('ready-to-show', () => win.show());
-  win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } return { action: 'deny' }; });
+  win.webContents.setWindowOpenHandler(({ url }) => { if (/^https:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } return { action: 'deny' }; });
   return win;
 }
 function openOnboarding() { if (gateWindow) { gateWindow.focus(); return; } gateWindow = createGateWindow('onboarding.html', 920, 760); gateWindow.on('closed', () => { gateWindow = null; }); }
-function openSignin() { if (gateWindow) { gateWindow.focus(); return; } gateWindow = createGateWindow('signin.html', 560, 640); gateWindow.on('closed', () => { gateWindow = null; }); }
+function openLock() { if (gateWindow) { gateWindow.focus(); return; } gateWindow = createGateWindow('lock.html', 520, 460); gateWindow.on('closed', () => { gateWindow = null; }); }
 
-// ---- main app window -------------------------------------------------------------
+// ---- main app window -----------------------------------------------------------------------
 function openMainApp() {
   if (mainWindow) { mainWindow.focus(); return; }
-  const st = activationStatus();
-  const tier = (st.lic && st.lic.ok && st.lic.payload && st.lic.payload.tier) ? st.lic.payload.tier : 'pro-plus';
+  const cfg = readConfig();
+  const problem = configProblem(cfg);
+  if (problem) {
+    dialog.showMessageBoxSync({ type: 'error', message: 'Safety Lab Aero cannot start with this configuration', detail: problem + '\n\nOpen Settings to correct it.' });
+    openSettings(); return;
+  }
   buildMenu();
+  const part = session.fromPartition('persist:slab-app');
+  installEgressGuard(part, cfg);
   mainWindow = new BrowserWindow({
     width: 1440, height: 900, minWidth: 1024, minHeight: 680,
-    backgroundColor: '#0A1F44', title: 'Safety Lab Aero',
-    icon: path.join(__dirname, 'build', 'icon.png'), show: false,
+    backgroundColor: '#0A1F44', title: 'Safety Lab Aero', icon: path.join(__dirname, 'build', 'icon.png'), show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload-app.js'),
       contextIsolation: false, nodeIntegration: false, sandbox: false, spellcheck: false,
-      additionalArguments: ['--slab-config-path=' + configPath(), '--slab-tier=' + tier]
+      partition: 'persist:slab-app',
+      devTools: !app.isPackaged,
+      additionalArguments: ['--slab-config-path=' + configPath(), '--slab-activation-path=' + activationPath(), '--slab-version=' + app.getVersion()]
     }
   });
   mainWindow.loadFile(path.join(__dirname, 'app', 'index.html'));
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
-    if (gateWindow) { const g = gateWindow; gateWindow = null; g.close(); }   // dismiss the gate once the app is up
+    reportHeapCeiling(mainWindow);
+    if (gateWindow) { const g = gateWindow; gateWindow = null; g.close(); }
+    if (_pendingDeepLink) { const u = _pendingDeepLink; _pendingDeepLink = null; setTimeout(() => handleDeepLink(u), 1500); }
   });
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } return { action: 'deny' }; });
-  mainWindow.webContents.on('will-navigate', (e, url) => { if (!url.startsWith('file://')) { e.preventDefault(); try { shell.openExternal(url); } catch (_) {} } });
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => { if (/^https:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } return { action: 'deny' }; });
+  mainWindow.webContents.on('will-navigate', (e, url) => { if (!url.startsWith('file://')) { e.preventDefault(); if (/^https:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } } });
+  mainWindow.webContents.on('will-attach-webview', (e) => { e.preventDefault(); });
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
-// ---- native project Save / Open --------------------------------------------------
-function setProjectTitle() { if (mainWindow) mainWindow.setTitle('Safety Lab Aero' + (currentProjectPath ? ' — ' + path.basename(currentProjectPath) : '')); }
+// Network-layer egress guard for the app partition. Refuses (and logs) any request whose host
+// is not on the allowlist derived from the configuration. Belt and braces with slab_config.js.
+const _egressGuarded = new WeakSet();
+function installEgressGuard(part, cfg) {
+  if (_egressGuarded.has(part)) return;
+  _egressGuarded.add(part);
+  const blocked = new Map();
+  part.webRequest.onBeforeRequest({ urls: ['<all_urls>'] }, (details, cb) => {
+    const live = readConfig();   // re-read so a settings change applies on reload without restart
+    if (egressAllowed(details.url, live)) return cb({});
+    const h = hostOf(details.url) || details.url.slice(0, 60);
+    blocked.set(h, (blocked.get(h) || 0) + 1);
+    if (blocked.get(h) === 1) console.warn('[slab egress] refused ' + h + ' (not in this install\'s allowlist: ' + Array.from(allowedHosts(live)).join(', ') + ')');
+    cb({ cancel: true });
+  });
+}
 
+// ---- deep links: safetylab://open?project=<id>&backend=<host> · safetylab://auth-callback?... ----
+function handleDeepLink(raw) {
+  const link = R.parseDeepLink(raw);
+  if (!link) return;
+  if (!mainWindow) { _pendingDeepLink = raw; routeStartup(); return; }
+  const cfg = readConfig();
+  if (link.kind === 'open') {
+    const mine = backendHostFor(cfg);
+    if (link.backend && mine && link.backend !== mine) {
+      dialog.showMessageBox(mainWindow, { type: 'warning', message: 'This link is for a different server', detail: 'The project link points at ' + link.backend + ', but this install uses ' + mine + '. Open it on that installation instead.' });
+      return;
+    }
+    mainWindow.focus();
+    mainWindow.webContents.executeJavaScript('(window.__slabOpenCloudProject ? window.__slabOpenCloudProject(' + JSON.stringify(link.id) + ') : false)').catch(() => {});
+  } else if (link.kind === 'auth') {
+    mainWindow.focus();
+    mainWindow.webContents.executeJavaScript('(window.__slabAuthCallback ? window.__slabAuthCallback(' + JSON.stringify(link.url) + ') : false)').catch(() => {});
+  }
+}
+
+// ---- native project Save / Open (.slab files on the user's disk) ------------------------------
+function setProjectTitle() { if (mainWindow) mainWindow.setTitle('Safety Lab Aero' + (currentProjectPath ? ' — ' + path.basename(currentProjectPath) : '')); }
 async function doSave(saveAs) {
   if (!mainWindow) return;
   let target = currentProjectPath;
@@ -189,113 +281,185 @@ async function doOpen() {
     currentProjectPath = p; setProjectTitle();
   } catch (e) { dialog.showErrorBox('Open failed', String(e)); }
 }
+async function openOnWeb() {
+  if (!mainWindow) return;
+  let href = '';
+  try { href = await mainWindow.webContents.executeJavaScript('(window.openInWebLink ? window.openInWebLink() : "")'); } catch (_) {}
+  if (!href) { dialog.showMessageBox(mainWindow, { type: 'info', message: 'Nothing to open on the web yet', detail: 'Open a project from your workspace first (and, on your organization\'s server, set the web address in Settings).' }); return; }
+  try { shell.openExternal(href); } catch (_) {}
+}
 
-// ---- settings window -------------------------------------------------------------
+// ---- settings window (isolated) --------------------------------------------------------------
 function openSettings() {
   if (settingsWindow) { settingsWindow.focus(); return; }
   settingsWindow = new BrowserWindow({
-    width: 580, height: 680, parent: mainWindow || undefined, resizable: true, minimizable: false, maximizable: false,
-    title: 'Safety Lab Aero — AI & Profile', backgroundColor: '#f6f8fc',
-    webPreferences: { preload: path.join(__dirname, 'preload-settings.js'), contextIsolation: true, nodeIntegration: false, sandbox: false }
+    width: 620, height: 760, parent: mainWindow || undefined, resizable: true, minimizable: false, maximizable: false,
+    title: 'Safety Lab Aero — Settings', backgroundColor: '#f6f8fc',
+    webPreferences: { preload: path.join(__dirname, 'preload-settings.js'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   settingsWindow.setMenuBarVisibility(false);
   settingsWindow.loadFile(path.join(__dirname, 'settings.html'));
   settingsWindow.on('closed', () => { settingsWindow = null; });
 }
-ipcMain.handle('slab:getConfig', () => readConfig());
-ipcMain.handle('slab:saveConfig', (_e, partial) => { const next = Object.assign({}, readConfig(), partial || {}); writeConfig(next); return next; });
-ipcMain.on('slab:applyAndReload', () => { if (mainWindow) mainWindow.reload(); if (settingsWindow) settingsWindow.close(); });
-
-// ---- gate IPC --------------------------------------------------------------------
-ipcMain.handle('gate:getBootstrap', () => {
-  const a = loadActivation();
-  const lic = a.licenseKey ? validateLicense(a.licenseKey) : { ok: false };
-  let licenseInfo = null;
-  if (lic.ok) licenseInfo = sanitize(lic.payload);
-  else if (lic.expired) licenseInfo = Object.assign({ expired: true }, sanitize(lic.payload));
-  return { agreements: AGREEMENTS, existing: { profile: a.profile || null, hasPasscode: !!a.passcodeHash, licenseInfo } };
+ipcMain.handle('slab:getConfig', () => { const c = readConfig(); return Object.assign({}, c, { hasPasscode: !!c.passcodeHash, passcodeHash: undefined }); });
+ipcMain.handle('slab:saveConfig', (_e, partial) => {
+  const cur = readConfig(); const next = Object.assign({}, cur);
+  for (const k of ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl']) if (partial && partial[k] != null) next[k] = String(partial[k]).trim();
+  if (partial && partial.passcode !== undefined) next.passcodeHash = partial.passcode ? hashPasscode(partial.passcode) : null;
+  const problem = configProblem(next);
+  if (problem) return { ok: false, error: problem };
+  writeConfig(next);
+  return { ok: true };
 });
-ipcMain.handle('gate:validateLicense', (_e, key) => {
-  const r = validateLicense(key);
-  return r.ok ? { ok: true, info: sanitize(r.payload) } : { ok: false, error: r.error, expired: !!r.expired };
+ipcMain.handle('slab:licenseInfo', async () => {
+  const a = loadActivation(); if (!a.license) return { valid: false, plain: 'No license has been loaded on this computer yet.' };
+  const r = await verifyLicense(a.license, readConfig());
+  return Object.assign({ valid: r.valid, plain: r.plain }, licenseSummary(r) || {});
+});
+ipcMain.handle('slab:replaceLicense', async () => {
+  const win = settingsWindow || gateWindow || BrowserWindow.getFocusedWindow();
+  const r = await dialog.showOpenDialog(win, { title: 'Choose your Safety Lab Aero license file', properties: ['openFile'], filters: [{ name: 'Safety Lab license', extensions: ['lic', 'txt'] }] });
+  if (r.canceled || !r.filePaths[0]) return { ok: false };
+  let blob; try { blob = fs.readFileSync(r.filePaths[0], 'utf8').trim(); } catch (e) { return { ok: false, error: String(e) }; }
+  return installLicense(blob);
+});
+async function installLicense(blob) {
+  const v = await verifyLicense(blob, readConfig());
+  if (!v.valid) return { ok: false, error: v.plain };
+  const a = loadActivation();
+  a.license = blob; a.maxIssuedSeen = Math.max(Number(a.maxIssuedSeen || 0) || 0, v.maxSeenNext || 0); a.activatedAt = a.activatedAt || new Date().toISOString();
+  saveActivation(a);
+  return { ok: true, info: licenseSummary(v) };
+}
+ipcMain.on('slab:applyAndReload', () => { if (settingsWindow) settingsWindow.close(); if (mainWindow) mainWindow.reload(); else routeStartup(); });
+ipcMain.handle('slab:version', () => ({ app: app.getVersion(), web: readBuildInfo() }));
+function readBuildInfo() { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'app', 'BUILD_INFO.json'), 'utf8')); } catch (_) { return null; } }
+
+// ---- gate IPC ----------------------------------------------------------------------------------
+ipcMain.handle('gate:getBootstrap', async () => {
+  const a = loadActivation();
+  const lic = a.license ? await verifyLicense(a.license, readConfig()) : null;
+  return { agreements: AGREEMENTS, existing: { hasPasscode: !!readConfig().passcodeHash, license: lic ? Object.assign({ valid: lic.valid, plain: lic.plain }, licenseSummary(lic) || {}) : null } };
+});
+ipcMain.handle('gate:checkLicense', async (_e, blob) => {
+  const v = await verifyLicense(String(blob || '').trim(), readConfig());
+  return v.valid ? { ok: true, info: licenseSummary(v) } : { ok: false, error: v.plain };
 });
 ipcMain.handle('gate:pickLicenseFile', async () => {
   const win = gateWindow || BrowserWindow.getFocusedWindow();
-  const r = await dialog.showOpenDialog(win, { title: 'Select your Safety Lab Aero license file', properties: ['openFile'], filters: [{ name: 'Safety Lab license', extensions: ['sllic', 'lic', 'txt'] }] });
+  const r = await dialog.showOpenDialog(win, { title: 'Choose your Safety Lab Aero license file', properties: ['openFile'], filters: [{ name: 'Safety Lab license', extensions: ['lic', 'txt'] }] });
   if (r.canceled || !r.filePaths[0]) return { ok: false };
-  try { return { ok: true, key: fs.readFileSync(r.filePaths[0], 'utf8').trim() }; } catch (e) { return { ok: false, error: String(e) }; }
+  try { return { ok: true, blob: fs.readFileSync(r.filePaths[0], 'utf8').trim() }; } catch (e) { return { ok: false, error: String(e) }; }
 });
-ipcMain.handle('gate:complete', (_e, data) => {
+ipcMain.handle('gate:complete', async (_e, data) => {
   data = data || {};
-  const r = validateLicense(data.licenseKey);
-  if (!r.ok) return { ok: false, error: r.error || 'License invalid.' };
+  const inst = await installLicense(String(data.license || '').trim());
+  if (!inst.ok) return { ok: false, error: inst.error || 'License invalid.' };
   if (!data.acceptEula || !data.acceptLicense) return { ok: false, error: 'You must accept both agreements to continue.' };
-  const prof = data.profile || {};
-  const a = {
-    licenseKey: data.licenseKey,
-    license: sanitize(r.payload),
-    profile: { name: String(prof.name || '').trim(), email: String(prof.email || '').trim(), org: String(prof.org || '').trim() },
-    passcodeHash: data.passcode ? hashPasscode(data.passcode) : null,
-    acceptances: {
-      eula: { version: AGREEMENTS.eulaVersion, at: new Date().toISOString() },
-      license: { version: AGREEMENTS.licenseVersion, at: new Date().toISOString() },
-      acceptedBy: (prof.email || r.payload.email || '').toLowerCase()
-    },
-    activatedAt: new Date().toISOString()
-  };
+  const a = loadActivation();
+  a.acceptances = { eula: { version: AGREEMENTS.eulaVersion, at: new Date().toISOString() }, license: { version: AGREEMENTS.licenseVersion, at: new Date().toISOString() } };
   saveActivation(a);
-  const cfg = readConfig(); cfg.profileName = a.profile.name || cfg.profileName; cfg.profileEmail = a.profile.email || cfg.profileEmail; writeConfig(cfg);
+  if (data.passcode !== undefined) { const cfg = readConfig(); cfg.passcodeHash = data.passcode ? hashPasscode(data.passcode) : null; writeConfig(cfg); }
   openMainApp();
   return { ok: true };
 });
-ipcMain.handle('gate:signin', (_e, data) => {
-  data = data || {};
-  const a = loadActivation();
-  const r = a.licenseKey ? validateLicense(a.licenseKey) : { ok: false, error: 'No license on file.' };
-  if (!r.ok) return { ok: false, relock: true, error: r.error || 'License invalid.' };
-  if (a.passcodeHash && !verifyPasscode(data.passcode || '', a.passcodeHash)) return { ok: false, error: 'Incorrect passcode.' };
+ipcMain.handle('gate:unlock', async (_e, data) => {
+  const cfg = readConfig();
+  if (cfg.passcodeHash && !verifyPasscode((data && data.passcode) || '', cfg.passcodeHash)) return { ok: false, error: 'Incorrect passcode.' };
+  const s = await activationStatus();
+  if (s.state === 'onboard') return { ok: false, relock: true, error: s.lic.plain || 'License invalid.' };
   openMainApp();
   return { ok: true };
 });
 ipcMain.on('gate:reactivate', () => { if (gateWindow) { const g = gateWindow; gateWindow = null; g.close(); } openOnboarding(); });
 ipcMain.on('gate:quit', () => { app.quit(); });
 
-// ---- menus -----------------------------------------------------------------------
+// ---- menus ----------------------------------------------------------------------------------------
 function buildGateMenu() {
-  const isMac = process.platform === 'darwin';
-  const t = [];
+  const isMac = process.platform === 'darwin'; const t = [];
   if (isMac) t.push({ label: app.name, submenu: [{ role: 'about' }, { type: 'separator' }, { role: 'hide' }, { role: 'quit' }] });
   t.push({ label: 'Edit', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] });
   Menu.setApplicationMenu(Menu.buildFromTemplate(t));
 }
 function buildMenu() {
-  const isMac = process.platform === 'darwin';
-  const template = [];
-  if (isMac) template.push({ label: app.name, submenu: [{ role: 'about' }, { type: 'separator' }, { label: 'AI & Profile Settings…', accelerator: 'Cmd+,', click: openSettings }, { label: 'Check for Updates…', click: () => initAutoUpdater(true) }, { type: 'separator' }, { role: 'services' }, { type: 'separator' }, { role: 'hide' }, { role: 'hideOthers' }, { role: 'unhide' }, { type: 'separator' }, { role: 'quit' }] });
+  const isMac = process.platform === 'darwin'; const template = [];
+  const settingsItem = { label: 'Settings…', accelerator: 'CmdOrCtrl+,', click: openSettings };
+  if (isMac) template.push({ label: app.name, submenu: [{ role: 'about' }, { type: 'separator' }, settingsItem, { label: 'Check for Updates…', click: () => initAutoUpdater(true) }, { type: 'separator' }, { role: 'services' }, { type: 'separator' }, { role: 'hide' }, { role: 'hideOthers' }, { role: 'unhide' }, { type: 'separator' }, { role: 'quit' }] });
   template.push({ label: 'File', submenu: [
-    { label: 'Open Project…', accelerator: 'CmdOrCtrl+O', click: () => doOpen() },
-    { label: 'Save Project', accelerator: 'CmdOrCtrl+S', click: () => doSave(false) },
-    { label: 'Save Project As…', accelerator: 'CmdOrCtrl+Shift+S', click: () => doSave(true) },
+    { label: 'Open Project File…', accelerator: 'CmdOrCtrl+O', click: () => doOpen() },
+    { label: 'Save Project File', accelerator: 'CmdOrCtrl+S', click: () => doSave(false) },
+    { label: 'Save Project File As…', accelerator: 'CmdOrCtrl+Shift+S', click: () => doSave(true) },
     { type: 'separator' },
-    ...(isMac ? [] : [{ label: 'AI & Profile Settings…', accelerator: 'Ctrl+,', click: openSettings }, { type: 'separator' }]),
+    { label: 'Open This Project on the Web', click: () => openOnWeb() },
+    { type: 'separator' },
+    ...(isMac ? [] : [settingsItem, { type: 'separator' }]),
     isMac ? { role: 'close' } : { role: 'quit' }
   ] });
   template.push({ label: 'Edit', submenu: [{ role: 'undo' }, { role: 'redo' }, { type: 'separator' }, { role: 'cut' }, { role: 'copy' }, { role: 'paste' }, { role: 'selectAll' }] });
-  template.push({ label: 'View', submenu: [{ role: 'reload' }, { role: 'forceReload' }, { role: 'toggleDevTools' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' }] });
+  const view = [{ role: 'reload' }, { role: 'forceReload' }];
+  if (!app.isPackaged) view.push({ role: 'toggleDevTools' });
+  view.push({ type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' });
+  template.push({ label: 'View', submenu: view });
   template.push({ label: 'Window', submenu: [{ role: 'minimize' }, { role: 'zoom' }, ...(isMac ? [{ type: 'separator' }, { role: 'front' }] : [{ role: 'close' }])] });
   template.push({ role: 'help', submenu: [
     { label: 'Check for Updates…', click: () => initAutoUpdater(true) },
+    { label: 'About This Build', click: () => { const b = readBuildInfo(); dialog.showMessageBox({ type: 'info', message: 'Safety Lab Aero ' + app.getVersion(), detail: b ? ('Web build ' + (b.webCommit || '?').slice(0, 10) + ' · pulled ' + (b.pulledAt || '?') + ' · ' + (b.fileCount || '?') + ' files') : 'No build info (app/ was not pulled by pull-web.sh).' }); } },
     { type: 'separator' },
     { label: 'Safety Lab Aero on the web', click: () => { try { shell.openExternal(WEBSITE); } catch (_) {} } }
   ] });
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
-// ---- lifecycle -------------------------------------------------------------------
-app.whenReady().then(() => {
-  if (process.platform === 'darwin' && app.dock) { try { app.dock.setIcon(path.join(__dirname, 'build', 'icon.png')); } catch (_) {} }
-  routeStartup();
-  setTimeout(() => { try { initAutoUpdater(false); } catch (_) {} }, 4000);   // quiet background update check after launch
-  app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) routeStartup(); });
-});
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+// ---- updater ----------------------------------------------------------------------------------------
+// electron-updater against https://updates.safetylabaero.com/desktop/. HONEST STATE (6 Sep 2026):
+// there is no code-signing certificate yet, so an update is verified only by the SHA-512 in the
+// manifest from the same host — which means anyone controlling that URL could ship code. Until a
+// certificate exists, updates are MANUAL: background checks are off, the menu item only tells the
+// user a newer version exists and opens the download page; nothing is downloaded or installed
+// silently. When CSC_LINK/APPLE_ID (mac) or a Windows cert are configured, flip AUTO_UPDATE_SIGNED.
+const AUTO_UPDATE_SIGNED = false;
+let autoUpdater = null;
+try { autoUpdater = require('electron-updater').autoUpdater; } catch (_) { autoUpdater = null; }
+let _updaterWired = false, _manualCheck = false;
+function initAutoUpdater(manual) {
+  _manualCheck = !!manual;
+  if (!autoUpdater) { if (manual) dialog.showMessageBox({ type: 'info', message: 'Updates unavailable', detail: 'The updater module is not installed in this build.' }); return; }
+  if (!manual && !AUTO_UPDATE_SIGNED) return;
+  try {
+    autoUpdater.autoDownload = AUTO_UPDATE_SIGNED;
+    autoUpdater.autoInstallOnAppQuit = AUTO_UPDATE_SIGNED;
+    if (!_updaterWired) {
+      _updaterWired = true;
+      autoUpdater.on('update-available', (info) => {
+        if (AUTO_UPDATE_SIGNED) return;
+        dialog.showMessageBox({ type: 'info', buttons: ['Open download page', 'Later'], defaultId: 0, cancelId: 1, message: 'A newer version is available', detail: 'Safety Lab Aero ' + (info && info.version ? info.version : '') + ' is available. This build installs updates manually: download the installer from the website and run it.' })
+          .then((r) => { if (r.response === 0) { try { shell.openExternal(WEBSITE + '/download'); } catch (_) {} } });
+      });
+      autoUpdater.on('update-downloaded', (info) => {
+        dialog.showMessageBox({ type: 'info', buttons: ['Restart now', 'Later'], defaultId: 0, cancelId: 1, message: 'Update ready', detail: 'Safety Lab Aero ' + (info && info.version ? info.version : '') + ' has been downloaded. Restart to apply it.' })
+          .then((r) => { if (r.response === 0) autoUpdater.quitAndInstall(); });
+      });
+      autoUpdater.on('update-not-available', () => { if (_manualCheck) dialog.showMessageBox({ type: 'info', message: "You're up to date", detail: 'No newer version is available right now.' }); });
+      autoUpdater.on('error', (e) => { console.log('[updater]', (e && e.message) || e); if (_manualCheck) dialog.showMessageBox({ type: 'info', message: 'Update check failed', detail: 'Could not check for updates right now.' }); });
+    }
+    autoUpdater.checkForUpdates();
+  } catch (e) { console.log('[updater] init failed:', e); }
+}
+
+// ---- lifecycle --------------------------------------------------------------------------------------
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) { app.quit(); }
+else {
+  app.on('second-instance', (_e, argv) => { const link = (argv || []).find(a => typeof a === 'string' && a.startsWith(PROTOCOL + '://')); if (link) handleDeepLink(link); else if (mainWindow) mainWindow.focus(); });
+  app.on('open-url', (e, url) => { e.preventDefault(); handleDeepLink(url); });
+  app.whenReady().then(() => {
+    try { app.setAsDefaultProtocolClient(PROTOCOL); } catch (_) {}
+    if (process.platform === 'darwin' && app.dock) { try { app.dock.setIcon(path.join(__dirname, 'build', 'icon.png')); } catch (_) {} }
+    const link = process.argv.find(a => typeof a === 'string' && a.startsWith(PROTOCOL + '://'));
+    if (link) _pendingDeepLink = link;
+    routeStartup();
+    if (AUTO_UPDATE_SIGNED) setTimeout(() => { try { initAutoUpdater(false); } catch (_) {} }, 4000);
+    app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) routeStartup(); });
+  });
+  app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+}

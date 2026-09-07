@@ -1,42 +1,41 @@
 {
   "name": "safety-lab-aero-desktop",
   "productName": "Safety Lab Aero",
-  "version": "0.10.1",
-  "description": "Safety Lab Aero \u2014 desktop / air-gap build. Electron wrapper around the analysis engine with native .slab project files and a configurable (bring-your-own) AI endpoint.",
+  "version": "0.16.0",
+  "description": "Safety Lab Aero \u2014 desktop build. Electron shell around the SAME web bundle (pulled from a wall-passed, stripped build), signed-license gate, real sign-in, network egress allowlist, safetylab:// links.",
   "author": "Muhammad Waqas Nafees",
   "license": "UNLICENSED",
   "private": true,
   "main": "main.js",
   "scripts": {
     "vendor": "bash vendor-libs.sh",
-    "sync": "bash sync-app.sh",
-    "setup": "bash vendor-libs.sh && bash sync-app.sh",
+    "pull": "bash pull-web.sh",
     "start": "electron .",
-    "dev": "bash sync-app.sh && electron .",
+    "dev": "SKIP_WALL=1 bash pull-web.sh && electron .",
+    "test": "for t in tests/*.test.js; do node \"$t\" || exit 1; done",
     "dist:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac",
     "dist:mac:signed": "electron-builder --mac",
     "dist:win": "electron-builder --win --x64",
-    "dist": "electron-builder -mw",
-    "release": "bash sync-app.sh && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac && bash publish-desktop.sh",
-    "release:win": "bash sync-app.sh && electron-builder --win --x64 && bash publish-desktop.sh",
-    "deploy": "wrangler deploy",
-    "preview": "wrangler dev"
+    "release": "bash release.sh --publish",
+    "release:build": "bash release.sh",
+    "release:win": "bash release.sh --win --publish"
   },
   "build": {
     "appId": "com.safetylabaero.desktop",
     "productName": "Safety Lab Aero",
     "files": [
       "main.js",
-      "license.js",
+      "shell_rules.js",
       "preload-app.js",
-      "preload-onboarding.js",
+      "preload-gate.js",
       "preload-settings.js",
       "settings.html",
       "onboarding.html",
-      "signin.html",
+      "lock.html",
       "agreements/**/*",
       "build/icon.png",
-      "app/**/*"
+      "app/**/*",
+      "!app/**/.DS_Store"
     ],
     "directories": {
       "output": "dist"
@@ -123,8 +122,7 @@
   },
   "devDependencies": {
     "@electron/notarize": "^2.5.0",
-    "electron": "^31.7.0",
-    "electron-builder": "^24.13.3",
-    "wrangler": "^4.107.0"
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
   }
 }

@@ -103,24 +103,24 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;backgroun
     </div>
 
     <h2>AI backend &amp; controlled data</h2>
-    <p style="color:var(--text-muted);font-size:15px;max-width:760px;">You choose where AI requests are processed, to match your programme's data‑handling posture. Documents you mark <strong>controlled</strong> (ITAR or proprietary) are hard‑routed: while one is in the project, the AI is blocked unless the backend is on‑premise or ITAR‑routed.</p>
+    <p style="color:var(--text-muted);font-size:15px;max-width:760px;">You choose where AI requests are processed, to match your programme's data‑handling posture. Documents you mark <strong>controlled</strong> (ITAR or proprietary) are hard‑routed: while one is in the project, every cloud AI path is blocked — server‑side — unless the backend is on‑premise.</p>
     <table>
         <thead><tr><th>Backend</th><th>What it is</th><th>Controlled docs</th></tr></thead>
         <tbody>
             <tr><td>Hosted proxy</td><td>Claude via the Pro+ hosted proxy.</td><td class="no">Not permitted</td></tr>
             <tr><td>Bring‑your‑own key</td><td>Your provider key, used directly.</td><td class="no">Not permitted</td></tr>
-            <tr><td>ITAR (Azure Gov)</td><td>Hosted proxy routed to Azure Government.</td><td class="yes">Permitted</td></tr>
+            <tr><td>ITAR (US‑sovereign cloud)</td><td>Planned: hosted proxy routed to Azure Government. Until live, the proxy refuses ITAR traffic server‑side rather than routing it to any public‑cloud model.</td><td class="no">Planned</td></tr>
             <tr><td>On‑premise</td><td>Self‑hosted / local backend.</td><td class="yes">Permitted</td></tr>
         </tbody>
     </table>
-    <p class="note">Controlled‑document routing is enforced in the application: a controlled document on file blocks every AI call — chat and batch alike — unless an on‑premise or Azure‑Government backend is configured, and where each controlled document was processed is recorded. This is a routing control, not a claim of formal accreditation; talk to us about your specific ITAR/EAR or programme‑security requirements.</p>
+    <p class="note">Controlled‑document routing is enforced in the application: a controlled document on file blocks every AI call — chat and batch alike — unless an on‑premise backend is configured (US‑sovereign cloud routing is planned), and where each controlled document was processed is recorded. The block is enforced server‑side at the proxy, not only in the browser. This is a routing control, not a claim of formal accreditation; talk to us about your specific ITAR/EAR or programme‑security requirements.</p>
 
     <h2>Frequently asked</h2>
     <div class="faq">
         <div class="qa"><h4>Does the AI decide λ, DAL, or severity?</h4><p>No. Those are owned by the deterministic engine and the engineer. The AI may propose a severity with rationale for you to confirm, and may build fault‑tree structure with rates left blank — but it never establishes a safety number as fact.</p></div>
         <div class="qa"><h4>Is the AI part of the certification argument?</h4><p>No — by design. The AI drafts, traces, and connects; the deterministic engine and the engineer own the numbers, the allocation, and the safety case. Requirements are allocated by interpreting the fault‑tree logic, not by the AI.</p></div>
-        <div class="qa"><h4>Where does my data go?</h4><p>The model and engine run locally in your browser or desktop app. Only an explicit AI request sends the relevant context to your configured backend — hosted proxy, your own key, on‑premise, or Azure Government for ITAR.</p></div>
-        <div class="qa"><h4>Can I use it on ITAR or controlled programmes?</h4><p>Mark the relevant documents controlled; the AI is then restricted to an on‑premise or Azure‑Government backend, and blocked otherwise. For fully air‑gapped work, the on‑premise backend keeps everything inside your boundary.</p></div>
+        <div class="qa"><h4>Where does my data go?</h4><p>The model and engine run locally in your browser or desktop app. Only an explicit AI request sends the relevant context to your configured backend — hosted proxy, your own key, or on‑premise. For ITAR projects, cloud backends are blocked server‑side (US‑sovereign cloud routing is planned).</p></div>
+        <div class="qa"><h4>Can I use it on ITAR or controlled programmes?</h4><p>Mark the relevant documents controlled; the AI is then restricted to an on‑premise backend and blocked from every cloud path, enforced server‑side (a US‑sovereign cloud option is planned). For fully air‑gapped work, the on‑premise backend keeps everything inside your boundary.</p></div>
         <div class="qa"><h4>Does it replace my DER or my engineers?</h4><p>No. It is a tool your engineers and DER use; the human owns every judgement and signs the safety case. The platform's job is to make the work faster and the golden thread complete and traceable.</p></div>
         <div class="qa"><h4>What standards does it follow?</h4><p>ARP 4754B and ARP 4761A, the means of compliance for your cert basis (AC 23.1309 / AC 25.1309 / AC 27 / AC 29 / SC‑VTOL, ASTM F3230), and DO‑178C / DO‑254 development assurance.</p></div>
     </div>

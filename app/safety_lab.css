@@ -20,9 +20,9 @@
     --color-overlay:   rgba(250, 247, 240, 0.88);
 
     /* Borders — warm ink hairlines (drafting-pen tones, not neutral gray) */
-    --color-border-hair:   rgba(26, 28, 34, 0.11);
-    --color-border-thin:   rgba(26, 28, 34, 0.18);
-    --color-border-strong: rgba(26, 28, 34, 0.32);
+    --color-border-hair:   rgba(26, 28, 34, 0.20);
+    --color-border-thin:   rgba(26, 28, 34, 0.30);
+    --color-border-strong: rgba(26, 28, 34, 0.44);
 
     /* Text — blue-black ink. Phase 48 near-black legibility preserved; hue warmed
        toward ink rather than neutral black. */
@@ -116,9 +116,9 @@ body.theme-dark {
     --color-overlay:   rgba(16, 19, 26, 0.88);
 
     /* Borders nudged up slightly to keep hairline separation visible against the deeper surfaces */
-    --color-border-hair:   rgba(242, 239, 230, 0.09);
-    --color-border-thin:   rgba(242, 239, 230, 0.15);
-    --color-border-strong: rgba(242, 239, 230, 0.26);
+    --color-border-hair:   rgba(242, 239, 230, 0.17);
+    --color-border-thin:   rgba(242, 239, 230, 0.26);
+    --color-border-strong: rgba(242, 239, 230, 0.38);
 
     /* Paper-tinted text on ink surfaces (Phase 48 near-white legibility preserved). */
     --color-text-primary:   #F5F2EA;
@@ -382,7 +382,7 @@ body.nav-sidebar .global-header h1 { display: none; }
 .asb-sub { display: flex; flex-direction: column; padding: 2px 0 6px; }
 .asb-item.sub { padding: 7px 10px 7px 38px; font-weight: 500; font-size: 13px; color: var(--color-text-tertiary); }
 .asb-item.sub:hover { color: var(--color-text-primary); }
-.asb-item.sub.snav-active { color: var(--color-accent); font-weight: 600; }
+.asb-item.sub.snav-active { color: var(--color-accent); background: var(--color-accent-soft); font-weight: 500; }
 
 .asb-foot { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--color-border-hair); }
 .asb-classic {
@@ -391,17 +391,56 @@ body.nav-sidebar .global-header h1 { display: none; }
 }
 .asb-classic:hover { background: var(--color-surface-3); }
 
-/* Icon-rail (collapsed) */
-body.nav-sidebar.nav-rail .app-sidebar { width: 60px; padding: 14px 6px; }
+/* Icon-rail (collapsed) + hover slide-out flyout.
+   Collapsed = 60px icons. Hovering a row slides its label (plain rows) or its full
+   sub-tree (groups) out to the right as a floating panel; the page never reflows
+   (sidebar is position:fixed; container margin stays 60px). Collapse rules hide only
+   TOP-LEVEL labels/sub-trees so a revealed flyout shows its nested groups normally.
+   initNavRailFlyout() (index.html) opens each closed <details> on hover so its content
+   can render, and stamps the panel's header text onto data-grp. */
+body.nav-sidebar.nav-rail .app-sidebar { width: 60px; padding: 14px 6px; overflow: visible; transition: width var(--t-base) ease, padding var(--t-base) ease; }
 body.nav-sidebar.nav-rail .container { margin-left: 60px !important; }
 body.nav-sidebar.nav-rail .asb-lbl,
 body.nav-sidebar.nav-rail .asb-chev,
 body.nav-sidebar.nav-rail .asb-brandtxt,
+body.nav-sidebar.nav-rail .asb-classic,
 body.nav-sidebar.nav-rail .asb-sub,
-body.nav-sidebar.nav-rail .asb-classic { display: none; }
+body.nav-sidebar.nav-rail .asb-sub2,
+body.nav-sidebar.nav-rail .asb-catsub { display: none; }
 body.nav-sidebar.nav-rail .asb-rail-btn { margin: 0 auto; }
-body.nav-sidebar.nav-rail .asb-item,
-body.nav-sidebar.nav-rail .asb-grp > summary { justify-content: center; padding: 10px 0; }
+body.nav-sidebar.nav-rail .brand-mark { display: none; }
+body.nav-sidebar.nav-rail .asb-brand { padding: 0 !important; justify-content: center; }
+body.nav-sidebar.nav-rail .asb-nav > .asb-item,
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp > summary { justify-content: center; padding: 10px 0; }
+body.nav-sidebar.nav-rail .asb-nav > .asb-item,
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp { position: relative; }
+/* transparent hover-bridge across the 10px gap to the flyout */
+body.nav-sidebar.nav-rail .asb-nav > .asb-item::after,
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp::after { content: ""; position: absolute; top: 0; left: 100%; width: 14px; height: 100%; }
+/* plain top-level row -> a label chip */
+body.nav-sidebar.nav-rail .asb-nav > .asb-item:hover > .asb-lbl {
+    display: block; position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%);
+    background: #16283F; color: rgba(240, 246, 255, 0.92); border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 8px 14px; white-space: nowrap; font-size: 13px; font-weight: 550; z-index: 200;
+    box-shadow: 6px 6px 24px rgba(0, 0, 0, 0.45); animation: railFlyChip 0.13s ease; }
+/* group top-level -> floating panel with its full sub-tree, scrollable */
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub {
+    display: flex; position: absolute; left: calc(100% + 10px); top: 0; min-width: 250px; max-width: 340px;
+    max-height: 82vh; overflow-y: auto; background: #16283F; border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 6px 6px 10px; z-index: 200; box-shadow: 6px 6px 24px rgba(0, 0, 0, 0.45); animation: railFlyPanel 0.13s ease; }
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub::before {
+    content: attr(data-grp); display: block; padding: 6px 12px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: rgba(240, 246, 255, 0.60); border-bottom: 1px solid rgba(255, 255, 255, 0.14); margin-bottom: 4px; }
+/* re-show everything inside a revealed flyout at normal size */
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub .asb-lbl,
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub .asb-chev { display: revert; }
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub .asb-sub,
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub .asb-sub2,
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub .asb-catsub { display: flex; flex-direction: column; }
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub .asb-item,
+body.nav-sidebar.nav-rail .asb-nav > .asb-grp:hover > .asb-sub .asb-grp > summary { justify-content: flex-start; padding: 7px 10px; }
+@keyframes railFlyChip { from { transform: translateY(-50%) translateX(-8px); } to { transform: translateY(-50%) translateX(0); } }
+@keyframes railFlyPanel { from { transform: translateX(-8px); } to { transform: translateX(0); } }
 
 /* FTA fullscreen reclaims the whole width */
 body.fta-fullscreen .app-sidebar { display: none !important; }
@@ -430,6 +469,9 @@ body.fta-fullscreen.nav-sidebar .container { margin-left: 0 !important; }
 .asb-sub2 { display: flex; flex-direction: column; }
 .asb-sub2 .asb-item.sub { padding-left: 52px; }
 .asb-subhead.s2, .asb-sub2 .asb-subhead, .asb-sub2 .asb-empty { padding-left: 52px; }
+/* third nesting level — a nested group inside a Safety sub-section (FTA under Trees & models) */
+.asb-grp.asb-nested.asb-deep > summary { padding-left: 52px; }
+.asb-grp.asb-nested.asb-deep .asb-sub2 .asb-item.sub { padding-left: 66px; }
 body.nav-sidebar.nav-rail .asb-sub2 { display: none; }
 
 /* Phase 75.2 — when the sidebar is on, the in-content nav lives in the sidebar instead.
@@ -1162,7 +1204,8 @@ details.form-advanced[open] > summary { border-bottom-left-radius: 0; border-bot
 .inline-desc {
     /* Phase 48 — bumped 11 → 12 px for readability. */
     font-family: var(--font-system); font-size: 12px; line-height: 1.3; text-align: center;
-    border: 1px solid var(--color-border-hair); border-radius: 6px;
+    /* crisp: square corners + strong hairline — soft radii blur under canvas zoom */
+    border: 1px solid var(--color-border-strong); border-radius: 2px;
     /* Phase 43 — backdrop-filter blur removed (was causing flicker on canvas zoom). */
     background-color: var(--color-surface-2);
     /* Phase 53.32 + 53.40 — fixed 100 px box; d3.tree nodeSize is derived from this so the
@@ -1178,7 +1221,7 @@ details.form-advanced[open] > summary { border-bottom-left-radius: 0; border-bot
     /* Phase 48 — bumped 10 → 12 px so event IDs (BE-XXX / TOP-XXX) are easier to read. */
     font-family: var(--font-system); font-size: 12px; font-weight: 600;
     color: var(--color-accent); text-align: center;
-    border: 1px solid var(--color-border-hair); border-radius: 6px;
+    border: 1px solid var(--color-border-strong); border-radius: 2px;
     /* Phase 43 — backdrop-filter removed (see .inline-desc comment for rationale). */
     background-color: var(--color-surface-2);
     width: 100%; height: 20px; box-sizing: border-box; padding: 0 2px;
@@ -1274,6 +1317,41 @@ body.theme-dark .inline-lib {
 .node.ccf-highlight path, .node.ccf-highlight circle { stroke: var(--color-purple) !important; stroke-width: 3px !important; filter: drop-shadow(0px 0px 8px rgba(175,82,222,0.4)); }
 .node.cutset-highlight path, .node.cutset-highlight circle { stroke: var(--color-danger) !important; stroke-width: 3px !important; filter: drop-shadow(0px 0px 8px rgba(255,59,48,0.4)); }
 .node.path-highlight path, .node.path-highlight circle { stroke: var(--color-danger) !important; stroke-width: 2.5px !important; }
+
+/* Phase 66.11 — LANDING HIGHLIGHT. When a click somewhere else sends you here
+   (golden thread, back-refs, dashboard worklist, a transfer gate), the thing you
+   were sent to is marked EXPLICITLY and STAYS marked until you interact — a
+   1.6s flash was routinely missed while the smooth-scroll was still running.
+   Waqas, 18 Aug: "once there it should be explicitly highlighted so the user
+   knows what they are looking for." */
+.node.landed-highlight path, .node.landed-highlight circle, .node.landed-highlight polygon, .node.landed-highlight rect {
+    stroke: var(--color-purple, #7247B1) !important;
+    stroke-width: 3.5px !important;
+    filter: drop-shadow(0 0 10px rgba(114,71,177,.55));
+    animation: sl-landed-pulse 1.25s ease-out 8;   /* 25 Aug 2026 — 1.15s x3 = 3.45s read as "a flash"; 1.25s x8 = the full 10s the highlight is up */
+}
+tr.sl-landed > td, td.sl-landed, div.sl-landed {
+    background: rgba(114,71,177,.16) !important;
+    box-shadow: inset 0 1px 0 var(--color-purple, #7247B1), inset 0 -1px 0 var(--color-purple, #7247B1);
+    animation: sl-landed-pulse 1.25s ease-out 8;   /* 25 Aug 2026 — 1.15s x3 = 3.45s read as "a flash"; 1.25s x8 = the full 10s the highlight is up */
+}
+tr.sl-landed > td:first-child, div.sl-landed { box-shadow: inset 3px 0 0 var(--color-purple, #7247B1), inset 0 1px 0 var(--color-purple, #7247B1), inset 0 -1px 0 var(--color-purple, #7247B1); }
+tr.sl-landed > td:last-child  { box-shadow: inset -3px 0 0 var(--color-purple, #7247B1), inset 0 1px 0 var(--color-purple, #7247B1), inset 0 -1px 0 var(--color-purple, #7247B1); }
+.sl-landed-badge {
+    display: inline-block; margin-right: 8px; padding: 2px 7px; border-radius: 999px;
+    background: var(--color-purple, #7247B1); color: #fff;
+    font-size: 9.5px; font-weight: 700; letter-spacing: .09em; white-space: nowrap;
+    vertical-align: middle;
+}
+@keyframes sl-landed-pulse {
+    0%   { opacity: 1; }
+    45%  { opacity: .45; }
+    100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .node.landed-highlight path, .node.landed-highlight circle, .node.landed-highlight polygon,
+    .node.landed-highlight rect, tr.sl-landed > td, td.sl-landed, div.sl-landed { animation: none; }
+}
 .link { fill: none; stroke: var(--color-border-strong); stroke-width: 1.5px; transition: stroke var(--t-base), stroke-width var(--t-base); }
 .link.cutset-highlight { stroke: var(--color-danger) !important; stroke-width: 3px; }
 
@@ -1447,7 +1525,16 @@ body.theme-dark .ar-badge-orphan      { color: #c7c7cc; }
     top: 20px; right: 20px;
     display: flex; flex-direction: column;
     gap: 10px;
-    z-index: 3000;
+    /* Phase 66.15 — WAS 3000, WHICH IS WHY NOBODY EVER SAW THE AI BUSY TOAST.
+       Every AI surface is drawn far above it: the assist overlays are z-index
+       99997-99998 WITH a full-screen rgba(0,0,0,.45) scrim, the ANEM chat panel
+       is 99996, the review panel 99999, and one viewer is 2147483640. A toast
+       raised from any of those flows was painted underneath the scrim — present
+       in the DOM, correct text, completely invisible. Status about work the user
+       just started has to outrank the thing they started it from, so the stack
+       now sits above every layer in the app. This fixes ordinary toasts too:
+       save confirmations and errors raised from an AI modal were equally lost. */
+    z-index: 2147483646;
     pointer-events: none;
     max-width: 380px;
 }
@@ -4187,7 +4274,14 @@ body.theme-dark .workspace-menu-action:hover {
     bottom: 0;
     left: auto;
     transform: none;
-    width: min(520px, calc(100vw - 24px));
+    /* Phase 66.18 — WAS 520px. Waqas, 19 Aug: "fault tree property modal that comes
+       in from the left needs to be wider, so its more legible." At 520 the drawer put
+       three form columns, the sibling-apportionment readout and the standards text in
+       a column narrower than a phone, so nearly everything wrapped. 760 fits the
+       three-across rows without wrapping on a 1440 screen and still leaves the canvas
+       usable. The drag handle and the remembered width are unchanged — this is only
+       the starting point for someone who has never dragged it. */
+    width: min(760px, calc(100vw - 24px));
     max-height: none;
     overflow-y: auto;
     z-index: 9999;
@@ -4196,10 +4290,70 @@ body.theme-dark .workspace-menu-action:hover {
     border-left: 1px solid var(--color-border-thin);
     border-radius: 0;
     box-shadow: -18px 0 48px rgba(0,0,0,0.22), -4px 0 16px rgba(0,0,0,0.12);
-    padding: 18px 20px 22px 20px !important;
+    /* Phase 66.24 — Waqas: "the scroll bar to the modal and the main page act together,
+       plus the scroll bar to the modal needs to allow the user go deeper."
+
+       (a) SCROLL CHAINING. The drawer is a scroll container sitting over a page that also
+           scrolls (`body:has(.modal-overlay.show){overflow:hidden}` does not fire — the
+           drawer is not a .modal-overlay, by design, since the canvas stays live behind
+           it). Default `overscroll-behavior: auto` means the moment the drawer hits either
+           end of its scroll the wheel keeps going into the page, so the two move as one.
+           `contain` stops the chain at the drawer without freezing the page for the canvas.
+
+       (b) RUNWAY. The stack is much taller since 66.23 and the last field used to bottom
+           out flush against the screen edge — the scrollbar simply stopped, with the row
+           you were reading pinned to the very bottom. 140px of bottom padding lets the
+           last section be scrolled up into a comfortable reading position, which is what
+           "allow the user go deeper" asks for. */
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    padding: 18px 20px 140px 20px !important;
     margin: 0 !important;
     animation: nodeDrawerIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* ---------------------------------------------------------------------------
+   Phase 66.26 — READ THIS BEFORE ADDING A DRAWER RULE.
+
+   The open node-properties drawer is matched by the ATTRIBUTE selector
+   `#node-config-panel[style*="display: block"]`, because the drawer is opened by JS
+   setting an inline `display: block` and NOTHING anywhere in the app ever adds an
+   `is-modal` class. `.is-modal` is a vestigial alias kept only so the two forms read as
+   a pair; on its own it matches nothing and any rule written against it alone is DEAD.
+
+   That is exactly what happened in 66.24: the sticky header and the viewport-pinned drag
+   handle were written as `#node-config-panel.is-modal …`, shipped, passed the wall — the
+   test asserted the RULE TEXT existed, not that the selector ever matches anything — and
+   did nothing at all in the browser. Caught by measuring getComputedStyle on the live
+   build, not by any test.
+
+   So: every drawer rule carries BOTH selectors, and
+   regression_node_drawer_layout.test.js now fails on any `.is-modal` rule that lacks its
+   attribute-selector twin.
+   --------------------------------------------------------------------------- */
+/* The drawer's own scrollbar, always visible so it reads as the drawer's and not the
+   page's. Without this, macOS overlay scrollbars fade out and the two feel like one. */
+#node-config-panel[style*="display: block"]::-webkit-scrollbar,
+#node-config-panel.is-modal::-webkit-scrollbar { width: 10px; }
+#node-config-panel[style*="display: block"]::-webkit-scrollbar-track,
+#node-config-panel.is-modal::-webkit-scrollbar-track { background: transparent; }
+#node-config-panel[style*="display: block"]::-webkit-scrollbar-thumb,
+#node-config-panel.is-modal::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong, rgba(0,0,0,0.28));
+    border-radius: 6px;
+    border: 2px solid var(--color-surface-1);
+}
+#node-config-panel[style*="display: block"]::-webkit-scrollbar-thumb:hover,
+#node-config-panel.is-modal::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent, #0a84ff);
+}
+#node-config-panel[style*="display: block"],
+#node-config-panel.is-modal { scrollbar-width: thin; }
+
+/* Nested scrollers inside the drawer (the "Consumable here" list) must not chain into
+   the drawer either — same defect, one level down. */
+#node-config-panel .cfg-stack [style*="overflow:auto"],
+#config-event-notice-row [style*="overflow:auto"] { overscroll-behavior: contain; }
 @keyframes nodeDrawerIn {
     from { transform: translateX(100%); opacity: 0.5; }
     to   { transform: translateX(0);    opacity: 1; }
@@ -4207,6 +4361,25 @@ body.theme-dark .workspace-menu-action:hover {
 /* Phase 57 — drag handle on the drawer's left edge to resize it wider/narrower. The chosen
    width is remembered (localStorage) and re-applied on the next open. Hidden unless the drawer
    is showing (it lives inside #node-config-panel, which is display:none otherwise). */
+/* Phase 66.24 — the handle used to be `position:absolute; top:0; bottom:0` inside the
+   drawer. In a scroll container that spans only the FIRST screenful: scroll the drawer
+   (now much taller since the fields stack) and the grab handle scrolls off the top and
+   the drawer can no longer be resized. Pinned to the viewport instead, tracking the
+   drawer's live width through --drawer-w, which _syncNodeDrawerWidthVar() keeps current
+   via a ResizeObserver (so it follows the CSS default, a saved width and a live drag
+   alike). During the 0.22s open animation the panel carries a transform, so the handle
+   rides in with it — which is the effect we want anyway. */
+#node-config-panel[style*="display: block"] .node-drawer-resize,
+#node-config-panel.is-modal .node-drawer-resize {
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: auto;
+    right: calc(var(--drawer-w, 760px) - 10px);
+    width: 10px;
+    z-index: calc(var(--z-drawer) + 1);
+}
+
 .node-drawer-resize {
     position: absolute;
     left: 0; top: 0; bottom: 0;
@@ -4397,8 +4570,62 @@ button:focus-visible, select:focus-visible, input:focus-visible, [role="button"]
     color: var(--color-text-tertiary);
     background: var(--color-surface-1); border: 1px solid var(--color-border-hair);
     border-radius: 999px; padding: 4px 11px; white-space: nowrap;
+    /* 23 Aug 2026 — the spine navigates now, so it has to look like it does.
+       Reset the <button> UA styles the old <span> never needed. */
+    font-family: inherit; cursor: pointer; -webkit-appearance: none; appearance: none;
+    transition: background var(--t-fast, .12s), color var(--t-fast, .12s), border-color var(--t-fast, .12s);
 }
+.wf-step:hover { background: var(--color-surface-2); color: var(--color-text-primary); border-color: var(--color-border-thin); }
+.wf-step:focus-visible { outline: 2px solid var(--color-accent, #0a84ff); outline-offset: 2px; }
 .wf-step.active { color: #fff; background: var(--color-accent, #0a84ff); border-color: var(--color-accent, #0a84ff); }
+.wf-step.active:hover { color: #fff; background: var(--color-accent-hover, #084FA3); border-color: var(--color-accent-hover, #084FA3); }
+@media (prefers-reduced-motion: reduce) { .wf-step { transition: none; } }
+/* 23 Aug 2026 — the aircraft lanes (R&M, HF) sit past a hairline, dashed:
+   parallel disciplines beside the ARP flow, not stages inside it. */
+.wf-step-sep { width: 1px; align-self: stretch; margin: 2px 8px; background: var(--color-border-hair); }
+.wf-step.lane { border-style: dashed; }
+.wf-step.lane.active { border-style: solid; }
+/* 23 Aug 2026 (2) — the Prove cluster: quiet text pills that only grow a
+   surface on hover/active, so ten of them read as a toolbar, not ten stages. */
+/* 23 Aug 2026 (4) — the FTA tree picker (fta_tree_picker.js): the
+   golden-thread-style select that replaced every tree row in the left nav. */
+/* 26 Aug 2026 — Waqas: "new fault tree button should be lined up and same size
+   as the drop down bar." The select carried 6px padding while the button
+   inherited the generic 8px 16px, so the button sat ~4px taller and off the
+   select's edges. The row now STRETCHES its children to one height, the select
+   takes the remaining width (flex: 1), and the button matches the select's
+   padding, font and radius exactly. The label keeps centering itself. */
+/* 26 Aug 2026 (later, batch 46) — THE ABOVE WAS NOT ENOUGH, and the reason is
+   worth writing down. `align-items: stretch` stretches a child's MARGIN BOX to
+   the row height, so the child's own border box ends up row height MINUS its
+   vertical margins. The generic `input, select, textarea` rule (line ~913)
+   gives every select `margin-bottom: var(--s-3)` = 12px; the button has none.
+   Measured live after the first attempt: host 43.3px, button 43.3px, select
+   31.3px — exactly 12px short, and the select's own margin is what set the
+   43.3px in the first place. So the select must zero its margin. Then the row
+   collapses to one 31.3px line and both children fill it; the host keeps the
+   12px bottom margin, so nothing below moves. */
+.fta-tree-pick-host { display: flex; align-items: stretch; gap: 10px; margin: 0 0 var(--s-3, 12px); }
+.fta-tree-pick-host label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); align-self: center; white-space: nowrap; }
+#fta-tree-pick { flex: 1 1 auto; min-width: 320px; padding: 6px 10px; font-size: 13px; margin: 0;
+    border: 1px solid var(--color-border-hair); border-radius: var(--r-sm, 6px);
+    background: var(--color-surface-1); color: var(--color-text-primary); }
+#fta-tree-new { padding: 6px 14px; font-size: 13px; border-radius: var(--r-sm, 6px); white-space: nowrap; flex-shrink: 0; }
+/* 23 Aug 2026 (3) — the Prove TAB BAR (prove_tabs.js). The strip is gone;
+   the Prove pages present as underline tabs at the top of each Prove view. */
+.prove-tabbar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px;
+    border-bottom: 1px solid var(--color-border-hair); margin: 0 0 var(--s-4, 16px); padding: 0 0 0 2px; }
+.prove-tabbar-lbl { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--color-text-tertiary); margin-right: 10px; white-space: nowrap; }
+.prove-tab { appearance: none; -webkit-appearance: none; background: transparent; border: none;
+    border-bottom: 2px solid transparent; font-family: inherit; font-size: 12.5px; font-weight: 600;
+    color: var(--color-text-secondary); padding: 7px 10px 8px; cursor: pointer; white-space: nowrap; }
+.prove-tab:hover { color: var(--color-text-primary); background: var(--color-surface-2); }
+.prove-tab:focus-visible { outline: 2px solid var(--color-accent, #0a84ff); outline-offset: -2px; }
+.prove-tab.active { color: var(--color-accent, #0a84ff); border-bottom-color: var(--color-accent, #0a84ff); }
+.wf-step.prove { background: transparent; border-color: transparent; }
+.wf-step.prove:hover { background: var(--color-surface-2); border-color: var(--color-border-hair); }
+.wf-step.prove.active { color: #fff; background: var(--color-accent, #0a84ff); border-color: var(--color-accent, #0a84ff); }
 .wf-step-arrow { color: var(--color-text-tertiary); font-size: 11px; }
 
 /* 7 — In-tree node search box on the FTA canvas. */
@@ -4453,9 +4680,9 @@ tr:has(.cma-suggest) { background: rgba(10, 132, 255, 0.045); }
     --color-surface-2: #fbfbfd;
     --color-surface-3: #ececef;
     --color-overlay:   rgba(255, 255, 255, 0.86);
-    --color-border-hair:   rgba(60, 60, 67, 0.10);
-    --color-border-thin:   rgba(60, 60, 67, 0.16);
-    --color-border-strong: rgba(60, 60, 67, 0.28);
+    --color-border-hair:   rgba(60, 60, 67, 0.18);
+    --color-border-thin:   rgba(60, 60, 67, 0.28);
+    --color-border-strong: rgba(60, 60, 67, 0.40);
     --color-text-primary:   #000000;
     --color-text-secondary: #1d1d1f;
     --color-text-tertiary:  #3a3a3c;
@@ -4809,7 +5036,7 @@ table, .u-mono, input[type="number"] { font-variant-numeric: tabular-nums; }
 }
 .ckpt-tile {
     background: var(--color-surface-1);
-    border: 1px solid var(--color-border-hair);
+    border: 1px solid var(--color-border-strong);
     border-radius: var(--r-md);
     padding: 10px 14px;
 }
@@ -4835,7 +5062,7 @@ table, .u-mono, input[type="number"] { font-variant-numeric: tabular-nums; }
 
 .ckpt-card {
     background: var(--color-surface-1);
-    border: 1px solid var(--color-border-thin);
+    border: 1px solid var(--color-border-strong);
     border-radius: var(--r-md);
     padding: 10px 14px 12px;
     cursor: pointer;
@@ -4980,8 +5207,13 @@ body *, body *::before, body *::after { border-radius: 0 !important; }
    the active item becomes a white chip with navy ink.
    ========================================== */
 body.nav-sidebar .app-sidebar {
-    /* The brand gradient — same stops as the sign-in gate's brand pane. */
-    background: linear-gradient(165deg, #1F3A5F 0%, #007aff 60%, #af52de 100%);
+    /* The brand gradient — same stops as the sign-in gate's brand pane, and as
+       the marketing site's page wash. TONED 14 Aug 2026: the old middle stop was
+       #007aff, on which white text measures 4.02:1 — under AA. The four stops
+       below run 15.47 / 6.93 / 6.46 / 4.73, so the whole panel now clears it.
+       Keep these three surfaces in step: landing.html body, this sidebar, and
+       .sl-brand-pane in auth_gate.js. */
+    background: linear-gradient(165deg, #14224A 0%, #3457A2 45%, #7247B1 85%, #9B55BE 100%);
     border-right: none;
 }
 body.theme-dark.nav-sidebar .app-sidebar {
@@ -4996,7 +5228,7 @@ body.theme-dark.nav-sidebar .app-sidebar {
 .asb-chev { color: rgba(240, 246, 255, 0.55); }
 .asb-item.sub { color: rgba(226, 236, 252, 0.68); }
 .asb-item.sub:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.08); }
-.asb-item.sub.snav-active { color: #FFFFFF; background: rgba(255, 255, 255, 0.16); font-weight: 600; }
+.asb-item.sub.snav-active { color: #FFFFFF; background: rgba(255, 255, 255, 0.16); font-weight: 500; }
 .asb-rail-btn {
     background: rgba(255, 255, 255, 0.10); border-color: rgba(255, 255, 255, 0.22);
     color: rgba(240, 246, 255, 0.85);
@@ -5009,6 +5241,26 @@ body.theme-dark.nav-sidebar .app-sidebar {
 }
 .asb-classic:hover { background: rgba(255, 255, 255, 0.18); }
 body.nav-sidebar .app-sidebar { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
+
+/* ── LEGIBILITY ON A MOVING BACKDROP (14 Aug 2026) ─────────────────────────
+   White text on a gradient reads as unstable even when it clears AA, because
+   the luminance behind each glyph changes down the panel. A soft dark shadow
+   separates the glyph from the backdrop WITHOUT deforming it, and text-shadow
+   inherits, so the root rule covers every label in the sidebar.
+   A HARD STROKE (-webkit-text-stroke: 0.6px #000) WAS TRIED AND REJECTED: at
+   13-15px it thickens the letterforms and small text gets muddier, not
+   clearer. Rendered side by side before choosing. Do not "upgrade" this to a
+   stroke.
+   The reset below protects nested LIGHT surfaces — a popover or input inside
+   the sidebar has dark text and must not inherit a dark shadow. */
+body.nav-sidebar .app-sidebar { text-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 0 1px rgba(0,0,0,0.30); }
+body.nav-sidebar .app-sidebar input,
+body.nav-sidebar .app-sidebar select,
+body.nav-sidebar .app-sidebar textarea,
+body.nav-sidebar .app-sidebar [class*="popover"],
+body.nav-sidebar .app-sidebar [class*="dropdown"],
+body.nav-sidebar .app-sidebar [class*="menu"],
+body.nav-sidebar .app-sidebar [class*="tooltip"] { text-shadow: none; }
 
 /* ==========================================
    Phase 62.9 — header control row normalization
@@ -5075,6 +5327,19 @@ body.nav-sidebar .container { padding-top: 20px; }
    browser focus box is replaced with a subtle inset ring on keyboard focus. */
 .asb-grp > summary.snav-active { background: rgba(255, 255, 255, 0.94); color: #1F3A5F; }
 .asb-grp > summary.snav-active .asb-chev { color: #1F3A5F; }
+
+/* Phase 63.6d — category headers stay readable on the gradient rail.
+   The white-chip active treatment (63.6c) sets the summary color, but
+   .asb-cat-lbl / .asb-lbl carry their own color (text-tertiary — pale paper
+   in dark mode), which was unreadable on the white chip. Hover on category
+   summaries also used var(--color-surface-2) (theme-dependent, unreadable on
+   the gradient) — replaced with the rail's standard white-tint hover. */
+body.nav-sidebar .asb-grp > summary.snav-active { background: rgba(255, 255, 255, 0.94) !important; }
+body.nav-sidebar .asb-grp > summary.snav-active .asb-lbl,
+body.nav-sidebar .asb-grp > summary.snav-active .asb-cat-lbl,
+body.nav-sidebar .asb-grp > summary.snav-active .asb-chev { color: #1F3A5F !important; }
+body.nav-sidebar .asb-grp.asb-cat > summary:hover { background: rgba(255, 255, 255, 0.10); }
+body.nav-sidebar .asb-grp.asb-cat > summary:hover .asb-cat-lbl { color: #FFFFFF; }
 .app-sidebar a:focus, .app-sidebar summary:focus, .app-sidebar button:focus { outline: none; }
 .app-sidebar a:focus-visible, .app-sidebar summary:focus-visible, .app-sidebar button:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.55);
@@ -5094,7 +5359,7 @@ body.nav-sidebar .container { padding-top: 20px; }
 .asb-grp.asb-nested > summary.snav-active {
     background: rgba(255, 255, 255, 0.16) !important;
     color: #FFFFFF !important;
-    font-weight: 600 !important;
+    /* #155: active = highlight chip, not a weight bump — each level keeps its resting weight so a selected leaf never reads as a section header */
 }
 .asb-item.snav-active .asb-ico,
 .asb-grp > summary.snav-active .asb-chev { color: #FFFFFF !important; opacity: 1; }
@@ -5346,3 +5611,222 @@ body.nav-sidebar .asb-brand { height: 38px; padding: 0 8px; margin: 6px 0 8px; a
 .app-sidebar .asb-empty { color: rgba(240, 246, 255, 0.55); }
 .app-sidebar .asb-chev { color: rgba(240, 246, 255, 0.65); }
 .app-sidebar .asb-add-system .asb-lbl { color: #BBD9FF; }
+
+/* ─── cfg-hint — the ONE sanctioned pattern for explanatory text near controls:
+   a single short line, left-aligned, muted, full detail in the title tooltip.
+   Long prose next to editable fields is banned (2026-07-05). */
+.cfg-hint { font-size: 11px; color: var(--color-text-tertiary); margin: 4px 0 0 0; text-align: left; line-height: 1.45; }
+.cfg-hint[title] { cursor: help; }
+
+/* Collapsible category groups inside the Analyze sidebar section */
+.asb-grp.asb-cat > summary { padding: 8px 10px 3px 38px; gap: 6px; }
+.asb-grp.asb-cat > summary:hover { background: var(--color-surface-2); }
+.asb-cat-lbl { font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); font-weight: 700; }
+.asb-grp.asb-cat > summary .asb-chev { font-size: 11px; }
+.asb-catsub { display: flex; flex-direction: column; }
+
+/* v66.12 — CCF cut-set row tint, theme-aware (was hardcoded #f3e8ff inline,
+   unreadable under dark mode: near-white text on a light lavender row). */
+.cutset-row-ccf { background-color: #f3e8ff; border-left: 3px solid #8b5cf6; }
+body.theme-dark .cutset-row-ccf { background-color: rgba(139, 92, 246, 0.18); }
+
+/* Phase 66.22 — event-reuse / strictest-allocation notices.
+   These live in #config-event-notice-row, the LAST block of the node-properties panel
+   and a sibling of the field rows, never a child of one. Twice bitten: nested in the
+   flex:3 name cell the prose rendered as a ~140px ribbon, and flex-basis:100% inside a
+   row with no flex-wrap merely shrank it against its neighbours. As a block at the foot
+   of the panel it simply takes the modal's full width and wraps.
+   :empty keeps the divider from drawing on an event that has nothing to say. */
+#config-event-notice-row { width: 100%; }
+#config-event-notice-row > div:empty { display: none; }
+#config-event-notice-row > div:not(:empty) {
+    border-top: 1px dashed var(--border-primary);
+    padding-top: 12px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+#config-event-notice-row > div:not(:empty) ~ div:not(:empty) {
+    border-top: none;
+    padding-top: 0;
+}
+#config-event-notice-row a { word-break: break-word; }
+
+/* ------------------------------------------------------------------------- *
+   Phase 66.23 — node-properties drawer: stack the fields, use the height.
+   Waqas, 19 Aug: "I dont like how this stuff wraps, can we make these stacked
+   vertically ... the drop down wider so the full text is visible" and "in modals
+   like these we need to maximize the use of the vertical space."
+
+   The drawer is a full-height fixed column with room to spare, but the field rows
+   were laid out horizontally with no flex-wrap. Six cells sharing 760px gave every
+   cell ~120px, so LABELS wrapped to three lines and "Basic Event" truncated to
+   "Bas". Worse, several rows put a `flex: 1 1 100%` hint paragraph in a NOWRAP row
+   (config-dal-kind-container being the one Waqas named): a 100% basis cannot break
+   to its own line without flex-wrap, so the explanatory text sat ADJACENT to the
+   control and squeezed it instead of sitting below it.
+
+   .cfg-stack turns those rows into a single vertical column: one control per row,
+   full width, label on one line, hint text underneath the control it explains.
+   Vertical space is the cheap axis here — the drawer already scrolls.
+
+   The child rule needs !important because the flex shorthands are inline styles.
+ * ------------------------------------------------------------------------- */
+#node-config-panel .cfg-stack {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+}
+#node-config-panel .cfg-stack > div {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
+}
+#node-config-panel .cfg-stack > div > label {
+    white-space: normal;
+    display: block;
+    margin-bottom: 4px;
+}
+#node-config-panel .cfg-stack select,
+#node-config-panel .cfg-stack input[type="text"],
+#node-config-panel .cfg-stack input[type="number"],
+#node-config-panel .cfg-stack textarea {
+    width: 100%;
+    margin-bottom: 0;
+}
+/* The hint paragraph belongs UNDER its control, not beside it. */
+#node-config-panel .cfg-stack .cfg-hint {
+    margin: 2px 0 0 0;
+}
+/* Checkbox labels stay on one line with the box — stacking those would be silly. */
+#node-config-panel .cfg-stack > div > label:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Header stays put while a taller stack scrolls under it. The box-shadow extends the
+   header's own background up through the panel's 18px top padding, so nothing shows
+   through above it. */
+/* Phase 66.23/66.24 — the drawer's top row stays put while the body scrolls.
+   Waqas: "can the top row stay put while you scroll down the modal, not just the text
+   but save changes, kebab, and the exit symbol too." All four ARE one element — the
+   <h4>, Save Changes, the ⋮ kebab and the × close all live inside .cfg-drawer-head —
+   so making that row sticky pins the lot. Save is the one that matters: on a stack this
+   tall you should never have to scroll back up to commit an edit.
+
+   Two details that make it look right rather than merely behave right:
+   - the negative side margins bleed the header's background across the drawer's 20px
+     horizontal padding, so content cannot be seen sliding past beside it;
+   - box-shadow 0 -20px 0 does the same upward, through the 18px top padding. */
+#node-config-panel[style*="display: block"] .cfg-drawer-head,
+#node-config-panel.is-modal .cfg-drawer-head {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    background: var(--color-surface-1);
+    box-shadow: 0 -20px 0 var(--color-surface-1);
+    margin: 0 -20px 12px -20px !important;
+    padding: 0 20px 10px 20px;
+    border-bottom: 1px solid var(--color-border-hair);
+}
+/* The kebab's popup has to clear the sticky row it hangs off. */
+#node-config-panel[style*="display: block"] .cfg-drawer-head .row-action-menu,
+#node-config-panel.is-modal .cfg-drawer-head .row-action-menu { z-index: 7; }
+/* The drag handle must not sit on top of the close button. */
+#node-config-panel[style*="display: block"] .cfg-drawer-head .node-modal-close,
+#node-config-panel.is-modal .cfg-drawer-head .node-modal-close { position: relative; z-index: 8; }
+
+/* =========================================================================== *
+   Phase 66.25 — PANEL AUDIT. Waqas, 19 Aug 2026:
+     "well you asked the question veere, lets audit all the panels and see what
+      happens, and fix it"
+
+   The question was mine, from the drawer post-mortem: what does this container do
+   when the content is twice as tall? `tests/lib/layout_scan.js` now asks it of every
+   panel in the app — index.html, safety_lab.css and the HTML built inside JS template
+   literals — and `tests/regression_layout_invariants.test.js` keeps asking on every
+   wall run. What follows is the fix for what it found.
+ * =========================================================================== */
+
+/* --- CHAIN: bounded scrollers that dragged the page along with them ---------
+   31 of them. Every one is a list or panel with its own scrollbar sitting over other
+   content; with the default `overscroll-behavior: auto`, reaching either end hands the
+   wheel to the page, so the widget and the page move as one — the exact complaint from
+   the node drawer, repeated across the app. `contain` stops the chain at the widget.
+   It is strictly better for any bounded scroller: nothing about it traps the user,
+   because the page still scrolls the moment the pointer leaves the widget. */
+.cb-list,
+.ar-preview-list,
+.dash-worklist-list,
+.shortcuts-card,
+.ckpt-modal,
+.fta-sidebar,
+.app-sidebar,
+.asb-sub,
+.modal-body,
+.ar-modal-body,
+.signup-modal-body,
+.template-editor-body,
+.backref-body,
+.cmd-palette-results {
+    overscroll-behavior: contain;
+}
+
+/* The same, for scrollers declared with an inline style — 21 of those in index.html
+   alone. Attribute-substring selectors catch the ones written today AND the ones
+   someone adds next month without reading this file. Specificity is (0,1,0), so any
+   real rule still wins. */
+[style*="overflow-y: auto"], [style*="overflow-y:auto"],
+[style*="overflow-y: scroll"], [style*="overflow-y:scroll"],
+[style*="overflow: auto"], [style*="overflow:auto"],
+[style*="overflow: scroll"], [style*="overflow:scroll"] {
+    overscroll-behavior: contain;
+}
+
+/* --- FLEX_MINH: scroll panes that could never actually scroll ---------------
+   The flexbox trap. A flex item's default `min-height` is `auto` — its content size —
+   so `flex: 1; overflow-y: auto` inside a capped flex column does NOT scroll: the item
+   refuses to shrink below its content and the CAPPED ANCESTOR overflows instead. It
+   looks correct at every content size you happened to test, and silently breaks the
+   first time the list is long. All three of these are modal bodies. */
+.template-editor-body,
+.backref-body,
+.cmd-palette-results {
+    min-height: 0;
+}
+
+/* --- NOWRAP: workspace tab strips ------------------------------------------
+   .sys-workspace-nav is an inline-flex with no wrap and no overflow. It carries 7 tabs
+   today (Functions · FCIM · FHA · FMEA · Requirements · Assumptions · PSSA) and the
+   PASA sub-nav 6, and both only ever grow. Without this, tab #8 or a narrow window
+   squashes every tab until the labels wrap inside the buttons. Tabs should scroll
+   sideways, not wrap and not squash — so: cap the width, allow the scroll, and forbid
+   the shrink. */
+.sys-workspace-nav {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+}
+.sys-workspace-nav button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* --- CLIP: the collapsible data-entry forms --------------------------------
+   `.collapsible-form-content` animates open by transitioning max-height 0 -> 2400px,
+   with `overflow: hidden` to clip during the animation. Both are needed for the
+   animation and both are wrong once it has finished: a form taller than 2400px is cut
+   off with NO scrollbar and no way to reach the rest of it, and `overflow: hidden`
+   clips any dropdown that opens past the edge. This wrapper is applied to 14 log-entry
+   forms (FCIM, FHA, FMEA, PRA, ZSA, CMA, requirements, assumptions, on both the
+   Aircraft and System sides), so it is not a corner case.
+
+   Fix: keep the cap for the duration of the animation, then hand the element back to
+   its natural height. `wrapFormCollapsible()` adds .cfc-settled on transitionend and
+   removes it before a close, so the animation is unchanged in both directions. */
+.collapsible-form-content.open.cfc-settled {
+    max-height: none;
+    overflow: visible;
+}

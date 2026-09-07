@@ -1,0 +1,130 @@
+{
+  "name": "safety-lab-aero-desktop",
+  "productName": "Safety Lab Aero",
+  "version": "0.10.1",
+  "description": "Safety Lab Aero \u2014 desktop / air-gap build. Electron wrapper around the analysis engine with native .slab project files and a configurable (bring-your-own) AI endpoint.",
+  "author": "Muhammad Waqas Nafees",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "vendor": "bash vendor-libs.sh",
+    "sync": "bash sync-app.sh",
+    "setup": "bash vendor-libs.sh && bash sync-app.sh",
+    "start": "electron .",
+    "dev": "bash sync-app.sh && electron .",
+    "dist:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac",
+    "dist:mac:signed": "electron-builder --mac",
+    "dist:win": "electron-builder --win --x64",
+    "dist": "electron-builder -mw",
+    "release": "bash sync-app.sh && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac && bash publish-desktop.sh",
+    "release:win": "bash sync-app.sh && electron-builder --win --x64 && bash publish-desktop.sh",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "build": {
+    "appId": "com.safetylabaero.desktop",
+    "productName": "Safety Lab Aero",
+    "files": [
+      "main.js",
+      "license.js",
+      "preload-app.js",
+      "preload-onboarding.js",
+      "preload-settings.js",
+      "settings.html",
+      "onboarding.html",
+      "signin.html",
+      "agreements/**/*",
+      "build/icon.png",
+      "app/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "afterPack": "afterPack.js",
+    "afterSign": "notarize.js",
+    "dmg": {
+      "artifactName": "SafetyLabAero-${os}-${arch}.${ext}",
+      "title": "Safety Lab Aero ${version}",
+      "background": "build/dmg-background.png",
+      "window": {
+        "width": 600,
+        "height": 400
+      },
+      "iconSize": 120,
+      "contents": [
+        {
+          "x": 150,
+          "y": 205,
+          "type": "file"
+        },
+        {
+          "x": 450,
+          "y": 205,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "nsis": {
+      "artifactName": "SafetyLabAero-win-${arch}.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Safety Lab Aero"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://updates.safetylabaero.com/desktop/"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "@electron/notarize": "^2.5.0",
+    "electron": "^31.7.0",
+    "electron-builder": "^24.13.3",
+    "wrangler": "^4.107.0"
+  }
+}

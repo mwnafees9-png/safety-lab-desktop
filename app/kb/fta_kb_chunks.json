@@ -544,5 +544,47 @@
   "source": "lifecycle-method",
   "topic": "Carry assumptions forward as inputs mature",
   "text": "Because inputs arrive over time, assumptions made early — an assumed redundancy, an assumed independence, a placeholder where a failure rate will go — must be logged and revisited as later-phase inputs appear. An early-phase tree is provisional: when the schematic or SDD arrives, the previously black-box branch is developed and each earlier assumption is explicitly confirmed or retired rather than silently inherited."
+ },
+ {
+  "id": "imp-01",
+  "source": "NRC-NUREG-0492",
+  "topic": "Minimal cut sets and top-down generation",
+  "text": "NUREG-0492 (Fault Tree Handbook, U.S. NRC, January 1981) defines a cut set as any set of basic events whose simultaneous occurrence causes the top event, and a minimal cut set (MCS) as a cut set no proper subset of which is still a cut set. The minimal cut sets are the irreducible failure combinations of the system: a one-event MCS is a single-point failure, a two-event MCS a double failure, and so on. They are obtained by the top-down substitution method (each gate replaced by its inputs — AND gates widen a set, OR gates branch into alternative sets) followed by absorption to remove non-minimal and duplicate sets; this is the MOCUS algorithm. Qualitative ranking is by cut-set order (lower order = more critical) and by the appearance of a common event across sets. Safety Lab Aero's solver enumerates minimal cut sets deterministically and reports them; the FHA/FTA grader treats every first-order cut set as a single-point failure to be justified against the failure-condition classification."
+ },
+ {
+  "id": "imp-02",
+  "source": "NRC-NUREG-0492",
+  "topic": "Birnbaum importance (marginal)",
+  "text": "The Birnbaum importance of basic event i is the partial derivative of the top-event probability with respect to that event's probability, I_B(i) = dQ_top/dq_i, equal to Q(q_i=1) minus Q(q_i=0): the top-event probability with i assumed failed minus the top-event probability with i assumed working. It measures the RATE at which the top-event probability changes with event i and does not itself depend on q_i, so it captures structural/architectural criticality independent of how likely the event is. NUREG-0492 introduces it as the basic marginal-importance measure from which the others are derived. Safety Lab Aero computes Birnbaum importance per basic event as one of its importance rankings; a high Birnbaum value flags an event the architecture leans on regardless of its current failure rate."
+ },
+ {
+  "id": "imp-03",
+  "source": "NRC-NUREG-0492",
+  "topic": "Fussell-Vesely and criticality importance",
+  "text": "The Fussell-Vesely importance of basic event i is the fractional contribution of that event to the top-event probability: the probability of the union of all minimal cut sets that contain i, divided by the top-event probability. Unlike Birnbaum it does depend on q_i, so it blends how likely the event is with how much of the risk flows through it, and it answers 'what share of current top-event probability involves this event.' The related criticality importance is the Birnbaum importance scaled by q_i/Q_top. NUREG-0492 and later PRA practice use Fussell-Vesely as the standard contributor ranking. Safety Lab Aero computes Fussell-Vesely alongside Birnbaum so the analyst can separate structural criticality (Birnbaum) from realized contribution (Fussell-Vesely)."
+ },
+ {
+  "id": "imp-04",
+  "source": "NASA-SP-2011-3421",
+  "topic": "Risk Achievement Worth and Risk Reduction Worth",
+  "text": "NASA/SP-2011-3421 (Probabilistic Risk Assessment Procedures Guide for NASA Managers and Practitioners, 2nd ed., December 2011) defines two ratio importance measures used for prioritization. Risk Achievement Worth (RAW) of event i is Q(q_i=1)/Q_top, the factor by which the top-event probability would rise if i were certain to occur — it ranks how much an element is worth keeping reliable (protecting). Risk Reduction Worth (RRW) is Q_top/Q(q_i=0), the factor by which the top-event probability would fall if i were made perfect — it ranks where improvement pays off most. RAW is a maintenance/defense priority; RRW is a design-improvement priority. Safety Lab Aero reports RAW and RRW per basic event; because they are ratios they order events differently from the additive Birnbaum measure, so the tool presents them together rather than as a single 'importance' number."
+ },
+ {
+  "id": "ccfparam-01",
+  "source": "NASA-SP-2011-3421",
+  "topic": "Common-cause parametric models: beta-factor and Multiple Greek Letter",
+  "text": "Common-cause failures (CCF) defeat nominally independent redundancy through a shared root cause, and parametric models apportion a component's total failure probability q between independent and common-cause modes. The beta-factor model splits q into an independent part q(1-beta) and a group part q*beta that fails all redundant members together; beta is the fraction of a component's failures that are common-cause. The Multiple Greek Letter (MGL) model generalizes this for groups larger than two with conditional fractions beta, gamma, delta: gamma is the conditional fraction of common-cause failures that involve three or more members, delta four or more. Safety Lab Aero's solver implements MGL exactly, splitting a CCF group's contribution into tiers: a pair term q*beta*(1-gamma), a triple term q*beta*gamma*(1-delta), and a quadruple term q*beta*gamma*delta; setting gamma=delta=0 reduces MGL to the beta-factor model. These CCF terms enter the fault tree as explicit common-cause events so an apparent AND of redundant items does not read as independent when it is not."
+ },
+ {
+  "id": "uncert-01",
+  "source": "NASA-SP-2011-3421",
+  "topic": "Uncertainty propagation and mean vs point estimate",
+  "text": "NASA/SP-2011-3421 treats basic-event probabilities as uncertain, typically modeled by a lognormal distribution characterized by a median and an error factor EF (EF = 95th percentile / median = median / 5th percentile), reflecting the multiplicative, order-of-magnitude uncertainty of reliability data. Epistemic uncertainty is propagated to the top event by Monte Carlo sampling of the basic-event distributions, producing a distribution for the top-event probability from which the mean and a 5th-95th credible interval are reported. Because lognormal distributions are right-skewed, the MEAN top-event probability exceeds the point estimate computed from median inputs, so the mean is the value compared against the safety objective. Safety Lab Aero's quantifier carries a per-event error factor and runs a lognormal Monte Carlo propagation; when no basic event has a non-trivial error factor the sampler collapses to the point estimate, which the tool notes."
+ },
+ {
+  "id": "pra-01",
+  "source": "NASA-SP-2011-3421",
+  "topic": "Where fault trees sit in a PRA",
+  "text": "A probabilistic risk assessment answers the risk triplet: what can go wrong (scenarios), how likely is each, and what are the consequences. NASA/SP-2011-3421 structures scenarios with initiating events, event sequence diagrams and event trees for the accident progression, and fault trees for the failure logic of the systems (pivotal events) invoked along each sequence. The fault tree supplies the probability of a system failing to perform its function given the demand; the event tree assembles these into end-state frequencies. Certification safety assessment under ARP4761A uses the same fault-tree logic to quantify a failure condition against its per-flight-hour objective, without necessarily building the full event-tree accident model. Safety Lab Aero models the fault-tree layer (failure logic, minimal cut sets, importance, CCF, uncertainty) that both frameworks share; it frames results in the certification objective, not a full PRA end-state frequency, unless the mission-risk basis (Part 450 / SORA) calls for the wider model."
  }
 ]
