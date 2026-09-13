@@ -17,7 +17,7 @@
     <script src="vendor/d3.v7.min.js"></script>
     <script src="vendor/chart.umd.min.js"></script>
     
-    <link rel="stylesheet" href="safety_lab.css?v=65.56">
+    <link rel="stylesheet" href="safety_lab.css?v=65.66">
     
     <style id="sl-boot-splash-style">
         .sl-boot-hidden #sl-boot-splash { display: none !important; }
@@ -613,7 +613,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     <button class="action-btn" onclick="autoFillFcIdsForActiveSystem()" title="Walk every FHA row in this system, find the best-matching FCIM TL/PL/M by description token-overlap, and fill in blank FC IDs.">Auto-fill FC IDs from FCIM</button>
                     <span style="font-size: 11px; color: var(--color-text-tertiary);">Fills blank cells only; existing FC IDs are preserved.</span>
                 </div>
-                <div class="sev-legend" aria-label="Severity color key"><span class="sev-legend-label">Severity</span><span class="sev-chip cell-Catastrophic">Catastrophic</span><span class="sev-chip cell-Hazardous">Hazardous</span><span class="sev-chip cell-Major">Major</span><span class="sev-chip cell-Minor">Minor</span><span class="sev-chip cell-Negligible">Negligible</span></div>
+                <div class="sev-legend" aria-label="Severity color key"><span class="sev-legend-label">Severity</span><span class="sev-chip cell-Catastrophic">Catastrophic</span><span class="sev-chip cell-Hazardous">Hazardous</span><span class="sev-chip cell-Major">Major</span><span class="sev-chip cell-Minor">Minor</span><span class="sev-chip cell-Negligible">No Safety Effect</span></div>
                 <div style="overflow-x: auto;">
                     <table id="sys-fha-table">
                         <thead><tr><th>Actions</th><th>Function</th><th>FC ID</th><th>Failure Condition</th><th>Phases</th><th>Effects</th><th>Severity</th><th>Assumptions</th><th>Comments</th></tr></thead>
@@ -858,16 +858,17 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
             </div>
 
             <h4 style="color: var(--header-color); border-bottom: 1px solid var(--border-primary); padding-bottom: 5px;">Qualitative Severity Classifications</h4>
-            <table class="reference-table" style="margin-bottom: 30px;">
-                <thead><tr><th style="width: 15%;">Classification</th><th style="width: 25%;">Effect on Aircraft</th><th style="width: 30%;">Effect on Occupants</th><th style="width: 30%;">Effect on Flight Crew</th></tr></thead>
+            <table class="reference-table" style="margin-bottom: 8px;">
+                <thead><tr><th style="width: 13%;">Classification</th><th style="width: 22%;">Effect on Aircraft</th><th style="width: 22%;">Effect on Occupants or Other Persons Excluding Flightcrew</th><th style="width: 29%;">Effect on Flightcrew</th><th style="width: 14%;">Allowable Qualitative Probability</th></tr></thead>
                 <tbody>
-                    <tr><td class="cell-Catastrophic">Catastrophic</td><td>Normally with hull loss / Loss of continued safe flight and landing.</td><td>Multiple fatalities.</td><td>Fatalities or incapacitation.</td></tr>
-                    <tr><td class="cell-Hazardous">Hazardous</td><td>Large reduction in safety margins or functional capabilities.</td><td>Serious or fatal injury to a relatively small number of the occupants.</td><td>Physical distress or higher workload.</td></tr>
-                    <tr><td class="cell-Major">Major</td><td>Significant reduction in safety margins or functional capabilities.</td><td>Physical discomfort, possibly including injuries.</td><td>Physical discomfort or a significant increase in workload.</td></tr>
-                    <tr><td class="cell-Minor">Minor</td><td>Slight reduction in safety margins or functional capabilities.</td><td>Physical discomfort.</td><td>Slight increase in workload or use of emergency procedures.</td></tr>
-                    <tr><td class="cell-Negligible">No Safety Effect</td><td>No effect on operational capabilities or safety.</td><td>Inconvenience.</td><td>No effect on flight crew workload.</td></tr>
+                    <tr><td class="cell-Catastrophic"><span class="sev-pill sev-cat">Catastrophic</span></td><td>Normally with hull loss.<div style="font-size:11.5px; margin-top:4px;">A failure condition that would prevent continued safe flight and landing is Catastrophic (AC 25.1309-1B §3.1.5 Note 1; AC 23.1309-1E: incapacitation or fatal injury to a flight crewmember, normally with loss of the airplane).</div></td><td>Multiple fatalities.</td><td>Fatalities or incapacitation.</td><td>Extremely improbable</td></tr>
+                    <tr><td class="cell-Hazardous"><span class="sev-pill sev-haz">Hazardous</span></td><td>Large reduction in functional capabilities or safety margins.</td><td>Serious or fatal injury to a small number of persons other than the flightcrew.</td><td>Physical distress or excessive workload such that the flightcrew cannot be relied upon to perform their tasks accurately or completely.</td><td>Extremely remote</td></tr>
+                    <tr><td class="cell-Major"><span class="sev-pill sev-maj">Major</span></td><td>Significant reduction in safety margins or functional capabilities.</td><td>Physical distress, possibly including injuries.</td><td>A physical discomfort or significant increase in workload or in conditions impairing the efficiency of the flightcrew.</td><td>Remote</td></tr>
+                    <tr><td class="cell-Minor"><span class="sev-pill sev-min">Minor</span></td><td>Slight reduction in functional capabilities or safety margins.</td><td>Physical discomfort.</td><td>Slight increase in workload.<div style="font-size:11.5px; margin-top:4px;">Includes routine flight plan changes and emergency procedures well within crew capability.</div></td><td>Probable</td></tr>
+                    <tr><td class="cell-Negligible"><span class="sev-pill sev-neg">No Safety Effect</span></td><td>No effect on operational capabilities or safety.</td><td>Inconvenience.</td><td>No effect on flightcrew workload.</td><td>No probability requirement</td></tr>
                 </tbody>
             </table>
+                <p style="font-size:12px; margin:0 0 30px;">Effect wording per FAA AC 25.1309-1B Table 4-1; AC 23.1309-1E paragraph 8 defines the same five classes in the same terms. The qualitative probability terms are common to the FAA and EASA bases; the numeric probability targets and DAL assignment vary by certification basis and are set in the Certification basis block above. The AI assistant classifies against the verbatim AC 25.1309-1B / AC 23.1309-1E definitions for the project's basis on every severity-assigning pass.</p>
 
             <h4 style="color: var(--header-color); border-bottom: 1px solid var(--border-primary); padding-bottom: 5px;">Applicable Quantitative Targets</h4>
             <p class="cfg-hint" title="Targets reflect the selection above. Probabilities are upper bounds (failures per flight hour); the design must demonstrate < target. DAL per SAE ARP4754A.">Upper bounds per flight hour · design must show &lt; target · DAL per ARP4754A.</p>
@@ -1219,7 +1220,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     <button id="btn-cancel-ac-fha" onclick="cancelEdit('acFha')" style="display:none; background:#94a3b8;">Cancel Edit</button>
                 </div>
             </div>
-            <div class="sev-legend" aria-label="Severity color key"><span class="sev-legend-label">Severity</span><span class="sev-chip cell-Catastrophic">Catastrophic</span><span class="sev-chip cell-Hazardous">Hazardous</span><span class="sev-chip cell-Major">Major</span><span class="sev-chip cell-Minor">Minor</span><span class="sev-chip cell-Negligible">Negligible</span></div>
+            <div class="sev-legend" aria-label="Severity color key"><span class="sev-legend-label">Severity</span><span class="sev-chip cell-Catastrophic">Catastrophic</span><span class="sev-chip cell-Hazardous">Hazardous</span><span class="sev-chip cell-Major">Major</span><span class="sev-chip cell-Minor">Minor</span><span class="sev-chip cell-Negligible">No Safety Effect</span></div>
             <div style="overflow-x: auto;">
                 <table id="ac-fha-table">
                     <thead id="ac-fha-thead"><tr><th>Actions</th><th>Sub-Function</th><th>FC ID</th><th>Failure Condition</th><th>Phases</th><th>Effects</th><th>Severity</th><th>Assumptions</th><th>Comments</th><th data-tmpl-review="1">Review</th></tr></thead>
@@ -3244,7 +3245,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     <h2 id="gt-title">Hazard Thread Validation</h2>
                     <button class="btn-red" onclick="closeGoldenThreadModal()" style="margin:0;">Close Thread</button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="display:block;">
                     <div id="gt-thread" style="padding: 4px 2px;"></div>
                 </div>
             </div>
@@ -3841,8 +3842,12 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script>window.SL_SHOWCASE_KESTREL25_SRC = 'demo_showcase_kestrel25.js?v=1';</script>
     <script>window.SL_SHOWCASE_HL1_SRC = 'demo_showcase_hl1.js?v=6';</script>
     <script>window.SL_SHOWCASE_HALCYON_SRC = 'demo_showcase_halcyon.js?v=5';</script>
+    <script>window.SL_SHOWCASE_VAYU_SRC = 'demo_showcase_vayu.js?v=1';</script>
     
-    <script>window.SL_MFA_REQUIRED = false;</script>
+    <script>window.SL_CRDT_AUTHORITATIVE = true;</script>
+    
+    <script>window.SL_DESKTOP_APP_READY = true;</script>
+    
     
     
     
@@ -3855,6 +3860,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="fuzz_bot.js?v=1.0" defer></script>
     
     <script src="presence.js?v=2.0" defer></script>
+    <script src="edit_locks.js?v=1.1" defer></script>
     
     <script src="rev_diff.js?v=1.0" defer></script>
     
@@ -3876,7 +3882,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="config_data.js?v=1.1" defer></script>
     <script src="ai_memory.js?v=1.0" defer></script>
     <script src="importers.js?v=1.5" defer></script>
-    <script src="core_modules.js?v=1.5" defer></script>
+    <script src="core_modules.js?v=1.6" defer></script>
     
     <script src="fta_quant_modules.js?v=66.16" defer></script>
     
@@ -3888,29 +3894,29 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="node_identity.js?v=1.0" defer></script>
     <script src="node_identity_ui.js?v=1.4" defer></script>
-    <script src="fta_view_modules.js?v=66.34" defer></script>
+    <script src="fta_view_modules.js?v=66.37" defer></script>
     
-    <script src="gt_thread.js?v=0.9" defer></script>
-    <script src="data_ops_modules.js?v=66.36" defer></script>
+    <script src="gt_thread.js?v=0.91" defer></script>
+    <script src="data_ops_modules.js?v=66.41" defer></script>
     
     <script src="support_modules.js?v=66.31" defer></script>
     
-    <script src="helpers_modules.js?v=2.91" defer></script>
+    <script src="helpers_modules.js?v=2.98" defer></script>
     <script src="cloud_writer.js?v=1.0" defer></script>
-    <script src="severity_axes.js?v=1.3" defer></script>
+    <script src="severity_axes.js?v=1.34" defer></script>
     
     <script src="fha_derive.js?v=1.1" defer></script>
     
-    <script src="bindings_modules.js?v=1.39" defer></script>
+    <script src="bindings_modules.js?v=1.45" defer></script>
     
-    <script src="misc_fn_modules.js?v=66.56" defer></script>
-    <script src="safety_lab.js?v=65.52" defer></script>
+    <script src="misc_fn_modules.js?v=66.60" defer></script>
+    <script src="safety_lab.js?v=65.54" defer></script>
     
     <script src="sl_env.js?v=1.1" defer></script>
     
     <script src="project_stores.js?v=1.0" defer></script>
     <script src="crdt_gc.js?v=1.1" defer></script>
-    <script src="crdt_sync.js?v=1.7" defer></script>
+    <script src="crdt_sync.js?v=1.9" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
     <script src="assurance_modules.js?v=1.31" defer></script>
@@ -3927,7 +3933,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ops_mc.js?v=0.2" defer></script>
     
-    <script src="msg3_module.js?v=1.3" defer></script>
+    <script src="msg3_module.js?v=1.5" defer></script>
     
     <script src="rel_analytics.js?v=1.3" defer></script>
     <script src="mx_analytics.js?v=1.1" defer></script>
@@ -3942,7 +3948,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="interdep_ai.js?v=1.2" defer></script>
     
-    <script src="evidence_package.js?v=2.6" defer></script>
+    <script src="evidence_package.js?v=2.8" defer></script>
     
     <script src="objectives_matrix.js?v=1.1" defer></script>
     
@@ -3972,7 +3978,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ram_cockpit.js?v=1.1" defer></script>
     
-    <script src="budget_ledger.js?v=1.4" defer></script>
+    <script src="budget_ledger.js?v=1.42" defer></script>
     
     <script src="importance_heat.js?v=2.1" defer></script>
     
@@ -3986,9 +3992,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="onboarding_tour.js?v=1.5" defer></script>
     
-    <script src="ffs_module.js?v=1.3" defer></script>
+    <script src="ffs_module.js?v=1.32" defer></script>
     
-    <script src="asa_triage.js?v=1.1" defer></script>
+    <script src="asa_triage.js?v=1.12" defer></script>
     <script src="idp_seed_trees.js?v=1.0" defer></script>
     
     <script src="gt_integrity.js?v=1.5" defer></script>
@@ -4001,7 +4007,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="session_resume.js?v=1.3" defer></script>
     
-    <script src="cloud_sync.js?v=2.0" defer></script>
+    <script src="cloud_sync.js?v=2.1" defer></script>
     
     <script src="reqif_import.js?v=1.2" defer></script>
     
@@ -4028,11 +4034,12 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="ram_predict.js?v=0.6" defer></script>
     <script src="ram_hub.js?v=1.1" defer></script>
     <script src="engine_selftest.js?v=1.0" defer></script>
-    <script src="ram_trace.js?v=1.1" defer></script>
-    <script src="model_checks.js?v=1.0" defer></script>
-    <script src="fault_sim.js?v=1.2" defer></script>
+    <script src="ram_trace.js?v=1.12" defer></script>
+    <script src="model_checks.js?v=1.01" defer></script>
+    <script src="fault_sim.js?v=1.22" defer></script>
     <script src="tab_guard.js?v=1.0" defer></script>
     <script src="journal.js?v=1.0" defer></script>
+    <script src="change_journal_sync.js?v=1.1" defer></script>
     <script src="pssa_ssa_pages.js?v=1.0" defer></script>
     <script src="nav_sfha_tree.js?v=1.3" defer></script>
     <script src="assumption_moat.js?v=1.4" defer></script>
@@ -4040,17 +4047,17 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="hf_assumptions.js?v=0.9" defer></script>
     <script src="hf_register_panel.js?v=1.8" defer></script>
     <script src="hf_analyses.js?v=1.16" defer></script>
-    <script src="field_defs.js?v=1.2" defer></script>
+    <script src="field_defs.js?v=1.4" defer></script>
     <script src="lane_ai_bar.js?v=1.2" defer></script>
     <script src="hf_evidence.js?v=0.2" defer></script>
     
     <script src="hf_severity_check.js?v=1.2" defer></script>
-    <script src="hf_severity_badge.js?v=1.2" defer></script>
+    <script src="hf_severity_badge.js?v=1.21" defer></script>
     
-    <script src="fha_a5.js?v=1.2" defer></script>
+    <script src="fha_a5.js?v=1.4" defer></script>
     
-    <script src="fcim_combined.js?v=1.3" defer></script>
-    <script src="a11_sequencing.js?v=1.1" defer></script>
+    <script src="fcim_combined.js?v=1.5" defer></script>
+    <script src="a11_sequencing.js?v=1.3" defer></script>
     <script src="corpus_retrieve.js?v=1.2" defer></script>
     
     <script src="stpa_core.js?v=1.1" defer></script>
@@ -4067,10 +4074,11 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="demo_kit.js?v=2" defer></script>
     <script src="hl1_showcase.js?v=6" defer></script>
     <script src="halcyon_showcase.js?v=5" defer></script>
-    <script src="demo_picker.js?v=4" defer></script>
-    <script src="first_run.js?v=1" defer></script>
+    <script src="vayu_showcase.js?v=1" defer></script>
+    <script src="demo_picker.js?v=5" defer></script>
+    <script src="first_run.js?v=2" defer></script>
     <script src="continue_session.js?v=1.0" defer></script>
-    <script src="stpa_panel.js?v=1.4" defer></script>
+    <script src="stpa_panel.js?v=1.41" defer></script>
     <script src="stpa_report.js?v=1.2" defer></script>
     <script src="stpa_ai_apply.js?v=0.2" defer></script>
     
@@ -4087,14 +4095,14 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="physical_independence.js?v=1.1" defer></script>
     <script src="independence_claims.js?v=1.0" defer></script>
     <script src="physical_crosscheck.js?v=1.1" defer></script>
-    <script src="zonal_ui.js?v=1.9" defer></script>
+    <script src="zonal_ui.js?v=1.12" defer></script>
     <script src="equipment_hazards.js?v=1.0" defer></script>
     <script src="beta_scoring.js?v=1.0" defer></script>
     <script src="zsa_walkthrough.js?v=1.1" defer></script>
-    <script src="cma_walkthrough.js?v=1.1" defer></script>
+    <script src="cma_walkthrough.js?v=1.31" defer></script>
     <script src="pra_library.js?v=1.2" defer></script>
-    <script src="pra_canvas.js?v=1.0" defer></script>
-    <script src="msg3_zonal.js?v=1.0" defer></script>
+    <script src="pra_canvas.js?v=1.21" defer></script>
+    <script src="msg3_zonal.js?v=1.21" defer></script>
     <script src="mac_l3.js?v=1.0" defer></script>
     
     <script src="mac_flows.js?v=1.1" defer></script>
@@ -4127,21 +4135,21 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="do_credit.js?v=1.0" defer></script>
     <script src="do160_ledger.js?v=1.0" defer></script>
     <script src="ewis_lane.js?v=1.0" defer></script>
-    <script src="event_trees.js?v=1.5" defer></script>
+    <script src="event_trees.js?v=1.55" defer></script>
     
-    <script src="bowtie.js?v=2.7" defer></script>
+    <script src="bowtie.js?v=2.71" defer></script>
     
     <script src="text_scale.js?v=2.2" defer></script>
     
     <script src="monitor_spec.js?v=1.4" defer></script>
-    <script src="exposure_case.js?v=1.2" defer></script>
+    <script src="exposure_case.js?v=1.22" defer></script>
     <script src="cra_matrix.js?v=1.3" defer></script>
     <script src="fta_proposals.js?v=1.0" defer></script>
     <script src="prove_tabs.js?v=1.5" defer></script>
     <script src="fta_tree_picker.js?v=1.2" defer></script>
     
     <script src="nav_return.js?v=1.0" defer></script>
-    <script src="fta_freq.js?v=1.3" defer></script>
+    <script src="fta_freq.js?v=1.32" defer></script>
     <script src="markov_ctmc.js?v=1.1" defer></script>
     <script src="mil217f_stress.js?v=1.1" defer></script>
     
@@ -4150,22 +4158,24 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="toolchain_plan.js?v=1.4" defer></script>
     
-    <script src="fc_variants.js?v=1.0" defer></script>
-    <script src="fc_tree_flow.js?v=1.0" defer></script>
-    <script src="cca_models.js?v=1.0" defer></script>
+    <script src="fc_variants.js?v=1.01" defer></script>
+    <script src="fc_tree_flow.js?v=1.02" defer></script>
+    <script src="cca_models.js?v=1.03" defer></script>
     
     <script src="spec_index.js?v=1.3" defer></script>
     <script src="eval_core.js?v=1.9" defer></script>
     <script src="ai_skills.js?v=2.12" defer></script>
     
-    <script src="ai_loader.js?v=8.52" defer></script>
-    <script src="config_management.js?v=1.8" defer></script>
+    <script src="ai_loader.js?v=8.54" defer></script>
+    <script src="config_management.js?v=1.10" defer></script>
     
     <script src="numbering_ui.js?v=1.0.1" defer></script>
     
     <script src="numbering_plan.js?v=1.2" defer></script>
     
-    <script src="auth_gate.js?v=62.70" defer></script>
+    
+    <script>window.SL_MS_SSO_ENABLED = true;</script>
+    <script src="auth_gate.js?v=62.73" defer></script>
     
     <script src="ms_sso.js?v=1.1" defer></script>
     
@@ -4262,13 +4272,16 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   var pop=null,cur=null,lx=0,ly=0,raf=0,lastCX=-9,lastCY=-9;
   function ensure(){ if(pop)return pop; pop=document.createElement('div'); pop.id='gloss-pop';
-    pop.style.cssText='position:fixed;z-index:2147483000;max-width:330px;pointer-events:none;display:none;background:#16283F;color:#F5F2EA;border:1px solid rgba(255,255,255,.18);border-radius:3px;padding:8px 11px;font:12px/1.45 var(--font-system,system-ui),sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.42);';
+    pop.style.cssText='position:fixed;z-index:2147483000;max-width:340px;pointer-events:none;display:none;background:#16283F;color:#F5F2EA;border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:8px 11px;font:12px/1.45 var(--font-system,system-ui),sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.42);';
     document.body.appendChild(pop); return pop; }
   function hide(){ if(pop)pop.style.display='none'; cur=null; }
   function ok(c){ return c && /[A-Za-z0-9&./-]/.test(c); }
   function wordAt(node,off){ var t=node.textContent,l=off,r=off; while(l>0&&ok(t[l-1]))l--; while(r<t.length&&ok(t[r]))r++; return t.slice(l,r); }
-  function place(){ if(!pop)return; var x=lx+14,y=ly+18,w=pop.offsetWidth,ht=pop.offsetHeight;
-    if(x+w>innerWidth-8)x=lx-w-14; if(y+ht>innerHeight-8)y=ly-ht-18; if(x<6)x=6; if(y<6)y=6; pop.style.left=x+'px'; pop.style.top=y+'px'; }
+  // 9 Sep 2026 (Daniel/Waqas: "the definition box completely covers the field — make these
+  // pop up as toasts") — the glossary definition no longer tracks the pointer (which dropped it
+  // straight onto whatever you were reading). It parks in a fixed toast spot just above the
+  // feedback button, out of the workspace entirely, whatever you hover.
+  function place(){ if(!pop)return; pop.style.left=Math.max(8,innerWidth-pop.offsetWidth-24)+'px'; pop.style.top=Math.max(8,innerHeight-pop.offsetHeight-84)+'px'; }
   function work(){ raf=0; var pos=null;
     try{ if(document.caretRangeFromPoint){var r=document.caretRangeFromPoint(lx,ly); if(r)pos={n:r.startContainer,o:r.startOffset};}
       else if(document.caretPositionFromPoint){var c=document.caretPositionFromPoint(lx,ly); if(c)pos={n:c.offsetNode,o:c.offset};} }catch(_){}

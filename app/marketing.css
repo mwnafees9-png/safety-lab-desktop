@@ -1,0 +1,85 @@
+/* ============================================================================
+   Safety Lab Aero — shared marketing identity ("Terminal", 11 Sep 2026).
+   Loaded LAST on every public page (everything except the app itself) so it
+   wins over each page's own inline styles. What it enforces, everywhere:
+     · white page with the subtle blue→purple hue, black text (no grey text)
+     · containers: white, 2px ink border, rounded corners
+     · gradient brand line at the very top, under the nav, and above the footer
+     · black table header rows with white text
+     · gradient primary buttons
+   Page-specific layout stays in each page; only the identity lives here.
+   ========================================================================== */
+:root{
+  color-scheme:light;
+  /* every alias the individual pages use for "muted" text or a hairline → ink */
+  --text:#14171c; --text-muted:#14171c; --ink-muted:#14171c; --ink-body:#14171c;
+  --mut:#14171c; --muted:#14171c; --body:#14171c; --ink:#14171c;
+  --border-hair:#14171c; --border:#14171c; --line:#14171c; --hair:#14171c;
+  --bg:#ffffff; --bg-soft:#ffffff; --bg-card:#ffffff; --card:#ffffff; --fill:#ffffff;
+  --surf:#ffffff; --surf2:#ffffff;
+  --r-md:9px; --r-lg:13px; --r-xl:16px;
+  --sl-ink:#14171c;
+  --sl-grad:linear-gradient(90deg,#007aff 0%,#af52de 100%);
+  --sl-hue:linear-gradient(165deg,#e9edff 0%,#ffffff 46%,#f9f2ff 100%);
+  --sl-black-hue:linear-gradient(135deg,#0a0c16 0%,#130f28 50%,#180e22 100%);
+}
+html{background:#f4f5ff !important;}
+body{
+  background:var(--sl-hue) !important; background-attachment:fixed !important;
+  color:var(--sl-ink) !important;
+  font-family:'IBM Plex Sans','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif !important;
+}
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;background:var(--sl-grad);z-index:2000;pointer-events:none;}
+a{color:#1a6ef2;}
+
+/* ── top bars: frosted white with the gradient line beneath */
+.nav, header.top{
+  background:rgba(255,255,255,0.82) !important;
+  -webkit-backdrop-filter:saturate(160%) blur(14px); backdrop-filter:saturate(160%) blur(14px);
+  border-bottom:3px solid transparent !important; border-image:var(--sl-grad) 1;
+}
+.nav-links a, header.top a.home{color:var(--sl-ink);}
+/* dark heroes (trust / AI guardrails) keep the black hue; the wordmark is white on them */
+.hero.hero--dark, header.hero{background:var(--sl-black-hue) !important;}
+
+/* ── hero copy is centered on every page; nav/brand rows stay as rows */
+.hero .eyebrow, .hero h1, .hero .lead, .hero > .container > p,
+.page-hero .eyebrow, .page-hero h1, .page-hero .lede,
+.hero-in .k, .hero-in h1, .hero-in > p, .hero-in .updated,
+.wrap > h1, .wrap > .lede, main > h1, main > .sub{ text-align:center; }
+.hero .lead, .page-hero .lede, .hero-in > p, .wrap > .lede{ margin-left:auto !important; margin-right:auto !important; }
+.page-hero{border-bottom:0 !important;}
+
+/* ── containers: white, 2px ink, rounded */
+.calc, .out, .cta-band, .tpl, .tcard, .qa, .toc, .method, .driver, .posture, .card,
+.boundary, .ex, .callout, .results{
+  background:#ffffff; border:2px solid var(--sl-ink) !important; border-radius:13px !important;
+  box-shadow:0 4px 12px rgba(20,23,28,.06), 0 8px 32px rgba(20,23,28,.06);
+}
+.results{background:#ffffff !important;}
+.contact, .close{background:var(--sl-black-hue) !important; border:2px solid var(--sl-ink) !important; border-radius:13px !important; color:#fff;}
+.close p, .contact p{color:#e7e1fa !important;}
+.cons{border-radius:9px !important;}
+.doc{border-top:4px solid transparent !important; border-image:var(--sl-grad) 1;}
+
+/* form controls and pills */
+input, select, textarea{border:1px solid var(--sl-ink) !important; border-radius:9px !important; background:#fff; color:var(--sl-ink);}
+.seg{border:1px solid var(--sl-ink) !important; border-radius:9px !important;}
+.seg button{color:var(--sl-ink);}
+.related a{border:1px solid var(--sl-ink) !important; color:var(--sl-ink) !important; border-radius:999px !important;}
+.badge, .v{border-radius:999px !important;}
+code{border-radius:5px !important;}
+
+/* ── tables: black header rows, white text, ink hairlines */
+th{background:#0b0b0d !important; color:#ffffff !important; border-color:#0b0b0d !important;}
+th:first-child{border-top-left-radius:8px;} th:last-child{border-top-right-radius:8px;}
+td{border-bottom:1px solid rgba(20,23,28,.35) !important;}
+.no{color:var(--sl-ink) !important; opacity:.55;}
+
+/* ── buttons: the brand gradient */
+.btn, .btn-primary, .nav-cta, .dl:not(.ghost), .roi{background:linear-gradient(135deg,#1a6ef2 0%,#af52de 100%) !important; color:#fff !important; border-radius:10px !important;}
+.dl.ghost{border:1px solid var(--sl-ink) !important; color:var(--sl-ink) !important; border-radius:10px !important;}
+
+/* ── footers: gradient line above, ink text */
+footer, .foot, footer.legal{border-top:4px solid transparent !important; border-image:var(--sl-grad) 1; color:var(--sl-ink) !important;}
+footer a, .foot a, .foot-links a, .foot-copy{color:var(--sl-ink) !important;}

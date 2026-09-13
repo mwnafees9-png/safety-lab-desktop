@@ -11,35 +11,45 @@
    Apple-inspired tokens, light + dark.
    ========================================== */
 :root {
+    /* 11 Sep — short alias tokens. ~150 call sites across the JS modules ask for
+       var(--color-border / --color-surface / --color-text / --color-link) with a
+       hard-coded grey fallback; the aliases were never defined, so every one of
+       them silently rendered the fallback grey. Declared in BOTH theme blocks
+       because a var() alias resolves where it is declared, not where it is used. */
+    --color-border:  var(--color-border-hair);
+    --color-surface: var(--color-surface-1);
+    --color-text:    var(--color-text-primary);
+    --color-link:    var(--color-accent);
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     /* Phase 62 — "Flight recorder" identity: paper + ink. Warm paper surfaces so the
        app reads like a controlled engineering document rather than a consumer OS. */
-    --color-surface-0: #EBE7DA;   /* global paper — deeper so cards still lift */
-    --color-surface-1: #FAF7F0;   /* cards/containers — the header-pill cream */
-    --color-surface-2: #F2EEE1;   /* controls — one step below cards */
-    --color-surface-3: #E5E0D1;
-    --color-overlay:   rgba(250, 247, 240, 0.88);
+    --color-surface-0: #F1F1EF;   /* Terminal — neutral off-white ground */
+    --color-surface-1: #FFFFFF;   /* cards/containers — clean white */
+    --color-surface-2: #F6F6F4;   /* controls — one step below cards */
+    --color-surface-3: #ECECEA;
+    --color-overlay:   rgba(255, 255, 255, 0.88);
 
     /* Borders — warm ink hairlines (drafting-pen tones, not neutral gray) */
-    --color-border-hair:   rgba(26, 28, 34, 0.20);
-    --color-border-thin:   rgba(26, 28, 34, 0.30);
-    --color-border-strong: rgba(26, 28, 34, 0.44);
+    --color-border-hair:   rgba(20, 23, 28, 0.82);
+    --color-border-thin:   rgba(20, 23, 28, 0.72);
+    --color-border-strong: #14171C;
 
     /* Text — blue-black ink. Phase 48 near-black legibility preserved; hue warmed
        toward ink rather than neutral black. */
     --color-text-primary:   #101216;
-    --color-text-secondary: #1B1D24;
-    --color-text-tertiary:  #363943;
+    --color-text-secondary: #101216;
+    --color-text-tertiary:  #101216;
 
     /* Accent — brand blue deepened one step for ink weight on paper. The original
        #007aff remains the marketing/brand blue (gradient, landing, logo). */
-    --color-accent:       #0A63CC;
-    --color-accent-hover: #084FA3;
-    --color-accent-soft:  rgba(10, 99, 204, 0.10);
+    --color-accent:       #1A6EF2;
+    --color-accent-hover: #0A5CDE;
+    --color-accent-soft:  rgba(0, 122, 255, 0.12);
 
     /* Brand (marketing surfaces + spine rule only — do not use as UI accent) */
     --color-brand-blue:   #007aff;
     --color-brand-purple: #af52de;
-    --brand-spine: linear-gradient(90deg, #007aff 0%, #af52de 100%);
+    --brand-spine: linear-gradient(90deg, #007aff 0%, #1a6ef2 58%, #af52de 100%);
 
     /* Semantic — ink-weighted for paper */
     --color-success: #1F7A33;
@@ -48,12 +58,14 @@
     --color-info:    #3E88C7;
     --color-purple:  #7E3FB8;
 
-    /* Severity tints — inspection-stamp inks on paper */
-    --sev-cat-bg: rgba(179, 38, 30, 0.10);   --sev-cat-fg: #B3261E;
-    --sev-haz-bg: rgba(154, 77, 0, 0.11);    --sev-haz-fg: #9A4D00;
-    --sev-maj-bg: rgba(122, 100, 16, 0.13);  --sev-maj-fg: #7A6410;
-    --sev-min-bg: rgba(31, 122, 51, 0.11);   --sev-min-fg: #1F7A33;
-    --sev-neg-bg: rgba(74, 78, 88, 0.11);    --sev-neg-fg: #4A4E58;
+    /* Severity — 11 Sep: bright, distinct. -fill = the solid pill colour (black text
+       on it), -fg = the same hue at a text-safe depth for use AS text, -bg = a tint. */
+    --sev-cat-fill: #F2928C; --sev-cat-fg: #C62828; --sev-cat-bg: rgba(245, 181, 176, 0.35);
+    --sev-haz-fill: #F5B878; --sev-haz-fg: #C25E00; --sev-haz-bg: rgba(248, 207, 163, 0.35);
+    --sev-maj-fill: #F2DB74; --sev-maj-fg: #9A7B00; --sev-maj-bg: rgba(246, 231, 160, 0.40);
+    --sev-min-fill: #F8ECB0; --sev-min-fg: #8F7A1A; --sev-min-bg: rgba(251, 243, 204, 0.45);
+    --sev-neg-fill: #A6DFB4; --sev-neg-fg: #2E7D45; --sev-neg-bg: rgba(194, 235, 203, 0.40);
+    --sev-pill-text: #0B0B0D;
 
     /* Legacy variable aliases — keep existing inline styles + JS working */
     --bg-global:         var(--color-surface-0);
@@ -80,14 +92,14 @@
     /* Radius — Phase 62.6: fully square. Corners are 0 everywhere; --r-full is
        retained for elements that are CIRCLES by design (dots, knobs), which are
        shapes rather than corners and re-round via the exemptions at end of file. */
-    --r-sm: 0; --r-md: 0; --r-lg: 0; --r-xl: 0; --r-full: 9999px;
+    --r-sm: 6px; --r-md: 9px; --r-lg: 13px; --r-xl: 16px; --r-full: 9999px;
 
     /* Shadow */
-    --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);
-    --shadow-md: 0 6px 16px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.03);
-    --shadow-lg: 0 16px 36px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
-    --shadow-xl: 0 32px 64px rgba(0,0,0,0.16);
+    --shadow-xs: 0 1px 2px rgba(20,23,28,0.06);
+    --shadow-sm: 0 4px 12px rgba(20,23,28,0.10), 0 1px 3px rgba(20,23,28,0.05);
+    --shadow-md: 0 14px 32px rgba(20,23,28,0.12), 0 3px 8px rgba(20,23,28,0.06);
+    --shadow-lg: 0 24px 50px rgba(20,23,28,0.16), 0 6px 14px rgba(20,23,28,0.08);
+    --shadow-xl: 0 40px 84px rgba(20,23,28,0.18);
 
     /* Motion */
     --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -100,9 +112,14 @@
        value (λ, P, IDs, hashes); tabular numerals via font-variant-numeric below. */
     --font-system: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-mono:   "IBM Plex Mono", "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --font-display: "Newsreader", Georgia, "Times New Roman", serif;
 }
 
 body.theme-dark {
+    --color-border:  var(--color-border-hair);
+    --color-surface: var(--color-surface-1);
+    --color-text:    var(--color-text-primary);
+    --color-link:    var(--color-accent);
     /* Compressed dark palette: surfaces stay close to true black, with only subtle
        elevation steps. Avoids the "elevated panel reads as light gray" effect from
        a pure iOS scale (#1c1c1e → #2c2c2e → #3a3a3c) when viewed in a low-light
@@ -116,22 +133,22 @@ body.theme-dark {
     --color-overlay:   rgba(16, 19, 26, 0.88);
 
     /* Borders nudged up slightly to keep hairline separation visible against the deeper surfaces */
-    --color-border-hair:   rgba(242, 239, 230, 0.17);
-    --color-border-thin:   rgba(242, 239, 230, 0.26);
-    --color-border-strong: rgba(242, 239, 230, 0.38);
+    --color-border-hair:   rgba(255, 255, 255, 0.30);
+    --color-border-thin:   rgba(255, 255, 255, 0.50);
+    --color-border-strong: rgba(255, 255, 255, 0.72);
 
     /* Paper-tinted text on ink surfaces (Phase 48 near-white legibility preserved). */
-    --color-text-primary:   #F5F2EA;
-    --color-text-secondary: #E8E5DC;
-    --color-text-tertiary:  #C9C6BC;
+    --color-text-primary:   #ECEEF4;
+    --color-text-secondary: #ECEEF4;
+    --color-text-tertiary:  #ECEEF4;
 
-    --color-accent:       #3D8BFF;
-    --color-accent-hover: #66A5FF;
-    --color-accent-soft:  rgba(61, 139, 255, 0.18);
+    --color-accent:       #6F86FF;
+    --color-accent-hover: #8AA0FF;
+    --color-accent-soft:  rgba(60, 120, 255, 0.20);
 
     --color-brand-blue:   #0a84ff;
     --color-brand-purple: #bf5af2;
-    --brand-spine: linear-gradient(90deg, #0a84ff 0%, #bf5af2 100%);
+    --brand-spine: linear-gradient(90deg, #0a84ff 0%, #3a7bff 58%, #bf5af2 100%);
 
     --color-success: #4CC968;
     --color-warning: #E8A13D;
@@ -139,11 +156,12 @@ body.theme-dark {
     --color-info:    #64B5E8;
     --color-purple:  #B07FE0;
 
-    --sev-cat-bg: rgba(240, 86, 74, 0.18);   --sev-cat-fg: #F58C82;
-    --sev-haz-bg: rgba(232, 161, 61, 0.18);  --sev-haz-fg: #F0BE7E;
-    --sev-maj-bg: rgba(214, 190, 80, 0.16);  --sev-maj-fg: #E0D28A;
-    --sev-min-bg: rgba(76, 201, 104, 0.16);  --sev-min-fg: #8ADCA0;
-    --sev-neg-bg: rgba(201, 198, 188, 0.14); --sev-neg-fg: #C9C6BC;
+    --sev-cat-fill: #E68F89; --sev-cat-fg: #F49A93; --sev-cat-bg: rgba(233, 168, 163, 0.22);
+    --sev-haz-fill: #E9B278; --sev-haz-fg: #F2B97C; --sev-haz-bg: rgba(235, 196, 148, 0.22);
+    --sev-maj-fill: #E5D170; --sev-maj-fg: #EDDD8C; --sev-maj-bg: rgba(232, 218, 147, 0.22);
+    --sev-min-fill: #EBE2A6; --sev-min-fg: #EFE7B8; --sev-min-bg: rgba(237, 230, 190, 0.22);
+    --sev-neg-fill: #9FD5AD; --sev-neg-fg: #9ED8AB; --sev-neg-bg: rgba(180, 221, 188, 0.22);
+    --sev-pill-text: #0B0B0D;
 
     --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
     --shadow-sm: 0 2px 6px rgba(0,0,0,0.4);
@@ -161,16 +179,16 @@ body.theme-dark {
     --bg-control:        #171B24;
     --bg-control-focus:  #20252F;
     --canvas-bg:         #10131A;
-    --canvas-grid:       rgba(242, 239, 230, 0.13);
-    --text-primary:      #F5F2EA;
-    --text-secondary:    #E8E5DC;
-    --border-primary:    rgba(242, 239, 230, 0.15);
-    --border-accent:     rgba(242, 239, 230, 0.26);
-    --header-color:      #3D8BFF;
-    --node-text:         #F5F2EA;
+    --canvas-grid:       rgba(255, 255, 255, 0.13);
+    --text-primary:      #ECEEF4;
+    --text-secondary:    #ECEEF4;
+    --border-primary:    rgba(255, 255, 255, 0.30);
+    --border-accent:     rgba(255, 255, 255, 0.50);
+    --header-color:      #6F86FF;
+    --node-text:         #ECEEF4;
     /* Phase 48 — canvas metrics text bumped from mid-gray to near-white. */
-    --node-metrics:      #C9C6BC;
-    --node-border-focus: #3D8BFF;
+    --node-metrics:      #ECEEF4;
+    --node-border-focus: #6F86FF;
 }
 
 /* -------- Base -------- */
@@ -232,8 +250,8 @@ body::before, body::after { display: none !important; }
 }
 .brand-tag { font-size: 12px; color: var(--color-text-tertiary); font-weight: 500; margin-top: 2px; letter-spacing: -0.005em; }
 
-h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.024em; color: var(--color-text-primary); margin: 0; }
-h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.018em; color: var(--color-text-primary); margin: 0; }
+h1 { font-size: 27px; font-weight: 600; letter-spacing: -0.012em; color: var(--color-text-primary); margin: 0; font-family: var(--font-display); }
+h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--color-text-primary); margin: 0; font-family: var(--font-display); }
 h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.014em; color: var(--color-text-primary); margin: 0 0 var(--s-4) 0; }
 h4 { font-size: 14px; font-weight: 600; letter-spacing: -0.006em; color: var(--color-text-primary); margin: 0 0 var(--s-3) 0; }
 p  { margin: 0 0 var(--s-3) 0; }
@@ -940,7 +958,7 @@ optgroup { font-weight: 600; color: var(--color-text-secondary); background: var
 
 /* -------- Buttons -------- */
 button {
-    background: var(--color-accent);
+    background: linear-gradient(135deg, #1a6ef2 0%, #af52de 100%);
     color: #ffffff;
     border: none;
     padding: 8px 16px;
@@ -960,7 +978,7 @@ button {
     gap: 6px;
 }
 button:hover:not(:disabled) {
-    background: var(--color-accent-hover);
+    background: linear-gradient(135deg, #2f79f5 0%, #b95fe0 100%);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
@@ -1055,10 +1073,12 @@ table {
     background: var(--color-surface-1);
     font-size: 13px;
     color: var(--color-text-primary);
-    border: 1px solid var(--color-border-hair);
+    border: 2px solid var(--color-border-strong);   /* 11 Sep — tables are containers: 2px ink (white in dark) */
     border-radius: var(--r-md);
     overflow: hidden;
 }
+table thead th:first-child { border-top-left-radius: calc(var(--r-md) - 2px); }
+table thead th:last-child  { border-top-right-radius: calc(var(--r-md) - 2px); }
 th, td {
     padding: 10px 14px;
     border: none;
@@ -1079,11 +1099,36 @@ tr:hover td { background: var(--color-surface-2); }
 tr:last-child td { border-bottom: none; }
 tr:nth-child(even) td { background: transparent; }
 
-.cell-Catastrophic { background: var(--sev-cat-bg) !important; color: var(--sev-cat-fg) !important; font-weight: 600; }
-.cell-Hazardous    { background: var(--sev-haz-bg) !important; color: var(--sev-haz-fg) !important; font-weight: 600; }
-.cell-Major        { background: var(--sev-maj-bg) !important; color: var(--sev-maj-fg) !important; font-weight: 600; }
-.cell-Minor        { background: var(--sev-min-bg) !important; color: var(--sev-min-fg) !important; }
-.cell-Negligible   { background: var(--sev-neg-bg) !important; color: var(--sev-neg-fg) !important; }
+/* effect-axis level chips (severity_axes.js) — same fills as the severity pills */
+.sev-axis-chip { color: var(--sev-pill-text) !important; }
+.sev-axis-chip[data-level="0"] { background: var(--sev-neg-fill) !important; }
+.sev-axis-chip[data-level="1"] { background: var(--sev-min-fill) !important; }
+.sev-axis-chip[data-level="2"] { background: var(--sev-maj-fill) !important; }
+.sev-axis-chip[data-level="3"] { background: var(--sev-haz-fill) !important; }
+.sev-axis-chip[data-level="4"] { background: var(--sev-cat-fill) !important; }
+/* ── Severity pills (11 Sep) — ONE look everywhere a severity is shown.
+   Renderers call sevPillHtml(); legacy inline <span class="cell-X"> gets the
+   same pill from the shared selector list; a <td class="cell-X"> is just a
+   plain cell that holds the pill. */
+td.cell-Catastrophic, td.cell-Hazardous, td.cell-Major, td.cell-Minor, td.cell-Negligible,
+td[class^="cell-"], td[class*=" cell-"] { background: transparent !important; color: var(--color-text-primary); }
+.sev-pill, span.cell-Catastrophic, span.cell-Hazardous, span.cell-Major, span.cell-Minor, span.cell-Negligible {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 3px 11px 3px 9px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    line-height: 1.5; white-space: nowrap; vertical-align: middle;
+    color: var(--sev-pill-text) !important; border: 1.5px solid transparent;
+}
+.sev-pill::before, span.cell-Catastrophic::before, span.cell-Hazardous::before, span.cell-Major::before, span.cell-Minor::before, span.cell-Negligible::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none; background: currentColor; opacity: .85;
+}
+.sev-pill.sev-cat, span.cell-Catastrophic { background: var(--sev-cat-fill) !important; }
+.sev-pill.sev-haz, span.cell-Hazardous    { background: var(--sev-haz-fill) !important; }
+.sev-pill.sev-maj, span.cell-Major        { background: var(--sev-maj-fill) !important; }
+.sev-pill.sev-min, span.cell-Minor        { background: var(--sev-min-fill) !important; }
+.sev-pill.sev-neg, span.cell-Negligible   { background: var(--sev-neg-fill) !important; }
+.sev-dal { font-family: var(--font-mono); font-size: 10.5px; color: var(--color-text-primary); margin-top: 4px; white-space: nowrap; }
+.sev-dal b { font-weight: 700; }
 
 /* -------- FTA layout -------- */
 .header-with-export { display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); flex-wrap: wrap; }
@@ -3001,8 +3046,8 @@ body.theme-dark .feedback-fab {
 }
 #shortcuts-fab button:hover { opacity: 1; transform: translateY(-1px); }
 #shortcuts-fab #fab-help { font-weight: 700; }
-body.theme-dark #shortcuts-fab button { background: #1e293b; border-color: #334155; color: #cbd5e1; }
-body.theme-dark #shortcuts-overlay kbd, body.theme-dark .shortcuts-keys kbd, body.theme-dark #shortcuts-fab kbd { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+body.theme-dark #shortcuts-fab button { background: var(--color-surface-2); border-color: var(--color-border-hair); color: var(--color-text-primary); }
+body.theme-dark #shortcuts-overlay kbd, body.theme-dark .shortcuts-keys kbd, body.theme-dark #shortcuts-fab kbd { background: var(--color-surface-0); border-color: var(--color-border-hair); color: var(--color-text-primary); }
 body.fta-fullscreen #shortcuts-fab { display: none; }   /* avoid covering canvas controls in fullscreen */
 @media (max-width: 720px) { #shortcuts-fab { bottom: 72px; right: 18px; } }
 
@@ -3039,7 +3084,7 @@ body.fta-fullscreen #shortcuts-fab { display: none; }   /* avoid covering canvas
 .ws-inline-lock[data-state="mine"] { color: #0b8043; border-color: #0b8043; background: rgba(11,128,67,.08); }
 .ws-inline-lock[data-state="other"] { color: #b3261e; border-color: #b3261e; background: rgba(179,38,30,.08); }
 .ws-inline-lock:hover { filter: brightness(0.96); }
-body.theme-dark .ws-inline-lock[data-state="open"] { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+body.theme-dark .ws-inline-lock[data-state="open"] { background: var(--color-surface-2); border-color: var(--color-border-hair); color: var(--color-text-primary); }
 
 /* #46 — generic collapsible entry form (keeps the table visible until you add/edit). */
 .sl-collapsible.is-collapsed > *:not(.sl-collapse-toggle) { display: none !important; }
@@ -3057,8 +3102,8 @@ body.theme-dark .ws-inline-lock[data-state="open"] { background: #1e293b; border
 .sl-dialog-ok { background: var(--color-accent, #0a84ff) !important; color: #fff !important; border-color: var(--color-accent, #0a84ff) !important; }
 .sl-dialog-ok.sl-danger { background: #dc2626 !important; border-color: #dc2626 !important; }
 body.theme-dark .sl-dialog-card { background: #0f172a; }
-body.theme-dark .sl-dialog-actions button { background: #1e293b; border-color: #334155; color: #cbd5e1; }
-body.theme-dark .sl-dialog-input { background: #0f172a; border-color: #334155; }
+body.theme-dark .sl-dialog-actions button { background: var(--color-surface-2); border-color: var(--color-border-hair); color: var(--color-text-primary); }
+body.theme-dark .sl-dialog-input { background: var(--color-surface-0); border-color: var(--color-border-hair); }
 
 /* #53 — respect the user's reduced-motion preference (WCAG 2.3.3 Animation from Interactions). */
 @media (prefers-reduced-motion: reduce) {
@@ -3344,13 +3389,7 @@ textarea:focus-visible,
     outline-offset: 2px;
     box-shadow: none;
 }
-/* Higher-contrast severity colors in light mode (audit fix) */
-.cell-Major { background: rgba(255, 204, 0, 0.18); color: #7a4f00; }
-.cell-Minor { background: rgba(52, 199, 89, 0.18); color: #195e30; }
-.cell-Negligible { background: rgba(142, 142, 147, 0.16); color: #3a3a3c; }
-body.theme-dark .cell-Major { color: #ffd86b; }
-body.theme-dark .cell-Minor { color: #76d49f; }
-body.theme-dark .cell-Negligible { color: #c7c7cc; }
+/* (legacy severity cell tints retired 11 Sep — severity pills block owns the look) */
 
 /* Screen-reader-only utility class */
 .sr-only {
@@ -4578,7 +4617,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, [role="button"]
 .wf-step:hover { background: var(--color-surface-2); color: var(--color-text-primary); border-color: var(--color-border-thin); }
 .wf-step:focus-visible { outline: 2px solid var(--color-accent, #0a84ff); outline-offset: 2px; }
 .wf-step.active { color: #fff; background: var(--color-accent, #0a84ff); border-color: var(--color-accent, #0a84ff); }
-.wf-step.active:hover { color: #fff; background: var(--color-accent-hover, #084FA3); border-color: var(--color-accent-hover, #084FA3); }
+.wf-step.active:hover { color: #fff; background: var(--color-accent-hover, #3D4FB0); border-color: var(--color-accent-hover, #3D4FB0); }
 @media (prefers-reduced-motion: reduce) { .wf-step { transition: none; } }
 /* 23 Aug 2026 — the aircraft lanes (R&M, HF) sit past a hairline, dashed:
    parallel disciplines beside the ARP flow, not stages inside it. */
@@ -4686,9 +4725,9 @@ tr:has(.cma-suggest) { background: rgba(10, 132, 255, 0.045); }
     --color-text-primary:   #000000;
     --color-text-secondary: #1d1d1f;
     --color-text-tertiary:  #3a3a3c;
-    --color-accent:       #007aff;
-    --color-accent-hover: #0064d6;
-    --color-accent-soft:  rgba(0, 122, 255, 0.10);
+    --color-accent:       #1A6EF2;
+    --color-accent-hover: #0A5CDE;
+    --color-accent-soft:  rgba(0, 122, 255, 0.12);
     --color-success: #34c759;
     --color-warning: #ff9500;
     --color-danger:  #ff3b30;
@@ -5191,7 +5230,7 @@ table, .u-mono, input[type="number"] { font-variant-numeric: tabular-nums; }
    inline styles. Circles by design (status dots, legend dots, round close/delete
    buttons, onramp checks, and anything inline-styled 50%) opt back in below.
    ========================================== */
-body *, body *::before, body *::after { border-radius: 0 !important; }
+/* Phase 62.6 square-corner override REMOVED 11 Sep — rounded containers restored via radius tokens */
 .save-indicator-dot,
 .graph-legend-dot,
 .node-modal-close,
@@ -5217,7 +5256,7 @@ body.nav-sidebar .app-sidebar {
     border-right: none;
 }
 body.theme-dark.nav-sidebar .app-sidebar {
-    background: linear-gradient(165deg, #16283F 0%, #0063d1 60%, #8f3fc0 100%);
+    background: linear-gradient(165deg, #0a0c14 0%, #0a0a0d 52%, #110b16 100%);
 }
 .asb-brandtxt { color: #FFFFFF; }
 .asb-item, .asb-grp > summary { color: rgba(240, 246, 255, 0.85); }
@@ -5412,14 +5451,7 @@ body.nav-sidebar .asb-grp.asb-cat > summary:hover .asb-cat-lbl { color: #FFFFFF;
 
 /* Severity cells as inspection stamps — the ink outline PLUS the severity
    tint fill (the tint comes from the .cell-* rules above; don't override it) */
-.cell-Catastrophic, .cell-Hazardous, .cell-Major, .cell-Minor, .cell-Negligible {
-    box-shadow: inset 0 0 0 1.5px currentColor;
-    font-weight: 600 !important;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-size: 11px !important;
-    font-family: var(--font-mono);
-}
+/* (severity stamps retired 11 Sep — see the severity pills block) */
 
 /* Document-outline buttons — ink line-work instead of colored fills */
 .btn-cyan {
@@ -5829,4 +5861,65 @@ body.theme-dark .cutset-row-ccf { background-color: rgba(139, 92, 246, 0.18); }
 .collapsible-form-content.open.cfc-settled {
     max-height: none;
     overflow: visible;
+}
+
+/* =========================================================================
+   Terminal look — dark side nav (both themes). Overrides the Phase-75 sidebar
+   surface to a near-black blue→purple hue with white text, a gradient seam,
+   and a gradient active bar. Scoped to body.nav-sidebar; nav is dark in light
+   AND dark app themes (like the design mockup). Colors are explicit (not theme
+   tokens) so nothing inverts to blank text.
+   ========================================================================= */
+body.nav-sidebar .app-sidebar {
+    background: linear-gradient(165deg, #0a0c14 0%, #0a0a0d 52%, #110b16 100%);
+    border-right: none;
+}
+body.nav-sidebar .app-sidebar::after {
+    content: ""; position: fixed; top: 0; bottom: 0; left: 264px; width: 2.5px;
+    background: linear-gradient(180deg, #007aff 0%, #1a6ef2 60%, #af52de 100%);
+    z-index: 61; pointer-events: none;
+}
+body.nav-sidebar.nav-rail .app-sidebar::after { left: 60px; }
+body.nav-sidebar .asb-brandtxt { color: #ffffff; font-family: var(--font-display); font-weight: 600; }
+body.nav-sidebar .asb-item,
+body.nav-sidebar .asb-grp > summary { color: #ffffff; }
+body.nav-sidebar .asb-item.sub { color: rgba(255,255,255,0.72); }
+body.nav-sidebar .asb-item:hover,
+body.nav-sidebar .asb-grp > summary:hover { background: rgba(255,255,255,0.07); color: #ffffff; }
+body.nav-sidebar .asb-item.sub:hover { color: #ffffff; }
+body.nav-sidebar .asb-chev { color: rgba(255,255,255,0.55); }
+body.nav-sidebar .asb-item.snav-active,
+body.nav-sidebar .asb-item.sub.snav-active {
+    background: rgba(255,255,255,0.08); color: #ffffff; position: relative;
+}
+body.nav-sidebar .asb-item.snav-active::before {
+    content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px;
+    border-radius: 0 3px 3px 0; background: linear-gradient(180deg, #007aff, #af52de);
+}
+body.nav-sidebar .asb-foot { border-top-color: rgba(255,255,255,0.10); }
+body.nav-sidebar .asb-classic,
+body.nav-sidebar .asb-rail-btn {
+    background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.14); color: rgba(255,255,255,0.82);
+}
+body.nav-sidebar .asb-classic:hover,
+body.nav-sidebar .asb-rail-btn:hover { background: rgba(255,255,255,0.11); color: #ffffff; }
+
+/* =========================================================================
+   Terminal look — BLACK table headers with WHITE text on every table, both
+   themes. Matches the mockup. Selectors mirror the existing header rules
+   (incl. the high-specificity .container + id-table + sticky overrides) so
+   this wins the cascade; white-on-near-black is contrast-safe.
+   ========================================================================= */
+thead th,
+.container table thead th,
+.reference-table thead th, .data-table thead th, table.sl-table thead th,
+#sys-func-table thead th, #sys-fcim-table thead th, #sys-fha-table thead th, #sys-req-table thead th,
+#ac-func-table thead th, #ac-fcim-table thead th, #ac-fha-table thead th, #ac-req-table thead th,
+#pra-table thead th, #zsa-table thead th, #cma-table thead th, #fmea-table thead th,
+#trace-table thead th, #item-table thead th {
+    background: #0b0b0d !important;
+    color: #ffffff !important;
+    border-top-color: #0b0b0d !important;
+    border-bottom-color: #0b0b0d !important;
+    box-shadow: none !important;
 }

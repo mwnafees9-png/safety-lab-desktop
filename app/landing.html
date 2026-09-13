@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#14224A" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#14224A" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#14224A">
-<meta name="description" content="Safety Lab Aero is an integrated aerospace safety analysis workspace. AFHA, PSSA, SSA, fault tree analysis, and DO-178C/DO-254 compliance in one tool — built for engineers, certified by math.">
+<meta name="description" content="Safety Lab Aero is an integrated aerospace safety analysis workspace. AFHA, PSSA, SSA, fault tree analysis, and DO-178C/DO-254 compliance in one tool, built for engineers and certified by math.">
 <meta name="keywords" content="ARP 4761A, ARP 4754B, AC 25.1309, fault tree analysis, FTA software, DO-178C, DO-254, DAL allocation, aerospace certification, safety analysis, AAM, eVTOL safety, SC-VTOL">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Safety Lab Aero">
-<meta property="og:title" content="Safety Lab Aero — Aerospace safety analysis, integrated">
+<meta property="og:title" content="Safety Lab Aero: Aerospace safety analysis, integrated">
 <meta property="og:description" content="One workspace for AFHA, PSSA, SSA, FTA, and DO-178C/DO-254 traceability. Built by an aerospace engineer for aerospace engineers.">
 <meta property="og:url" content="https://safetylabaero.com">
 <meta property="og:image" content="https://safetylabaero.com/og.png">
@@ -18,12 +18,12 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Safety Lab Aero — integrated aerospace safety analysis workspace">
+<meta property="og:image:alt" content="Safety Lab Aero, the integrated aerospace safety analysis workspace">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Safety Lab Aero — Aerospace safety analysis, integrated">
+<meta name="twitter:title" content="Safety Lab Aero: Aerospace safety analysis, integrated">
 <meta name="twitter:description" content="One workspace for AFHA, PSSA, SSA, FTA, and DO-178C/DO-254 traceability. Built by an aerospace engineer for aerospace engineers.">
 <meta name="twitter:image" content="https://safetylabaero.com/og.png">
-<title>Safety Lab Aero — Aerospace safety analysis, integrated</title>
+<title>Safety Lab Aero: Aerospace safety analysis, integrated</title>
 <link rel="canonical" href="https://safetylabaero.com/">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,7 +42,7 @@
       "operatingSystem": "Web",
       "url": "https://safetylabaero.com/",
       "image": "https://safetylabaero.com/og.png",
-      "description": "Safety Lab Aero is an integrated aerospace safety analysis workspace. It carries a program from functional hazard assessment to a certification-ready evidence package on the ARP 4761A / 4754B process — AFHA, fault tree analysis, FMEA, common-cause analysis, requirements and verification in one connected model, with DO-178C / DO-254 / DO-330 support.",
+      "description": "Safety Lab Aero is an integrated aerospace safety analysis workspace. It carries a program from functional hazard assessment to a certification-ready evidence package on the ARP 4761A / 4754B process: AFHA, fault tree analysis, FMEA, common-cause analysis, requirements and verification in one connected model, with DO-178C / DO-254 / DO-330 support.",
       "featureList": [
         "Functional Hazard Assessment (AFHA / SFHA)",
         "Fault Tree Analysis with rigorous top-event quantification",
@@ -86,7 +86,7 @@
    ============================================================================ */
 
 :root {
-    color-scheme: dark;
+    color-scheme: light;
 
     --brand-blue:   #007aff;
     --brand-purple: #af52de;
@@ -105,11 +105,10 @@
     --text-strong:  #f3f5fa;
     --text-muted:   #9aa3b8;
 
-    /* Phase 62.6 — fully square */
-    --r-sm: 0;
-    --r-md: 0;
-    --r-lg: 0;
-    --r-xl: 0;
+    --r-sm: 6px;
+    --r-md: 9px;
+    --r-lg: 13px;
+    --r-xl: 16px;
     --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.20), 0 1px 3px rgba(0, 0, 0, 0.28);
@@ -160,7 +159,7 @@ body {
 a { color: var(--brand-blue); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .container {
-    max-width: 1100px;
+    max-width: 1360px;
     margin: 0 auto;
     padding: 0 var(--s-5);
 }
@@ -198,29 +197,29 @@ a:hover { text-decoration: underline; }
    dark :root defaults + the prefers-color-scheme blocks, so it wins for every visitor
    regardless of their OS dark/light setting. */
 :root {
-    color-scheme: dark;
+    color-scheme: light;
     /* Phase 63 — THE GRADIENT IDENTITY: one continuous deep blue→purple wash
        across the whole page (the approved Lovable-concept direction, ported
        in-house). Light-on-dark; surfaces are translucent glass. */
-    --bg:          #14224A;
-    --bg-soft:     rgba(255, 255, 255, 0.045);
-    --bg-card:     rgba(255, 255, 255, 0.07);
-    --border-hair: rgba(255, 255, 255, 0.14);
-    --border:      rgba(255, 255, 255, 0.20);
-    --text:        rgba(255, 255, 255, 0.80);
-    --text-strong: #F2F5FC;
-    --text-muted:  rgba(255, 255, 255, 0.56);
-    --accent:      #9DC6FF;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.22);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.22), 0 8px 32px rgba(0, 0, 0, 0.28);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.28), 0 24px 64px rgba(0, 0, 0, 0.36);
+    --bg:          #ffffff;
+    --bg-soft:     #f7f8fb;
+    --bg-card:     #ffffff;
+    --border-hair: #e3e6ee;
+    --border:      #d4d8e3;
+    --text:        #14171c;
+    --text-strong: #0A1F44;
+    --text-muted:  #3d4351;
+    --accent:      #1a6ef2;
+    --shadow-sm: 0 1px 2px rgba(20,23,28,0.05), 0 1px 3px rgba(20,23,28,0.06);
+    --shadow-md: 0 4px 12px rgba(20,23,28,0.07), 0 8px 28px rgba(20,23,28,0.08);
+    --shadow-lg: 0 12px 32px rgba(20,23,28,0.10), 0 24px 60px rgba(20,23,28,0.12);
 }
-html { background: #14224A; }
+html { background: #f4f5ff; }
 body {
-    background: linear-gradient(180deg, #14224A 0%, #3457A2 45%, #7247B1 85%, #9B55BE 100%);
+    background: linear-gradient(165deg, #e9edff 0%, #ffffff 46%, #f9f2ff 100%);
     background-attachment: fixed;
 }
-.nav { background: rgba(16, 26, 56, 0.72) !important; -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px); }
+.nav { background: rgba(255, 255, 255, 0.82) !important; -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px); }
 /* glass surfaces: anything that was a white card is now translucent glass */
 .pricing-card, .feature-card, .tst-card, .process-card-prev, .about-card, .nav-more-menu {
     background: var(--bg-card) !important;
@@ -234,13 +233,13 @@ body {
 a { color: var(--accent); }
 /* the dots rail on dark */
 /* clipped gradient text needs a LIGHT gradient on the dark wash */
-.hero h1 .grad-text { background: linear-gradient(135deg, #BFDBFF 0%, #EBC6FF 100%); -webkit-background-clip: text; background-clip: text; }
+.hero h1 .grad-text { background: linear-gradient(135deg, #007aff 0%, #af52de 100%); -webkit-background-clip: text; background-clip: text; }
 /* one continuous wash: sections never paint over the page gradient */
-.hero, .process-preview, .features, .pricing, .about, .cta-strip, .tst-section, .golden-thread, footer { background: transparent !important; }
+.hero, .process-preview, .features, .pricing, .about, .tst-section, .golden-thread, footer { background: transparent !important; }
 .pgdots a { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.45); }
 .pgdots a .pgtip { background: rgba(16,26,56,0.92); color: #F2F5FC; border-color: rgba(255,255,255,0.22); }
 /* Phase 62.6 — zero radii site-wide; inline-styled circles stay round. */
-body *, body *::before, body *::after { border-radius: 0 !important; }
+/* (retired 11 Sep — containers are rounded again) */
 [style*="border-radius: 50%"], [style*="border-radius:50%"] { border-radius: 50% !important; }
 /* Phase 62 — brand spine: the gradient's one structural appearance. */
 body::before {
@@ -254,7 +253,7 @@ body::before {
 }
 a { color: var(--accent); }
 .nav-inner {
-    max-width: 1100px;
+    max-width: 1360px;
     margin: 0 auto;
     padding: var(--s-3) var(--s-5);
     display: flex;
@@ -306,13 +305,14 @@ a { color: var(--accent); }
    Big cards can be glass; a dropdown over content cannot. Opaque surface,
    strong text, visible hover. */
 .nav-more-menu {
-    background: rgba(11, 20, 46, 0.97) !important;
-    border-color: rgba(255, 255, 255, 0.22) !important;
-    -webkit-backdrop-filter: saturate(150%) blur(16px);
-    backdrop-filter: saturate(150%) blur(16px);
+    background: #ffffff !important;
+    border-color: #14171c !important;
+    text-align: left;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
 }
-.nav-more-menu a { color: var(--text-strong); }
-.nav-more-menu a:hover { background: rgba(255, 255, 255, 0.10); text-decoration: none; }
+.nav-more-menu a { color: #14171c !important; font-weight: 500; }
+.nav-more-menu a:hover { background: rgba(26,110,242,0.10); text-decoration: none; }
 .nav-cta {
     background: var(--grad);
     color: #fff !important;
@@ -385,7 +385,7 @@ a { color: var(--accent); }
     margin: 0 0 var(--s-4);
 }
 .hero h1 .grad-text {
-    background: linear-gradient(135deg, #BFDBFF 0%, #EBC6FF 100%); /* light clip on the dark wash */
+    background: linear-gradient(135deg, #007aff 0%, #af52de 100%); /* light clip on the dark wash */
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -755,7 +755,7 @@ footer {
     color: var(--text-muted);
 }
 .foot-inner {
-    max-width: 1100px;
+    max-width: 1360px;
     margin: 0 auto;
     padding: 0 var(--s-5);
     display: flex;
@@ -986,6 +986,45 @@ footer {
 .tst-card h3{ margin:0 0 6px; font-size:16px; font-weight:700; color:var(--text-strong); letter-spacing:-.01em; }
 .tst-card p{ margin:0; font-size:14px; color:var(--text-muted); line-height:1.5; }
 @media (max-width:820px){ .tst-themes{ grid-template-columns:1fr; } }
+
+/* 11 Sep — center all landing text + gradient separators between main sections */
+body{text-align:center}
+.nav-inner{text-align:left}
+/* width-capped blocks were anchored to the left edge of the column; center the boxes themselves */
+.section-sub,.tst-lead,.tst-quote blockquote,.hero-inner,.hero-sub,.pricing-note{margin-left:auto !important;margin-right:auto !important}
+.feature-icon,.tst-card-ic,.founder-avatar{margin-left:auto;margin-right:auto}
+.tst-byline,.tier-features li,.gt-chrome,.gt-legend,.foot-inner,.foot-links,.tst-pills,.related,.hero-ctas,.tst-themes{justify-content:center}
+.foot-inner{gap:var(--s-6)}
+.gt-expand{margin-left:0}
+/* container borders: thicker + ink, matching the app's black-border containers */
+.pricing-card,.feature-card,.tst-card,.process-card-prev,.about-card,.founder-card,.process-strip,.tst-quote,.gt-panel,.nav-more-menu{
+  border-width:2px !important;border-style:solid !important;border-color:#14171c !important;
+}
+.tst-section{border-top:0;border-bottom:0}
+/* gradient separator between every main section */
+.process-preview,.golden-thread,.features,.pricing,.about,.cta-strip,.tst-section,footer{
+  border-top:4px solid transparent;border-image:linear-gradient(90deg,#007aff 0%,#af52de 100%) 1;
+}
+/* golden-thread section: leftovers from the old dark wash, restyled for the light page */
+#golden-thread .section-eyebrow{color:#1a6ef2;border:1px solid rgba(26,110,242,.40);background:rgba(26,110,242,.08);border-radius:999px;-webkit-backdrop-filter:none;backdrop-filter:none}
+#golden-thread .section-eyebrow::before{background:#12b981}
+.section-spotlight::before,.section-spotlight::after{display:none}
+.gt-panel{background:#ffffff;border-radius:var(--r-lg);overflow:hidden}
+.gt-expand{background:#f2f4fa;border-color:#14171c;color:#14171c}
+.gt-expand:hover{background:#e6e9f3;border-color:#14171c;color:#14171c}
+.gt-chrome,.gt-chrome-lbl,.gt-chrome-note,.gt-legend{color:#14171c}
+.gt-chrome-caret{color:#14171c}
+.tst-tag{color:#0b6b46;background:rgba(16,140,90,.10);border-color:rgba(16,140,90,.40)}
+.tst-avatar,.founder-avatar{border-radius:50% !important}
+/* about: one centered column — text under the heading, founder card as the signature beneath it */
+.about-grid{grid-template-columns:1fr !important;justify-items:center;gap:var(--s-5)}
+.about-body{max-width:900px;width:100%;margin:0 auto;text-align:center}
+.founder-card{order:2;width:min(100%,300px)}
+/* feature grids: fixed three-up rows, short last rows centered */
+@media (min-width:900px){
+  .features-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-5)}
+  .features-grid .feature-card{flex:0 1 calc((100% - 2*var(--s-5))/3)}
+}
 </style>
 <style>
 /* Paginated sections (desktop): each top-level section presents as a page.
@@ -1109,13 +1148,13 @@ footer {
         <span class="section-eyebrow">The golden thread &middot; live</span>
         <h2 class="section-title">&ldquo;Integrated&rdquo; isn&rsquo;t a layout. It&rsquo;s one connected thread.</h2>
         <p class="section-sub">
-            The promise at the top of this page is a single model, not a bundle of tools. One aircraft function flows down to its systems, its STPA hazards, a failure condition, a fault tree, the common-cause analyses &mdash; PRA, ZSA, CMA &mdash; that test its independence, the safety requirements that control it, and the verification that closes each one. Reliability and human factors run beneath as feeder lanes, wired into the exact artifact they inform rather than parked in a separate tool. That unbroken line is the golden thread, and it&rsquo;s what &ldquo;integrated&rdquo; actually buys you: move the design and the whole thread moves with it, because there is only one source of truth to drift from.
+            The promise at the top of this page is a single model, not a bundle of tools. One aircraft function flows down to its systems, its STPA hazards, a failure condition, a fault tree, the common-cause analyses (PRA, ZSA, CMA) that test its independence, the safety requirements that control it, and the verification that closes each one. Reliability and human factors run beneath as feeder lanes, wired into the exact artifact they inform rather than parked in a separate tool. That unbroken line is the golden thread, and it&rsquo;s what &ldquo;integrated&rdquo; actually buys you: move the design and the whole thread moves with it, because there is only one source of truth to drift from.
         </p>
         <div class="gt-panel" id="gt-panel-frame">
             <div class="gt-chrome">
                 <span class="gt-chrome-lbl">Function</span>
                 <span class="gt-chrome-pick">AF-2.1 &middot; Thrust <span class="gt-chrome-caret">&#9662;</span></span>
-                <span class="gt-chrome-note">One function, one thread &mdash; there is no all-functions firehose.</span>
+                <span class="gt-chrome-note">One function, one thread. There is no all-functions firehose.</span>
                 <button type="button" class="gt-expand" id="gt-expand" aria-expanded="false" aria-controls="gt-panel-frame"><span class="gt-expand-ic" aria-hidden="true">&#10530;</span><span class="gt-expand-lbl">Expand</span></button>
             </div>
             <div class="gt-legend">
@@ -1136,10 +1175,10 @@ footer {
                 <span class="gt-lg-pill" style="background:#0E7490">Engine</span>
             </div>
             <div class="gt-host" id="gt-thread-host" role="img" aria-label="The golden thread for aircraft function AF-2.1, thrust: a safety-assessment swim lane of function, systems, STPA hazards, failure conditions, fault trees, common-cause analyses, requirements and verification, with reliability and human-factors feeder lanes beneath it."></div>
-            <div class="gt-hint"><span class="gt-hint-dot"></span> <b>This is live &mdash; drag it.</b> Pan the thread, hover a card to isolate it, click any card to open its trace.</div>
+            <div class="gt-hint"><span class="gt-hint-dot"></span> <b>This is live. Drag it.</b> Pan the thread, hover a card to isolate it, click any card to open its trace.</div>
         </div>
         <p class="section-sub" style="margin-top: var(--s-5);">
-            That is the workspace&rsquo;s own renderer above, running on a worked example. On your project it runs on your data: every card carries who authored it &mdash; engineer, AI, or a deterministic engine &mdash; and every stale, compromised or obsolete artifact is surfaced as a named finding rather than a silent gap. Click any card to lay out its ecosystem, then generate its full trace report in one click.
+            That is the workspace&rsquo;s own renderer above, running on a worked example. On your project it runs on your data: every card carries who authored it (engineer, AI, or a deterministic engine), and every stale, compromised or obsolete artifact is surfaced as a named finding rather than a silent gap. Click any card to lay out its ecosystem, then generate its full trace report in one click.
         </p>
     </div>
 
@@ -1287,7 +1326,7 @@ footer {
         if (!host) return;
         if (!graph || !graph.nodes || !graph.nodes.length) {
             host.innerHTML = '<div style="padding:48px;text-align:center;color:' + MUTE + ';font-size:13px;">'
-                + 'Select an aircraft function above — its golden thread (failure conditions, trees, requirements, verification, plus the reliability and human-factors feeder lanes) renders here.</div>';
+                + 'Select an aircraft function above. Its golden thread (failure conditions, trees, requirements, verification, plus the reliability and human-factors feeder lanes) renders here.</div>';
             return;
         }
         const byKey = {}; graph.nodes.forEach(n => byKey[n.key] = n);
@@ -1438,7 +1477,7 @@ footer {
             }
             const dot = statusDot(n);
             if (dot && !bl) c += '<circle cx="' + (p.x + 16) + '" cy="' + (p.y + p.h - 9) + '" r="3.5" fill="' + dot + '"/>';
-            c += '<title>' + esc(n.label + (n.sub ? ' — ' + n.sub : '') + (n.flag ? '  [' + n.flag.toUpperCase() + (n.flagReason ? ': ' + n.flagReason : '') + ']' : '')) + '</title>';
+            c += '<title>' + esc(n.label + (n.sub ? ' · ' + n.sub : '') + (n.flag ? '  [' + n.flag.toUpperCase() + (n.flagReason ? ': ' + n.flagReason : '') + ']' : '')) + '</title>';
             c += '</g>';
             return c;
         }
@@ -1484,7 +1523,7 @@ footer {
 
 
 
-<script>window.GT_GRAPH = {"nodes":[{"key":"func:AF-2.1","kind":"func","id":"AF-2.1","label":"AF-2.1 · Thrust","sub":"Function","ref":{"kind":"acFunc","id":"AF-2.1"},"deg":5},{"key":"sys:PROP","kind":"sys","id":"PROP","label":"Propulsion","sub":"System","ref":{"kind":"system","id":"PROP"},"deg":3,"role":"primary"},{"key":"sys:ELEC","kind":"sys","id":"ELEC","label":"Electrical power","sub":"System","ref":{"kind":"system","id":"ELEC"},"deg":2,"role":"resource","via":"28V DC bus","hops":1},{"key":"sys:EIND","kind":"sys","id":"EIND","label":"Engine indication","sub":"System","ref":{"kind":"system","id":"EIND"},"deg":2,"role":"resource","via":"ARINC 429","hops":2},{"key":"stpa:H-1","kind":"stpa","id":"H-1","label":"H-1","sub":"STPA hazard · thrust","ref":{"kind":"stpaHazard","id":"H-1"},"deg":2},{"key":"stpa:H-5","kind":"stpa","id":"H-5","label":"H-5","sub":"STPA hazard · asymmetry","ref":{"kind":"stpaHazard","id":"H-5"},"deg":1,"flag":"stale","flagReason":"STPA hazard not yet traced to a loss"},{"key":"fc:AC:101","kind":"fc","id":"AC:101","label":"FC-101","sub":"AFHA · Catastrophic","ref":{"kind":"acFha","id":101},"deg":10},{"key":"fc:AC:105","kind":"fc","id":"AC:105","label":"FC-105","sub":"AFHA · Hazardous","ref":{"kind":"acFha","id":105},"deg":7},{"key":"fta:11","kind":"fta","id":"11","label":"Loss of thrust","sub":"Fault tree","ref":{"kind":"ftaPage","id":11},"deg":5},{"key":"fta:12","kind":"fta","id":"12","label":"Asymmetric thrust","sub":"Fault tree","ref":{"kind":"ftaPage","id":12},"deg":3},{"key":"cca:cma:4","kind":"cca","id":"cma:4","label":"CMA C-04","sub":"Shared 28V DC supply","ref":{"kind":"cma","id":4},"deg":2,"flag":"compromised","flagReason":"Independence compromised — FADEC A ⊥ FADEC B"},{"key":"cca:pra:2","kind":"cca","id":"pra:2","label":"PRA P-02","sub":"Rotor burst","ref":{"kind":"pra","id":2},"deg":1},{"key":"cca:zsa:300","kind":"cca","id":"zsa:300","label":"ZSA 300","sub":"Aft propulsion bay","ref":{"kind":"zsa","id":300},"deg":2},{"key":"ip:fadec-ab","kind":"ip","id":"fadec-ab","label":"FADEC A ⊥ FADEC B","sub":"Independence · verified","ref":{"kind":"principle","id":"fadec-ab"},"deg":2},{"key":"req:acReq:14","kind":"req","id":"acReq:14","label":"SR-014","sub":"Redundancy","ref":{"kind":"acReq","id":14},"deg":3},{"key":"req:acReq:31","kind":"req","id":"acReq:31","label":"SR-031","sub":"Monitoring & isolation","ref":{"kind":"acReq","id":31},"deg":2},{"key":"req:sysReq:71","kind":"req","id":"sysReq:71","label":"SR-071","sub":"Segregation","ref":{"kind":"sysReq","id":71,"systemId":"ELEC"},"deg":2,"flag":"stale","flagReason":"Upstream source changed since this requirement was generated."},{"key":"req:acReq:88","kind":"req","id":"acReq:88","label":"STPA · UCA-04","sub":"Requirement","ref":{"kind":"acReq","id":88},"deg":2},{"key":"vv:st:Verified","kind":"vv","id":"st:Verified","label":"Verified","sub":"Verification","ref":null,"deg":1},{"key":"vv:st:In review","kind":"vv","id":"st:In review","label":"In review","sub":"Verification","ref":null,"deg":1},{"key":"vv:st:Planned","kind":"vv","id":"st:Planned","label":"Planned","sub":"Verification","ref":null,"deg":2},{"key":"ram:item:IT-204","kind":"ram","id":"item:IT-204","label":"IT-204","sub":"FADEC channel A · DAL A","ref":{"kind":"item","id":204,"systemId":"PROP"},"deg":1},{"key":"ram:item:IT-209","kind":"ram","id":"item:IT-209","label":"IT-209","sub":"FADEC channel B · DAL A","ref":{"kind":"item","id":209,"systemId":"PROP"},"deg":1},{"key":"hf:hf:ASM-07","kind":"hf","id":"hf:ASM-07","label":"ASM-07","sub":"HF · validated","ref":{"kind":"assumption","id":"ASM-07"},"deg":2},{"key":"hf:hf:ASM-12","kind":"hf","id":"hf:ASM-12","label":"ASM-12","sub":"HF · assumption","ref":{"kind":"assumption","id":"ASM-12"},"deg":2,"flag":"stale","flagReason":"HF assumption not yet validated"}],"links":[{"s":"func:AF-2.1","t":"sys:PROP"},{"s":"func:AF-2.1","t":"sys:ELEC"},{"s":"func:AF-2.1","t":"sys:EIND"},{"s":"sys:PROP","t":"fc:AC:101"},{"s":"sys:PROP","t":"fc:AC:105"},{"s":"sys:ELEC","t":"fc:AC:101"},{"s":"sys:EIND","t":"fc:AC:105"},{"s":"stpa:H-1","t":"fc:AC:101"},{"s":"stpa:H-1","t":"fta:11"},{"s":"stpa:H-5","t":"fc:AC:105"},{"s":"fc:AC:101","t":"fta:11"},{"s":"fc:AC:105","t":"fta:12"},{"s":"fta:11","t":"cca:cma:4"},{"s":"fta:12","t":"cca:cma:4"},{"s":"fc:AC:101","t":"cca:zsa:300"},{"s":"fc:AC:101","t":"cca:pra:2"},{"s":"fc:AC:105","t":"cca:zsa:300"},{"s":"fta:11","t":"ip:fadec-ab"},{"s":"ip:fadec-ab","t":"req:acReq:14"},{"s":"fc:AC:101","t":"req:acReq:14"},{"s":"fc:AC:101","t":"req:acReq:31"},{"s":"fc:AC:101","t":"req:sysReq:71"},{"s":"fc:AC:105","t":"req:acReq:88"},{"s":"req:acReq:14","t":"vv:st:Verified"},{"s":"req:acReq:31","t":"vv:st:In review"},{"s":"req:sysReq:71","t":"vv:st:Planned"},{"s":"req:acReq:88","t":"vv:st:Planned"},{"s":"ram:item:IT-204","t":"fta:11"},{"s":"ram:item:IT-209","t":"fta:12"},{"s":"func:AF-2.1","t":"hf:hf:ASM-07"},{"s":"hf:hf:ASM-07","t":"fc:AC:105"},{"s":"func:AF-2.1","t":"hf:hf:ASM-12"},{"s":"hf:hf:ASM-12","t":"fc:AC:101"}]};</script>
+<script>window.GT_GRAPH = {"nodes":[{"key":"func:AF-2.1","kind":"func","id":"AF-2.1","label":"AF-2.1 · Thrust","sub":"Function","ref":{"kind":"acFunc","id":"AF-2.1"},"deg":5},{"key":"sys:PROP","kind":"sys","id":"PROP","label":"Propulsion","sub":"System","ref":{"kind":"system","id":"PROP"},"deg":3,"role":"primary"},{"key":"sys:ELEC","kind":"sys","id":"ELEC","label":"Electrical power","sub":"System","ref":{"kind":"system","id":"ELEC"},"deg":2,"role":"resource","via":"28V DC bus","hops":1},{"key":"sys:EIND","kind":"sys","id":"EIND","label":"Engine indication","sub":"System","ref":{"kind":"system","id":"EIND"},"deg":2,"role":"resource","via":"ARINC 429","hops":2},{"key":"stpa:H-1","kind":"stpa","id":"H-1","label":"H-1","sub":"STPA hazard · thrust","ref":{"kind":"stpaHazard","id":"H-1"},"deg":2},{"key":"stpa:H-5","kind":"stpa","id":"H-5","label":"H-5","sub":"STPA hazard · asymmetry","ref":{"kind":"stpaHazard","id":"H-5"},"deg":1,"flag":"stale","flagReason":"STPA hazard not yet traced to a loss"},{"key":"fc:AC:101","kind":"fc","id":"AC:101","label":"FC-101","sub":"AFHA · Catastrophic","ref":{"kind":"acFha","id":101},"deg":10},{"key":"fc:AC:105","kind":"fc","id":"AC:105","label":"FC-105","sub":"AFHA · Hazardous","ref":{"kind":"acFha","id":105},"deg":7},{"key":"fta:11","kind":"fta","id":"11","label":"Loss of thrust","sub":"Fault tree","ref":{"kind":"ftaPage","id":11},"deg":5},{"key":"fta:12","kind":"fta","id":"12","label":"Asymmetric thrust","sub":"Fault tree","ref":{"kind":"ftaPage","id":12},"deg":3},{"key":"cca:cma:4","kind":"cca","id":"cma:4","label":"CMA C-04","sub":"Shared 28V DC supply","ref":{"kind":"cma","id":4},"deg":2,"flag":"compromised","flagReason":"Independence compromised: FADEC A ⊥ FADEC B"},{"key":"cca:pra:2","kind":"cca","id":"pra:2","label":"PRA P-02","sub":"Rotor burst","ref":{"kind":"pra","id":2},"deg":1},{"key":"cca:zsa:300","kind":"cca","id":"zsa:300","label":"ZSA 300","sub":"Aft propulsion bay","ref":{"kind":"zsa","id":300},"deg":2},{"key":"ip:fadec-ab","kind":"ip","id":"fadec-ab","label":"FADEC A ⊥ FADEC B","sub":"Independence · verified","ref":{"kind":"principle","id":"fadec-ab"},"deg":2},{"key":"req:acReq:14","kind":"req","id":"acReq:14","label":"SR-014","sub":"Redundancy","ref":{"kind":"acReq","id":14},"deg":3},{"key":"req:acReq:31","kind":"req","id":"acReq:31","label":"SR-031","sub":"Monitoring & isolation","ref":{"kind":"acReq","id":31},"deg":2},{"key":"req:sysReq:71","kind":"req","id":"sysReq:71","label":"SR-071","sub":"Segregation","ref":{"kind":"sysReq","id":71,"systemId":"ELEC"},"deg":2,"flag":"stale","flagReason":"Upstream source changed since this requirement was generated."},{"key":"req:acReq:88","kind":"req","id":"acReq:88","label":"STPA · UCA-04","sub":"Requirement","ref":{"kind":"acReq","id":88},"deg":2},{"key":"vv:st:Verified","kind":"vv","id":"st:Verified","label":"Verified","sub":"Verification","ref":null,"deg":1},{"key":"vv:st:In review","kind":"vv","id":"st:In review","label":"In review","sub":"Verification","ref":null,"deg":1},{"key":"vv:st:Planned","kind":"vv","id":"st:Planned","label":"Planned","sub":"Verification","ref":null,"deg":2},{"key":"ram:item:IT-204","kind":"ram","id":"item:IT-204","label":"IT-204","sub":"FADEC channel A · DAL A","ref":{"kind":"item","id":204,"systemId":"PROP"},"deg":1},{"key":"ram:item:IT-209","kind":"ram","id":"item:IT-209","label":"IT-209","sub":"FADEC channel B · DAL A","ref":{"kind":"item","id":209,"systemId":"PROP"},"deg":1},{"key":"hf:hf:ASM-07","kind":"hf","id":"hf:ASM-07","label":"ASM-07","sub":"HF · validated","ref":{"kind":"assumption","id":"ASM-07"},"deg":2},{"key":"hf:hf:ASM-12","kind":"hf","id":"hf:ASM-12","label":"ASM-12","sub":"HF · assumption","ref":{"kind":"assumption","id":"ASM-12"},"deg":2,"flag":"stale","flagReason":"HF assumption not yet validated"}],"links":[{"s":"func:AF-2.1","t":"sys:PROP"},{"s":"func:AF-2.1","t":"sys:ELEC"},{"s":"func:AF-2.1","t":"sys:EIND"},{"s":"sys:PROP","t":"fc:AC:101"},{"s":"sys:PROP","t":"fc:AC:105"},{"s":"sys:ELEC","t":"fc:AC:101"},{"s":"sys:EIND","t":"fc:AC:105"},{"s":"stpa:H-1","t":"fc:AC:101"},{"s":"stpa:H-1","t":"fta:11"},{"s":"stpa:H-5","t":"fc:AC:105"},{"s":"fc:AC:101","t":"fta:11"},{"s":"fc:AC:105","t":"fta:12"},{"s":"fta:11","t":"cca:cma:4"},{"s":"fta:12","t":"cca:cma:4"},{"s":"fc:AC:101","t":"cca:zsa:300"},{"s":"fc:AC:101","t":"cca:pra:2"},{"s":"fc:AC:105","t":"cca:zsa:300"},{"s":"fta:11","t":"ip:fadec-ab"},{"s":"ip:fadec-ab","t":"req:acReq:14"},{"s":"fc:AC:101","t":"req:acReq:14"},{"s":"fc:AC:101","t":"req:acReq:31"},{"s":"fc:AC:101","t":"req:sysReq:71"},{"s":"fc:AC:105","t":"req:acReq:88"},{"s":"req:acReq:14","t":"vv:st:Verified"},{"s":"req:acReq:31","t":"vv:st:In review"},{"s":"req:sysReq:71","t":"vv:st:Planned"},{"s":"req:acReq:88","t":"vv:st:Planned"},{"s":"ram:item:IT-204","t":"fta:11"},{"s":"ram:item:IT-209","t":"fta:12"},{"s":"func:AF-2.1","t":"hf:hf:ASM-07"},{"s":"hf:hf:ASM-07","t":"fc:AC:105"},{"s":"func:AF-2.1","t":"hf:hf:ASM-12"},{"s":"hf:hf:ASM-12","t":"fc:AC:101"}]};</script>
 
 <script>
 (function(){
@@ -1594,49 +1633,49 @@ footer {
         <span class="section-eyebrow">The deterministic MBSA core</span>
         <h2 class="section-title">The model doesn&rsquo;t illustrate the analyses. It produces them.</h2>
         <p class="section-sub">
-            This is where the golden thread stops being a filing discipline and becomes an engine. One behavioral model of the aircraft &mdash; functions, systems, resources, zones, typed deviations, operating modes &mdash; compiles into the analyses, proves the safety claims, and answers what-if questions live. Built on the ARP4754A / 4761A methodology. No sampling, no heuristics, no AI in the loop: a <em>deterministic MBSA core</em> &mdash; same model in, same analyses and verdicts out, on any machine, every time.
+            This is where the golden thread stops being a filing discipline and becomes an engine. One behavioral model of the aircraft (functions, systems, resources, zones, typed deviations, operating modes) compiles into the analyses, proves the safety claims, and answers what-if questions live. Built on the ARP4754A / 4761A methodology. No sampling, no heuristics, no AI in the loop: a <em>deterministic MBSA core</em>: same model in, same analyses and verdicts out, on any machine, every time.
         </p>
         <div class="features-grid">
 
             <div class="feature-card">
                 <div class="feature-icon">⚙️</div>
                 <h3>The model compiles the analyses</h3>
-                <p>Availability rules compile into fault trees &mdash; and every compile is <em>proven equivalent</em> to the model it came from, automatically. Hand-built trees stay first-class; compiled ones can never quietly disagree with the model.</p>
+                <p>Availability rules compile into fault trees, and every compile is <em>proven equivalent</em> to the model it came from, automatically. Hand-built trees stay first-class; compiled ones can never quietly disagree with the model.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">✅</div>
                 <h3>Safety claims, machine-checked</h3>
-                <p>No single failure reaches a Catastrophic condition. No single zonal event does either. Dispatch relief never stands alone. Model covers every Cat/Haz condition. Twenty-plus live checks prove these on the model itself &mdash; and every exception carries a signed engineering basis that reopens if the design moves.</p>
+                <p>No single failure reaches a Catastrophic condition. No single zonal event does either. Dispatch relief never stands alone. Model covers every Cat/Haz condition. Twenty-plus live checks prove these on the model itself, and every exception carries a signed engineering basis that reopens if the design moves.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
                 <h3>Fault injection you can watch</h3>
-                <p>Click a system, a shared resource, or a whole zone failed. The dependency cascade lights up, the availability arithmetic shows its work, and the tripped failure conditions appear with their severities &mdash; a read-only lens for design reviews and what-if sessions.</p>
+                <p>Click a system, a shared resource, or a whole zone failed. The dependency cascade lights up, the availability arithmetic shows its work, and the tripped failure conditions appear with their severities: a read-only lens for design reviews and what-if sessions.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">⚖️</div>
                 <h3>Two engines, forced to agree</h3>
-                <p>Every evaluation runs twice &mdash; clause arithmetic and compiled model logic &mdash; and the two are cross-checked on every run. Disagreement renders as a named finding. Corroboration isn&rsquo;t a claim here; it&rsquo;s a mechanism.</p>
+                <p>Every evaluation runs twice, once as clause arithmetic and once as compiled model logic, and the two are cross-checked on every run. Disagreement renders as a named finding. Corroboration isn&rsquo;t a claim here; it&rsquo;s a mechanism.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🔀</div>
                 <h3>Failures are typed. Reconfiguration is real.</h3>
-                <p>Loss, erroneous, and inadvertent behavior propagate as distinct lanes &mdash; every claimed monitor or blocking path becomes a claim the common-mode analysis must own. Fallback modes are first-class, and the switchover itself is a named failure mode, corroborated by seeded Monte Carlo. Functional FMEAs generate from the model and enter your analysis only with an engineer&rsquo;s signature.</p>
+                <p>Loss, erroneous, and inadvertent behavior propagate as distinct lanes, so every claimed monitor or blocking path becomes a claim the common-mode analysis must own. Fallback modes are first-class, and the switchover itself is a named failure mode, corroborated by seeded Monte Carlo. Functional FMEAs generate from the model and enter your analysis only with an engineer&rsquo;s signature.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📌</div>
                 <h3>Standing on named assumptions</h3>
-                <p>Model rules cite the assumptions that substantiate them. Invalidate one and every claim resting on it is named on the spot &mdash; analyses, dispatch limits, signed acceptances, gates. The model&rsquo;s schema is versioned and enforced, so it can&rsquo;t silently drift.</p>
+                <p>Model rules cite the assumptions that substantiate them. Invalidate one and every claim resting on it is named on the spot: analyses, dispatch limits, signed acceptances, gates. The model&rsquo;s schema is versioned and enforced, so it can&rsquo;t silently drift.</p>
             </div>
 
         </div>
         <p class="section-sub" style="margin-top: var(--s-5); text-align: center;">
-            And the core plugs into the tools you already run: architecture in from your MBSE tool over SysML/XMI, requirements flowing <em>both ways</em> with Jama &middot; Polarion &middot; DOORS &mdash; live change tracking on Jama, verification status returning over ReqIF. <a href="#connect" style="color: inherit; text-decoration: underline;">See the integrations &darr;</a>
+            And the core plugs into the tools you already run: architecture in from your MBSE tool over SysML/XMI, requirements flowing <em>both ways</em> with Jama &middot; Polarion &middot; DOORS, with live change tracking on Jama, verification status returning over ReqIF. <a href="#connect" style="color: inherit; text-decoration: underline;">See the integrations &darr;</a>
         </p>
     </div>
 </section>
@@ -1645,8 +1684,8 @@ footer {
     <div class="container">
         <span class="section-eyebrow">From the field</span>
         <h2 class="tst-lead">&ldquo;The most complete safety analysis tool I&rsquo;ve used.&rdquo;</h2>
-        <p class="tst-lead-by">— a safety engineer</p>
-        <p class="section-sub">And the part nobody forgets is the golden thread — the interconnectedness, and the live flagging of obsolescence and compromised requirements the moment something upstream changes.</p>
+        <p class="tst-lead-by">a safety engineer</p>
+        <p class="section-sub">And the part nobody forgets is the golden thread: the interconnectedness, and the live flagging of obsolescence and compromised requirements the moment something upstream changes.</p>
 
         <div class="tst-pills">
             <div class="tst-pill"><span class="tst-pill-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span><span class="tst-pill-txt">Used by DERs <em>on active certification programs</em></span></div>
@@ -1656,7 +1695,7 @@ footer {
 
         <figure class="tst-quote">
             <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
-            <blockquote>Very powerful and highly visual — better than some of the tools I&rsquo;ve used with previous clients, including very large aeronautical companies. Its strongest points are document export and full traceability of the whole process, from requirements V&amp;V through to the safety CCAs. Really impressed.</blockquote>
+            <blockquote>Very powerful and highly visual, better than some of the tools I&rsquo;ve used with previous clients, including very large aeronautical companies. Its strongest points are document export and full traceability of the whole process, from requirements V&amp;V through to the safety CCAs. Really impressed.</blockquote>
             <figcaption class="tst-byline">
                 <span class="tst-avatar" aria-hidden="true">SC</span>
                 <span class="tst-who">Safety Consultant<span class="tst-tag">Anzen</span></span>
@@ -1692,7 +1731,7 @@ footer {
 
         <figure class="tst-quote">
             <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
-            <blockquote>I love how you can see how everything affects each other — and that there&rsquo;s a path to qualifying the tool per DO-330 and measuring compliance against ARP4754A. Being able to link PRs to the affected items and track them is a biggie for me on the software side. Seriously well done.</blockquote>
+            <blockquote>I love how you can see how everything affects each other, and that there&rsquo;s a path to qualifying the tool per DO-330 and measuring compliance against ARP4754A. Being able to link PRs to the affected items and track them is a biggie for me on the software side. Seriously well done.</blockquote>
             <figcaption class="tst-byline">
                 <span class="tst-avatar" aria-hidden="true">SW</span>
                 <span class="tst-who">Software Safety Engineer<span class="tst-tag">Verified beta tester</span></span>
@@ -1701,7 +1740,7 @@ footer {
 
         <figure class="tst-quote">
             <span class="tst-qmark" aria-hidden="true">&ldquo;</span>
-            <blockquote>You&rsquo;re solving a big problem with certification that the big corporate players haven&rsquo;t — and probably won&rsquo;t — figure out. The hard part is getting them to recognize it and act. Keep it up.</blockquote>
+            <blockquote>You&rsquo;re solving a big problem with certification that the big corporate players haven&rsquo;t figured out, and probably won&rsquo;t. The hard part is getting them to recognize it and act. Keep it up.</blockquote>
             <figcaption class="tst-byline">
                 <span class="tst-avatar" aria-hidden="true">SE</span>
                 <span class="tst-who">Safety Engineer<span class="tst-tag">Boeing</span></span>
@@ -1727,7 +1766,7 @@ footer {
             <div class="tst-card">
                 <span class="tst-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v3h-3"/></svg></span>
                 <h3>Obsolescence, in real time</h3>
-                <p>When a part or standard goes stale, every artifact it touches lights up at once — no manual sweep.</p>
+                <p>When a part or standard goes stale, every artifact it touches lights up at once. No manual sweep.</p>
             </div>
             <div class="tst-card">
                 <span class="tst-card-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l1-1"/><path d="M14 11a5 5 0 0 0-7 0l-1 1"/><path d="M3 3l18 18"/></svg></span>
@@ -1776,7 +1815,7 @@ footer {
             <div class="feature-card">
                 <div class="feature-icon">📝</div>
                 <h3>Reports your DER actually reads</h3>
-                <p>AFHA, PASA, SFHA, PSSA, SSA, ASA, PRA, ZSA, CMA — all nine ARP 4761A reports generated to Word or PDF, with your own org template if you have one.</p>
+                <p>AFHA, PASA, SFHA, PSSA, SSA, ASA, PRA, ZSA, CMA: all nine ARP 4761A reports generated to Word or PDF, with your own org template if you have one.</p>
             </div>
 
         </div>
@@ -1789,44 +1828,44 @@ footer {
         <span class="section-eyebrow">Reliability &amp; Maintainability · Pro+</span>
         <h2 class="section-title">A complete R&amp;M program, on the same golden thread.</h2>
         <p class="section-sub">
-            Not a bolted-on calculator — the same failure rates that drive your fault trees drive prediction, spares, maintenance intervals and cost. A field finding on a rate a handed-off safety argument used shows up on the dashboard as a challenge to that gate.
+            Not a bolted-on calculator. The same failure rates that drive your fault trees drive prediction, spares, maintenance intervals and cost. A field finding on a rate a handed-off safety argument used shows up on the dashboard as a challenge to that gate.
         </p>
         <div class="features-grid">
 
             <div class="feature-card">
                 <div class="feature-icon">📈</div>
                 <h3>Prediction to field data, closed loop</h3>
-                <p>Reliability prediction, MTTR/MDT ledgers, dispatch reliability, and FRACAS with statistical verdicts — a field MTBF is VERIFIED only when the chi-square lower confidence bound clears the prediction, never on a point estimate.</p>
+                <p>Reliability prediction, MTTR/MDT ledgers, dispatch reliability, and FRACAS with statistical verdicts. A field MTBF is VERIFIED only when the chi-square lower confidence bound clears the prediction, never on a point estimate.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🎲</div>
-                <h3>RBD — exact and Monte Carlo</h3>
-                <p>Exact k-of-N block diagrams with live fault-tree duals, plus seeded Monte Carlo for what product forms can't express: standby redundancy, imperfect switching, warm dormancy, phased missions. Same seed, same number — reproducible for the auditor.</p>
+                <h3>RBD: exact and Monte Carlo</h3>
+                <p>Exact k-of-N block diagrams with live fault-tree duals, plus seeded Monte Carlo for what product forms can't express: standby redundancy, imperfect switching, warm dormancy, phased missions. Same seed, same number, reproducible for the auditor.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📐</div>
                 <h3>Life data, honestly bounded</h3>
-                <p>Weibull by median-rank regression and maximum likelihood side by side, with Fisher confidence bounds. A wear-out claim needs the whole β interval above 1 — a point estimate alone is not evidence. Crow-AMSAA growth with goodness-of-fit.</p>
+                <p>Weibull by median-rank regression and maximum likelihood side by side, with Fisher confidence bounds. A wear-out claim needs the whole β interval above 1; a point estimate alone is not evidence. Crow-AMSAA growth with goodness-of-fit.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🛠</div>
                 <h3>MSG-3, all four programs</h3>
-                <p>Systems &amp; powerplant analysis with the full logic cascade, plus structures (AD/ED/FD ratings → derived task sets), zonal derived from your ZSA register, and L/HIRF protection features — all pushing into one maintenance ledger with provenance.</p>
+                <p>Systems &amp; powerplant analysis with the full logic cascade, plus structures (AD/ED/FD ratings → derived task sets), zonal derived from your ZSA register, and L/HIRF protection features, all pushing into one maintenance ledger with provenance.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">✈️</div>
                 <h3>MMEL &amp; dispatch, computed</h3>
-                <p>Dispatch rulings from exact minimal cut sets — an item whose loss leaves order-1 protection is NO DISPATCH, mechanically. Quantitative exposure via transient recomputation, time-limited dispatch budgets from your safety targets.</p>
+                <p>Dispatch rulings from exact minimal cut sets: an item whose loss leaves order-1 protection is NO DISPATCH, mechanically. Quantitative exposure via transient recomputation, time-limited dispatch budgets from your safety targets.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">💰</div>
                 <h3>Spares, intervals, cost</h3>
-                <p>Poisson spares at your fill rate, PM intervals reconciled against latent-failure not-to-exceed limits, testability rollups, level-of-repair, and life-cycle cost — priced from the λ and MTTR the safety case already carries, so design trades price themselves.</p>
+                <p>Poisson spares at your fill rate, PM intervals reconciled against latent-failure not-to-exceed limits, testability rollups, level-of-repair, and life-cycle cost, priced from the λ and MTTR the safety case already carries, so design trades price themselves.</p>
             </div>
 
         </div>
@@ -1839,44 +1878,44 @@ footer {
         <span class="section-eyebrow">Human Factors</span>
         <h2 class="section-title">The crew is a component. Model it like one.</h2>
         <p class="section-sub">
-            Most safety cases credit the pilot in prose — &ldquo;crew detects and reverts&rdquo; — and never say how long that takes, whether anyone measured it, or what else the crew was doing at the time. Safety Lab makes the human claim a typed, cited, checkable record on the same golden thread as the fault trees, so an unearned credit fails an invariant instead of surviving review.
+            Most safety cases credit the pilot in prose (&ldquo;crew detects and reverts&rdquo;) and never say how long that takes, whether anyone measured it, or what else the crew was doing at the time. Safety Lab makes the human claim a typed, cited, checkable record on the same golden thread as the fault trees, so an unearned credit fails an invariant instead of surviving review.
         </p>
         <div class="features-grid">
 
             <div class="feature-card">
                 <div class="feature-icon">📖</div>
                 <h3>298 page-cited reference values</h3>
-                <p>Reaction times, detection thresholds, reach and workload data drawn from the NASA Human Integration Design Handbook — each carrying its section, author-year, the printed page, and a verbatim quote containing the number. Every value is tagged <em>aircraft</em>, <em>spaceflight</em>, or <em>general</em>, because HIDH is a spaceflight handbook and pretending otherwise is how a bad number gets credited. A preset seeds a field; it never fills one, and never marks anything validated.</p>
+                <p>Reaction times, detection thresholds, reach and workload data drawn from the NASA Human Integration Design Handbook, each carrying its section, author-year, the printed page, and a verbatim quote containing the number. Every value is tagged <em>aircraft</em>, <em>spaceflight</em>, or <em>general</em>, because HIDH is a spaceflight handbook and pretending otherwise is how a bad number gets credited. A preset seeds a field; it never fills one, and never marks anything validated.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
                 <h3>Two lanes: credited and uncredited</h3>
-                <p>Every human-factors assumption can carry both the value you hope to credit and the conservative value you must use until someone proves it. The credited lane applies only once the assumption is Validated or Verified. A Catastrophic or Hazardous claim resting on an unvalidated credit is a hard invariant failure — not a comment, not a warning.</p>
+                <p>Every human-factors assumption can carry both the value you hope to credit and the conservative value you must use until someone proves it. The credited lane applies only once the assumption is Validated or Verified. A Catastrophic or Hazardous claim resting on an unvalidated credit is a hard invariant failure, not a comment or a warning.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">⏱</div>
                 <h3>Workload saturation, arithmetic not vibes</h3>
-                <p>Per crewmember, per flight phase, across the five HIDH channels — visual, auditory, cognitive, psychomotor, verbal — declared co-active tasks are summed against the 80% time-occupancy red line. Ledger arithmetic: no solver, no pilot model, no simulation. And an exposure duration is never silently reused as a response window; if the phase declares no window, the check declines to run rather than invent one.</p>
+                <p>Per crewmember, per flight phase, across the five HIDH channels (visual, auditory, cognitive, psychomotor, verbal), declared co-active tasks are summed against the 80% time-occupancy red line. Ledger arithmetic: no solver, no pilot model, no simulation. And an exposure duration is never silently reused as a response window; if the phase declares no window, the check declines to run rather than invent one.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">⚖️</div>
                 <h3>Severity reconciled against workload</h3>
-                <p>AC 25.1309 writes severity in workload language, so the two can be compared. A task the model says drives excessive workload sitting under a Minor severity classification is a two-band gap, and the FHA row says so on its face. Advisory — it flags the contradiction for an engineer to resolve, and never overrides your classification.</p>
+                <p>AC 25.1309 writes severity in workload language, so the two can be compared. A task the model says drives excessive workload sitting under a Minor severity classification is a two-band gap, and the FHA row says so on its face. Advisory only: it flags the contradiction for an engineer to resolve, and never overrides your classification.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🧪</div>
                 <h3>Trials enter as evidence, not as truth</h3>
-                <p>Sim campaigns, flight test, bench trials and literature ingest with metric, value, sample size and a real source — uncited evidence is rumor, so the source field is mandatory. Measured worse than assumed reads CONTRADICTS; at or better reads SUPPORTS. Nothing self-validates: a human validates in the register, and a Validated assumption whose own evidence contradicts it gets flagged until someone answers for it.</p>
+                <p>Sim campaigns, flight test, bench trials and literature ingest with metric, value, sample size and a real source, because uncited evidence is rumor, so the source field is mandatory. Measured worse than assumed reads CONTRADICTS; at or better reads SUPPORTS. Nothing self-validates: a human validates in the register, and a Validated assumption whose own evidence contradicts it gets flagged until someone answers for it.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📏</div>
                 <h3>Ergonomics on the standards spine</h3>
-                <p>ISO 9241 and MIL-STD-1472 sit on the spine by designation, title and role — cite-and-point, never a word of licensed text stored. A Fitts&rsquo; Law movement-time calculator in the Shannon formulation that <em>requires</em> cited coefficients, because a borrowed coefficient without a citation is a guess wearing a suit. Seven-factor human-performance taxonomy for STPA causal factors, with NASA-HFACS nanocodes as the deep layer.</p>
+                <p>ISO 9241 and MIL-STD-1472 sit on the spine by designation, title and role: cite-and-point, never a word of licensed text stored. A Fitts&rsquo; Law movement-time calculator in the Shannon formulation that <em>requires</em> cited coefficients, because a borrowed coefficient without a citation is a guess wearing a suit. Seven-factor human-performance taxonomy for STPA causal factors, with NASA-HFACS nanocodes as the deep layer.</p>
             </div>
 
         </div>
@@ -1889,45 +1928,45 @@ footer {
         <span class="section-eyebrow">Connectivity</span>
         <h2 class="section-title">Your requirements live in an ALM. Ours plug into it.</h2>
         <p class="section-sub">
-            Polarion, Jama Connect, IBM DOORS — Safety Lab imports the standard ReqIF interchange every major requirements tool exports, so requirements and FHA content arrive with their identifiers, attributes, hierarchy and trace links intact. Not as text to re-type.
+            Polarion, Jama Connect, IBM DOORS: Safety Lab imports the standard ReqIF interchange every major requirements tool exports, so requirements and FHA content arrive with their identifiers, attributes, hierarchy and trace links intact. Not as text to re-type.
         </p>
         <div class="features-grid">
 
             <div class="feature-card">
                 <div class="feature-icon">🔗</div>
                 <h3>ReqIF from any ALM</h3>
-                <p>OMG-standard ReqIF import with a preview before anything touches your project. Works with Polarion's Round-trip export, Jama Connect Interchange, DOORS, Codebeamer — one importer, every tool.</p>
+                <p>OMG-standard ReqIF import with a preview before anything touches your project. Works with Polarion's Round-trip export, Jama Connect Interchange, DOORS, Codebeamer. One importer, every tool.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🔁</div>
                 <h3>Re-import is a sync, not a paste</h3>
-                <p>Rows match on their source identifiers: unchanged rows skip, changed rows update in place and keep their safety traces, deleted rows are flagged for disposition — never silently removed while analyses still reference them.</p>
+                <p>Rows match on their source identifiers: unchanged rows skip, changed rows update in place and keep their safety traces, deleted rows are flagged for disposition, never silently removed while analyses still reference them.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🛡️</div>
                 <h3>FHA import that refuses to guess</h3>
-                <p>Failure conditions import with severity, phases and effects — and a severity wording the importer can't map unambiguously arrives unclassified with a warning, because a misread classification is worse than a missing one.</p>
+                <p>Failure conditions import with severity, phases and effects, and a severity wording the importer can't map unambiguously arrives unclassified with a warning, because a misread classification is worse than a missing one.</p>
             </div>
 
 
             <div class="feature-card">
                 <div class="feature-icon">📐</div>
                 <h3>Architecture from your MBSE tool</h3>
-                <p>SysML blocks become systems, activities become functions, internal-block connectors become the interfaces and resources the dependency and propagation models run on &mdash; imported over standard XMI (Cameo and friends), re-import diffing changes onto the thread. Pilot program: bring a sample export.</p>
+                <p>SysML blocks become systems, activities become functions, internal-block connectors become the interfaces and resources the dependency and propagation models run on, imported over standard XMI (Cameo and friends), re-import diffing changes onto the thread. Pilot program: bring a sample export.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📡</div>
                 <h3>Status flows back, live</h3>
-                <p>Your requirements team keeps working in their tool. The live bridge watches your Jama project and stages every change for signed import &mdash; nothing crosses the boundary without an engineer&rsquo;s signature, and your API token never leaves your machine. Verification status, MoC state, and DAL flow back over ReqIF today; direct API write-back is next. Polarion rides the same connector.</p>
+                <p>Your requirements team keeps working in their tool. The live bridge watches your Jama project and stages every change for signed import. Nothing crosses the boundary without an engineer&rsquo;s signature, and your API token never leaves your machine. Verification status, MoC state, and DAL flow back over ReqIF today; direct API write-back is next. Polarion rides the same connector.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
                 <h3>Your data stays yours</h3>
-                <p>Imports parse entirely in your browser — requirement data never transits our servers. Excel round-trip for tools without ReqIF; live API synchronization with status write-back available as a pilot.</p>
+                <p>Imports parse entirely in your browser; requirement data never transits our servers. Excel round-trip for tools without ReqIF; live API synchronization with status write-back available as a pilot.</p>
             </div>
 
         </div>
@@ -1940,20 +1979,20 @@ footer {
         <span class="section-eyebrow">The story</span>
         <h2 class="section-title">It&rsquo;s not us. It&rsquo;s you.</h2>
         <p class="section-sub">
-            Safety Lab doesn&rsquo;t do safety engineering. It makes <em>your</em> safety engineering executable, checkable, and provable &mdash; and then gets out of the way.
+            Safety Lab doesn&rsquo;t do safety engineering. It makes <em>your</em> safety engineering executable, checkable, and provable, and then gets out of the way.
         </p>
         <div class="features-grid">
 
             <div class="feature-card">
                 <div class="feature-icon">🧠</div>
                 <h3>Your judgment</h3>
-                <p>Every hazard call, severity, independence claim, &beta;, and acceptance carries <em>your</em> signature &mdash; the engine derives everything else from those decisions and re-derives it when they change. Computed output never overwrites an engineer&rsquo;s word.</p>
+                <p>Every hazard call, severity, independence claim, &beta;, and acceptance carries <em>your</em> signature. The engine derives everything else from those decisions and re-derives it when they change. Computed output never overwrites an engineer&rsquo;s word.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">📌</div>
                 <h3>Your assumptions, load-bearing</h3>
-                <p>Every claim knows what it rests on. Assumptions bind to the analyses, model rules, dispatch limits and dispositions built on them &mdash; invalidate one, and every exposed claim is named on the spot. An assumption nothing rests on gets flagged too.</p>
+                <p>Every claim knows what it rests on. Assumptions bind to the analyses, model rules, dispatch limits and dispositions built on them. Invalidate one, and every exposed claim is named on the spot. An assumption nothing rests on gets flagged too.</p>
             </div>
 
             <div class="feature-card">
@@ -1971,13 +2010,13 @@ footer {
             <div class="feature-card">
                 <div class="feature-icon">🔍</div>
                 <h3>Your proof, re-runnable by anyone</h3>
-                <p>Deterministic end to end: same project file, same trees, same requirements, same verdicts &mdash; on any machine, including your DER&rsquo;s. The hash-chained journal makes the history itself tamper-evident.</p>
+                <p>Deterministic end to end: same project file, same trees, same requirements, same verdicts, on any machine, including your DER&rsquo;s. The hash-chained journal makes the history itself tamper-evident.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">✍️</div>
                 <h3>Your name on it, deservedly</h3>
-                <p>When the evidence package goes out, it is your engineering &mdash; every derivation traceable to your inputs, every acceptance carrying your basis, every gate signed by your team. The tool just made it impossible to lose the thread.</p>
+                <p>When the evidence package goes out, it is your engineering: every derivation traceable to your inputs, every acceptance carrying your basis, every gate signed by your team. The tool just made it impossible to lose the thread.</p>
             </div>
 
         </div>
@@ -1989,26 +2028,26 @@ footer {
         <span class="section-eyebrow">The discipline</span>
         <h2 class="section-title">What the tool refuses to do.</h2>
         <p class="section-sub">
-            Anyone can add features. The reason a DER trusts a workspace is what it will not let slide. These guardrails are not a mode you switch on &mdash; they are the design.
+            Anyone can add features. The reason a DER trusts a workspace is what it will not let slide. These guardrails are not a mode you switch on. They are the design.
         </p>
         <div class="features-grid">
 
             <div class="feature-card">
                 <div class="feature-icon">🧮</div>
                 <h3>The AI never does the math</h3>
-                <p>The deterministic engine owns every computation. The AI drafts structure and accelerates the busywork &mdash; but it never does the math, and nothing it produces enters your analysis until a qualified engineer reviews and accepts it.</p>
+                <p>The deterministic engine owns every computation. The AI drafts structure and accelerates the busywork, but it never does the math, and nothing it produces enters your analysis until a qualified engineer reviews and accepts it.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">✍️</div>
                 <h3>Nothing is approved on trust</h3>
-                <p>An approval is a re-authenticated signature bound to the exact analysis it signs. If the analysis changes after sign-off, the signature no longer matches that state &mdash; and the record says so.</p>
+                <p>An approval is a re-authenticated signature bound to the exact analysis it signs. If the analysis changes after sign-off, the signature no longer matches that state, and the record says so.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">⛓️</div>
                 <h3>The record can&rsquo;t be quietly changed</h3>
-                <p>Saves, sealed revisions, and sign-offs land in an append-only, hash-chained ledger. Any later edit or deletion of a past record is mathematically detectable &mdash; the audit trail a certification authority expects.</p>
+                <p>Saves, sealed revisions, and sign-offs land in an append-only, hash-chained ledger. Any later edit or deletion of a past record is mathematically detectable: the audit trail a certification authority expects.</p>
             </div>
 
             <div class="feature-card">
@@ -2040,7 +2079,7 @@ footer {
             <div class="tier-card">
                 <div class="tier-name">Education</div>
                 <div class="tier-price">Free <small>/ forever</small></div>
-                <div class="tier-desc">Verified .edu or academic — for individual coursework, thesis work, and research.</div>
+                <div class="tier-desc">Verified .edu or academic, for individual coursework, thesis work, and research.</div>
                 <ul class="tier-features">
                     <li>Full FTA / FMEA / FHA tools</li>
                     <li>Component library</li>
@@ -2053,7 +2092,7 @@ footer {
             <div class="tier-card">
                 <div class="tier-name">Pro</div>
                 <div class="tier-price">$1,500 <small>/ seat &middot; month</small></div>
-                <div class="tier-desc">Working safety engineers — the full classical toolset, no AI assist.</div>
+                <div class="tier-desc">Working safety engineers: the full classical toolset, no AI assist.</div>
                 <ul class="tier-features">
                     <li>Everything in Education</li>
                     <li>End-to-end requirements workflow</li>
@@ -2082,11 +2121,11 @@ footer {
             <div class="tier-card">
                 <div class="tier-name">Enterprise</div>
                 <div class="tier-price">Custom</div>
-                <div class="tier-desc">Organizations running certification programs — teams, controlled environments, qualification support.</div>
+                <div class="tier-desc">Organizations running certification programs: teams, controlled environments, qualification support.</div>
                 <ul class="tier-features">
                     <li>Everything in Pro+, multi-seat</li>
                     <li>Independent review &amp; sign-off chains, gates &amp; evidence packages</li>
-                    <li>RM integration — Jama live + ReqIF (DOORS / Polarion / Codebeamer)</li>
+                    <li>RM integration: Jama live + ReqIF (DOORS / Polarion / Codebeamer)</li>
                     <li>SSO &amp; user provisioning</li>
                     <li>On-prem / air-gap deployment (ITAR &amp; non-US regimes)</li>
                     <li>DO-330 tool-qualification support &middot; support SLA</li>
@@ -2097,7 +2136,7 @@ footer {
         </div>
 
         <p class="pricing-note">
-            Pro and Pro+ are <strong>individual licenses</strong>, priced per seat and billed monthly — cancel anytime. Use by an organization on an active type-certification program requires an <strong>Enterprise</strong> license. Education is free for verified academic use.
+            Pro and Pro+ are <strong>individual licenses</strong>, priced per seat and billed monthly. Cancel anytime. Use by an organization on an active type-certification program requires an <strong>Enterprise</strong> license. Education is free for verified academic use.
         </p>
     </div>
 </section>
@@ -2117,13 +2156,13 @@ footer {
 
             <div class="about-body">
                 <p>
-                    I've spent years inside Part 25 and SC-VTOL programs — running FHAs, building fault trees, allocating DALs, and walking DERs through verification. The classical safety toolset has earned its place; its methods have been refined over decades of certified flight.
+                    I've spent years inside Part 25 and SC-VTOL programs, running FHAs, building fault trees, allocating DALs, and walking DERs through verification. The classical safety toolset has earned its place; its methods have been refined over decades of certified flight.
                 </p>
                 <p>
-                    What I wanted was a single workspace where every artifact connects to every other one — where the FHAs, fault trees, requirements, and supporting analyses share state automatically, instead of living in separate documents that get reconciled by hand.
+                    What I wanted was a single workspace where every artifact connects to every other one, where the FHAs, fault trees, requirements, and supporting analyses share state automatically, instead of living in separate documents that get reconciled by hand.
                 </p>
                 <p>
-                    <strong>Safety Lab Aero is that workspace.</strong> It's designed to fit how safety teams already work — and to give them back the time currently spent reconciling.
+                    <strong>Safety Lab Aero is that workspace.</strong> It's designed to fit how safety teams already work, and to give them back the time currently spent reconciling.
                 </p>
                 <p style="font-size: 14px; color: var(--text-muted);">
                     Questions? <a href="mailto:waqas.nafees@safetylabaero.com">waqas.nafees@safetylabaero.com</a>
@@ -2138,7 +2177,7 @@ footer {
 <section class="cta-strip">
     <div class="container">
         <h2>Stop reconciling. Start certifying.</h2>
-        <p>Spin up a free trial — full Pro tier, no credit card for 10 days.</p>
+        <p>Spin up a free trial: full Pro tier, no credit card for 10 days.</p>
         <a href="/app" class="btn">Start free trial</a>
         <a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-mac-arm64.dmg" class="btn" style="margin-left: 10px;">⬇ Download for Mac</a>
         <a href="https://updates.safetylabaero.com/desktop/SafetyLabAero-win-x64.exe" class="btn" style="margin-left: 10px;">⬇ Download for Windows</a>

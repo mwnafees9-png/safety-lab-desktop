@@ -100,13 +100,12 @@ footer{margin-top:56px; border-top:1px solid var(--border-hair);
    ============================================================================ */
 :root{
   color-scheme:light;
-  --bg:#F7F4EC; --bg-soft:#F1EDE2; --bg-card:#FFFFFF;
-  --border-hair:#E4DFD1; --border:#CFC9B8;
-  --text:#16181D; --text-strong:#0A1F44; --text-muted:#565B66;
-  --r-md:0; --r-lg:0;
+  --bg:#ffffff; --bg-soft:#f7f8fb; --bg-card:#FFFFFF;
+  --border-hair:#e3e6ee; --border:#d4d8e3;
+  --text:#14171c; --text-strong:#0A1F44; --text-muted:#3d4351;
+  --r-md:9px; --r-lg:13px;
 }
-*{border-radius:0 !important;}
-body{font-family:var(--font-sans);}
+body{font-family:var(--font-sans); background:linear-gradient(165deg,#e9edff 0%,#ffffff 46%,#f9f2ff 100%); background-attachment:fixed;}
 body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;background:var(--grad);z-index:2000;pointer-events:none;}
-.nav{background:rgba(247,244,236,0.88) !important;}
-a{color:#0A63CC;}
+.nav{background:rgba(255,255,255,0.85) !important;}
+a{color:#1a6ef2;}
