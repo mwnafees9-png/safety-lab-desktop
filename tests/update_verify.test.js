@@ -98,11 +98,15 @@ console.log('\n[U5] domain separation: a non-domain (licence-style) signature do
   check('a signature over the bare bytes is not accepted as an update signature', r.ok === false, JSON.stringify(r));
 }
 
-console.log('\n[U6] the shipped build is fail-closed until a real key is pasted in');
+console.log('\n[U6] fail-closed when no real key is provisioned');
 {
-  check('_isProvisioned is false for the baked-in placeholder', UV._isProvisioned(UV.PUBLIC_KEYS) === false, JSON.stringify(UV.PUBLIC_KEYS.map(k => k.kid)));
+  // Test the LOGIC with an explicit placeholder set (key-agnostic), so this stays true whether or
+  // not the shipped build has had a real key pasted in.
+  const placeholderOnly = [{ kid: 'slab-upd-UNPROVISIONED', alg: 'ES256', kty: 'EC', crv: 'P-256', x: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', y: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' }];
+  check('_isProvisioned is false for a placeholder-only key set', UV._isProvisioned(placeholderOnly) === false);
   const sig = sign(KEY.priv, KEY.kid, ymlBuf, UV.UPDATE_MANIFEST_DOMAIN);
-  check('with only the placeholder key, even a real signature verifies nothing', UV.verifyManifest(ymlBuf, sig, UV.PUBLIC_KEYS).ok === false);
+  check('with only a placeholder key, even a real signature verifies nothing', UV.verifyManifest(ymlBuf, sig, placeholderOnly).ok === false);
+  check('the shipped build IS provisioned with a real update-signing key', UV._isProvisioned(UV.PUBLIC_KEYS) === true, JSON.stringify(UV.PUBLIC_KEYS.map(k => k.kid)));
 }
 
 console.log('\n[U7] version compare and manifest parsing');

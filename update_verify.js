@@ -39,8 +39,10 @@ const UPDATE_MANIFEST_DOMAIN = 'SLAB-UPDATE-MANIFEST-v1\n';
 // pasted in, every manifest reads as UNVERIFIED and no update is ever offered. That is fail-closed
 // on purpose: a missing key must never mean "trust the host".
 const PUBLIC_KEYS = [
-  // { kid: 'slab-upd-2026-09-14', alg: 'ES256', kty: 'EC', crv: 'P-256', x: '…', y: '…' }
-  { kid: 'slab-upd-UNPROVISIONED', alg: 'ES256', kty: 'EC', crv: 'P-256', x: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', y: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' }
+  // Rotation: to change keys, ADD the new record, ship, then drop the old one once no manifest
+  // signed with it is still served. A record here must be a real update-signing public key;
+  // with none, update_verify is fail-closed and offers nothing.
+  { kid: 'slab-upd-2026-09-14', alg: 'ES256', kty: 'EC', crv: 'P-256', x: 'R34qwmACAbjeJ8CvwD93eHJ7-bWq1ChqNR4bEjfSGzg', y: 'fCCBUnNnzqudioPAuz4Mttuj5qqoXzGR_0YBEX3MoOU' }
 ];
 
 function _isProvisioned(keys) {
