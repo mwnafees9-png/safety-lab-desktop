@@ -5,8 +5,9 @@
  * Executes the pure rules in shell_rules.js (egress allowlist, config sanity, the overrides the
  * preload hands the web bundle, deep-link parsing, the ONE license verifier loaded from the
  * pulled bundle) and checks the shell's structure: no second license system, no seeded
- * identity/tier/token, DevTools off in packaged builds, safetylab:// registered, updates manual
- * until a certificate exists, and app/ pulled by pull-web.sh from a stripped web build.
+ * identity/tier/token, DevTools off in packaged builds, safetylab:// registered, updates gated by
+ * an independently-signed manifest (S24) and manual until a native certificate exists, and app/
+ * pulled by pull-web.sh from a stripped web build.
  *
  * Run: node tests/regression_desktop_shell.test.js     (release.sh runs every tests/*.test.js)
  */
@@ -40,7 +41,16 @@ const main = read('main.js'), preload = read('preload-app.js'), pkg = JSON.parse
   check('egress guard cancels anything not allowed (webRequest.onBeforeRequest → cancel:true)', /onBeforeRequest\(\{ urls: \['<all_urls>'\] \}[\s\S]{0,500}cb\(\{ cancel: true \}\)/.test(main));
   check('the license verifier is the PULLED web module (shell_rules.loadVerifier over app/)', /R\.loadVerifier\(path\.join\(__dirname, 'app'\)\)/.test(main) && !/createPublicKey|crypto\.verify\(/.test(main));
   check('config sanity runs BEFORE the window opens (openMainApp → configProblem → Settings)', /function openMainApp\(\) \{[\s\S]{0,400}configProblem\(cfg\)[\s\S]{0,300}openSettings\(\); return;/.test(main));
-  check('updates are MANUAL until a certificate exists (AUTO_UPDATE_SIGNED=false, no background check)', /const AUTO_UPDATE_SIGNED = false;/.test(main) && /if \(!manual && !AUTO_UPDATE_SIGNED\) return;/.test(main) && /if \(AUTO_UPDATE_SIGNED\) setTimeout/.test(main));
+  check('updates need a native cert to auto-install (AUTO_UPDATE_SIGNED=false; no launch-time background check without it)', /const AUTO_UPDATE_SIGNED = false;/.test(main) && /if \(!AUTO_UPDATE_SIGNED\) \{\s*\n\s*if \(!manual\) return;/.test(main) && /if \(AUTO_UPDATE_SIGNED\) setTimeout/.test(main));
+
+  console.log('\n[S24] independent update-manifest verification');
+  check('update_verify.js ships (in package.json files) and exists', (pkg.build.files || []).includes('update_verify.js') && exists('update_verify.js'));
+  check('the manifest lock is ON and main.js verifies the manifest before trusting it', /const AUTO_UPDATE_MANIFEST_VERIFIED = true;/.test(main) && /const UV = require\('\.\/update_verify\.js'\)/.test(main) && /UV\.checkForVerifiedUpdate\(/.test(main));
+  check('the manual check acts on the verified result; an unverified manifest offers nothing', /verified\.status === 'update'/.test(main) && /verified\.status === 'unverified'/.test(main) && /Could not verify the update/.test(main));
+  check('the native auto path (once a cert exists) also refuses an unverified manifest', /refusing auto-update: manifest unverified/.test(main));
+  const UVm = require(path.join(ROOT, 'update_verify.js'));
+  check('update_verify is fail-closed: an unprovisioned key set verifies nothing', UVm._isProvisioned([{ kid: 'slab-upd-UNPROVISIONED', x: 'AAA' }]) === false && UVm.verifyManifest(Buffer.from('x'), 'k.zz', [{ kid: 'slab-upd-UNPROVISIONED', x: 'AAA' }]).ok === false);
+  check('publish-desktop.sh signs each manifest and refuses to publish without the key', /sign-manifest\.mjs" sign/.test(read('publish-desktop.sh')) && /no update-signing key/.test(read('publish-desktop.sh')) && /latest-mac\.yml\.sig/.test(read('publish-desktop.sh')));
   check('will-attach-webview refused; new windows only open https externally', /will-attach-webview[^\n]*preventDefault/.test(main) && (main.match(/\/\^https:\\\/\\\/\/i\.test\(url\)/g) || []).length >= 3);
   check('"Open This Project on the Web" uses the bundle\'s own openInWebLink (never a hard-coded Safety Lab address)', /window\.openInWebLink \? window\.openInWebLink\(\) : ""/.test(main) && !/openExternal\(HOSTED_WEB_APP/.test(main));
 

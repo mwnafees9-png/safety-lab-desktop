@@ -411,30 +411,86 @@ function buildMenu() {
 }
 
 // ---- updater ----------------------------------------------------------------------------------------
-// electron-updater against https://updates.safetylabaero.com/desktop/. HONEST STATE (6 Sep 2026):
-// there is no code-signing certificate yet, so an update is verified only by the SHA-512 in the
-// manifest from the same host — which means anyone controlling that URL could ship code. Until a
-// certificate exists, updates are MANUAL: background checks are off, the menu item only tells the
-// user a newer version exists and opens the download page; nothing is downloaded or installed
-// silently. When CSC_LINK/APPLE_ID (mac) or a Windows cert are configured, flip AUTO_UPDATE_SIGNED.
+// electron-updater against https://updates.safetylabaero.com/desktop/. Two independent locks decide
+// whether an update is ever believed or applied (14 Sep 2026, S24):
+//
+//   AUTO_UPDATE_MANIFEST_VERIFIED — ON now, no certificate needed. Safety Lab signs the update
+//     manifest (latest-*.yml) with an ECDSA P-256 key whose private half never leaves Waqas's Mac;
+//     update_verify.js checks that signature against the PUBLIC key baked into this build BEFORE it
+//     believes the manifest. A host that served a forged manifest cannot produce a valid signature,
+//     so it cannot announce, hide, or (when the native path is on) push an update. Until a real
+//     public key is pasted into update_verify.js the check is fail-closed: nothing is offered.
+//
+//   AUTO_UPDATE_SIGNED — a native code-signing certificate exists (Apple Developer ID / Windows
+//     Authenticode) so electron-updater can auto-download and verify the payload's OWN signature.
+//     Still false: no certificate yet. Until then updates are MANUAL — the app only tells the user a
+//     verified newer version exists and opens the download page; nothing downloads or installs
+//     silently. Flip this to true once CSC_LINK/APPLE_ID (mac) or a Windows cert are configured; the
+//     manifest lock still applies on top, so the two are belt and suspenders.
 const AUTO_UPDATE_SIGNED = false;
+const AUTO_UPDATE_MANIFEST_VERIFIED = true;
+const UPDATE_FEED = 'https://updates.safetylabaero.com/desktop/';
+const UV = require('./update_verify.js');
 let autoUpdater = null;
 try { autoUpdater = require('electron-updater').autoUpdater; } catch (_) { autoUpdater = null; }
 let _updaterWired = false, _manualCheck = false;
-function initAutoUpdater(manual) {
+
+function updateManifestName() { return process.platform === 'win32' ? 'latest.yml' : (process.platform === 'linux' ? 'latest-linux.yml' : 'latest-mac.yml'); }
+
+// Small https GET for the manifest + its .sig (main process; the app window's egress guard does not
+// apply here). Caps the body so a hostile host cannot stream forever.
+function _httpsGet(url) {
+  return new Promise((resolve, reject) => {
+    let https; try { https = require('https'); } catch (e) { return reject(e); }
+    const req = https.get(url, { timeout: 15000 }, (res) => {
+      if (res.statusCode && res.statusCode >= 300) { res.resume(); return reject(new Error('HTTP ' + res.statusCode)); }
+      let data = ''; res.setEncoding('utf8');
+      res.on('data', (c) => { data += c; if (data.length > 1000000) { req.destroy(); reject(new Error('manifest too large')); } });
+      res.on('end', () => resolve(data));
+    });
+    req.on('timeout', () => req.destroy(new Error('timeout')));
+    req.on('error', reject);
+  });
+}
+
+function _tellUpdateAvailable(version) {
+  return dialog.showMessageBox({ type: 'info', buttons: ['Open download page', 'Later'], defaultId: 0, cancelId: 1, message: 'A newer version is available', detail: 'Safety Lab Aero ' + (version || '') + ' is available. This build installs updates manually: download the installer from the website and run it.' })
+    .then((r) => { if (r.response === 0) { try { shell.openExternal(WEBSITE + '/download'); } catch (_) {} } });
+}
+
+async function initAutoUpdater(manual) {
   _manualCheck = !!manual;
+  // Lock 1: verify the manifest against our own key before trusting a single field of it.
+  let verified = { status: 'skipped' };
+  if (AUTO_UPDATE_MANIFEST_VERIFIED) {
+    try { verified = await UV.checkForVerifiedUpdate({ feedUrl: UPDATE_FEED + updateManifestName(), currentVersion: app.getVersion(), keys: UV.PUBLIC_KEYS, fetchText: _httpsGet }); }
+    catch (e) { verified = { status: 'error', reason: (e && e.message) || String(e) }; }
+    console.log('[updater] manifest ' + verified.status + ' ' + (verified.version || verified.reason || ''));
+  }
+
+  // No native certificate yet: never download. Act on the verified result only, and never in the
+  // background (no launch-time nagging until a certificate exists).
+  if (!AUTO_UPDATE_SIGNED) {
+    if (!manual) return;
+    if (verified.status === 'update') return _tellUpdateAvailable(verified.version);
+    if (verified.status === 'current') return void dialog.showMessageBox({ type: 'info', message: "You're up to date", detail: 'No newer version is available right now.' });
+    if (verified.status === 'unverified') return void dialog.showMessageBox({ type: 'warning', message: 'Could not verify the update', detail: 'The update details could not be confirmed as authentic, so nothing will be offered. If you need the latest version, download the installer directly from ' + WEBSITE + '/download.' });
+    return void dialog.showMessageBox({ type: 'info', message: 'Update check failed', detail: 'Could not check for updates right now.' });
+  }
+
+  // Native path (a certificate exists): electron-updater downloads and verifies the payload's own
+  // code signature. Lock 2 stacks on lock 1 — refuse to proceed if the manifest did not verify.
   if (!autoUpdater) { if (manual) dialog.showMessageBox({ type: 'info', message: 'Updates unavailable', detail: 'The updater module is not installed in this build.' }); return; }
-  if (!manual && !AUTO_UPDATE_SIGNED) return;
+  if (AUTO_UPDATE_MANIFEST_VERIFIED && verified.status === 'unverified') {
+    console.log('[updater] refusing auto-update: manifest unverified (' + verified.reason + ')');
+    if (manual) dialog.showMessageBox({ type: 'warning', message: 'Update not applied', detail: 'The update could not be verified as authentic and was not downloaded.' });
+    return;
+  }
   try {
-    autoUpdater.autoDownload = AUTO_UPDATE_SIGNED;
-    autoUpdater.autoInstallOnAppQuit = AUTO_UPDATE_SIGNED;
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
     if (!_updaterWired) {
       _updaterWired = true;
-      autoUpdater.on('update-available', (info) => {
-        if (AUTO_UPDATE_SIGNED) return;
-        dialog.showMessageBox({ type: 'info', buttons: ['Open download page', 'Later'], defaultId: 0, cancelId: 1, message: 'A newer version is available', detail: 'Safety Lab Aero ' + (info && info.version ? info.version : '') + ' is available. This build installs updates manually: download the installer from the website and run it.' })
-          .then((r) => { if (r.response === 0) { try { shell.openExternal(WEBSITE + '/download'); } catch (_) {} } });
-      });
       autoUpdater.on('update-downloaded', (info) => {
         dialog.showMessageBox({ type: 'info', buttons: ['Restart now', 'Later'], defaultId: 0, cancelId: 1, message: 'Update ready', detail: 'Safety Lab Aero ' + (info && info.version ? info.version : '') + ' has been downloaded. Restart to apply it.' })
           .then((r) => { if (r.response === 0) autoUpdater.quitAndInstall(); });

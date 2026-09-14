@@ -26,6 +26,7 @@
     "files": [
       "main.js",
       "shell_rules.js",
+      "update_verify.js",
       "preload-app.js",
       "preload-gate.js",
       "preload-settings.js",

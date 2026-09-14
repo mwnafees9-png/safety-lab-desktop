@@ -55,6 +55,24 @@ put "$DIST/SafetyLabAero-win-x64.exe"          "application/octet-stream"
 put "$DIST/SafetyLabAero-win-x64.exe.blockmap" "application/octet-stream"
 put "$DIST/Safety Lab Aero-$VERSION-win.zip"   "application/zip"
 
+# --- Sign the update manifests (S24) so the desktop app trusts them independently of this host.
+#     The private key lives only on your Mac (~/.safetylab/update_signing_key.pem, created by
+#     `node tools/update-signing/sign-manifest.mjs keygen`). The app REQUIRES a valid signature, so
+#     refuse to publish an unsigned feed rather than silently break updates for everyone. ---
+if [ ! -f "$HOME/.safetylab/update_signing_key.pem" ]; then
+  echo "  ERROR: no update-signing key at ~/.safetylab/update_signing_key.pem" >&2
+  echo "    run once:  node tools/update-signing/sign-manifest.mjs keygen   then paste the public key into update_verify.js and rebuild" >&2
+  exit 1
+fi
+for y in latest-mac.yml latest.yml latest-linux.yml; do
+  [ -f "$DIST/$y" ] || continue
+  node "$HERE/tools/update-signing/sign-manifest.mjs" sign "$DIST/$y"
+done
+
+# --- Update-manifest signatures FIRST (a client that gets a new .yml must find its .sig) ---
+put "$DIST/latest-mac.yml.sig" "text/plain"
+put "$DIST/latest.yml.sig"     "text/plain"
+
 # --- Update manifests LAST, so clients never fetch one before its payloads exist ---
 put "$DIST/latest-mac.yml" "text/yaml"
 put "$DIST/latest.yml"     "text/yaml"
