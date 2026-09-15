@@ -23,6 +23,31 @@ VERSION="$(node -p "require('$HERE/package.json').version")"
 
 echo "Publishing Safety Lab Aero desktop v$VERSION  →  r2://$BUCKET/$PREFIX/"
 
+# --- REFUSE a stale feed (15 Sep 2026). This script uploads and SIGNS whatever dist/latest*.yml it
+#     finds. Twice tonight the Windows build had not run, dist/latest.yml still said 0.15.0 from
+#     August, and the publish went ahead: the August installer was re-uploaded and the August
+#     manifest was freshly signed as current, under our key. A warning in the build script did not
+#     stop it. Only a refusal here can. Every manifest present in dist/ must carry package.json's
+#     version, and every payload a manifest names must exist beside it, or nothing is published.
+STALE=0
+for y in latest-mac.yml latest.yml latest-linux.yml; do
+  [ -f "$DIST/$y" ] || continue
+  MV="$(sed -n 's/^version:[[:space:]]*//p' "$DIST/$y" | head -1 | tr -d "'\"")"
+  if [ "$MV" != "$VERSION" ]; then
+    echo "  REFUSED: $y says version $MV but package.json says $VERSION" >&2
+    echo "    that manifest is from an old build. Build this platform first (build-win-docker.sh / release.sh)." >&2
+    STALE=1
+  fi
+  for u in $(sed -n 's/^[[:space:]]*-[[:space:]]*url:[[:space:]]*//p' "$DIST/$y" | tr -d "'\"" | tr ' ' '\001'); do
+    f="$(printf '%s' "$u" | tr '\001' ' ')"
+    if [ ! -f "$DIST/$f" ]; then
+      echo "  REFUSED: $y names '$f' but dist/ has no such file" >&2
+      STALE=1
+    fi
+  done
+done
+[ "$STALE" = "0" ] || { echo "Nothing published. Fix the build, then run this again." >&2; exit 1; }
+
 put () {  # <local file> <content-type>
   local f="$1" ct="$2" tries=0 max=5
   if [ ! -f "$f" ]; then echo "  SKIP (missing): $(basename "$f")"; return 0; fi
