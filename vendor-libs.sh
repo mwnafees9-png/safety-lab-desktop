@@ -34,4 +34,4 @@ else
 fi
 copy "$TMP/node_modules/@supabase/supabase-js/dist/umd/supabase.js" "$DEST/supabase.min.js"
 
-echo "Done. vendor-libs/ populated. Next: bash sync-app.sh"
+echo "Done. vendor-libs/ populated. Next: bash pull-web.sh"
