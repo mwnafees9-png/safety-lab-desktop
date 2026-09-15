@@ -7,10 +7,13 @@
 #   ./release.sh --publish  # build + publish installers
 #   ./release.sh --win      # Windows build instead of macOS
 #
-# Code signing: honest state — no Apple / Windows certificate yet. Builds are ad-hoc signed
-# (afterPack.js) and updates are MANUAL in the app (main.js AUTO_UPDATE_SIGNED=false).
-# When certificates exist: set CSC_LINK/CSC_KEY_PASSWORD (+ APPLE_ID/APPLE_APP_SPECIFIC_PASSWORD/
-# APPLE_TEAM_ID for notarization), flip AUTO_UPDATE_SIGNED, and this script needs no change.
+# Code signing: no Apple certificate yet; Mac builds are ad-hoc signed (afterPack.js). Whether THIS
+# build is signed is stamped into app/BUILD_INFO.json as codeSigned.mac (from CSC_LINK) and the app
+# reads it at runtime to decide its update policy (shell_rules.autoUpdatePolicy): Windows auto-updates
+# regardless (manifest signature + sha512 chain); Mac auto-updates only when signed, because
+# electron-updater refuses to update an unsigned Mac app. When the certificate exists: set
+# CSC_LINK/CSC_KEY_PASSWORD (+ APPLE_ID/APPLE_APP_SPECIFIC_PASSWORD/APPLE_TEAM_ID for notarization)
+# and this script needs no other change.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 cd "$HERE"
@@ -29,6 +32,14 @@ for t in tests/*.test.js; do
 done
 [ "$FAILS" = "0" ] || { echo "NOT RELEASING — $FAILS desktop suite(s) failed."; exit 1; }
 echo "DESKTOP WALL GREEN"
+
+echo "── stamp code-signing state into BUILD_INFO ─────────"
+MAC_SIGNED=false; [ -n "${CSC_LINK:-}" ] && MAC_SIGNED=true
+node -e '
+const fs=require("fs"),p="app/BUILD_INFO.json";const b=JSON.parse(fs.readFileSync(p,"utf8"));
+b.codeSigned={mac:process.argv[1]==="true",win:!!process.env.WIN_CSC_LINK};
+fs.writeFileSync(p,JSON.stringify(b,null,2));console.log("codeSigned",JSON.stringify(b.codeSigned));
+' "$MAC_SIGNED"
 
 echo "── package ──────────────────────────────────────────"
 if [ "$WIN" = "1" ]; then npx electron-builder --win --x64; else CSC_IDENTITY_AUTO_DISCOVERY="${CSC_IDENTITY_AUTO_DISCOVERY:-false}" npx electron-builder --mac; fi

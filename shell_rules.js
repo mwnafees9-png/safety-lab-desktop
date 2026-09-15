@@ -113,4 +113,45 @@ function parseDeepLink(raw) {
   return null;
 }
 
-module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink };
+// ---- auto-update policy (15 Sep 2026) -----------------------------------------------------------
+// Whether this build may DOWNLOAD and INSTALL an update on its own, per platform. Two facts decide it:
+//
+//   Windows: electron-updater does not need a code-signing certificate to update safely. It checks
+//     the downloaded installer's SHA-512 against latest.yml, and latest.yml is verified against our
+//     own ES256 key (update_verify.js) before a byte is fetched, so the chain is our key -> manifest
+//     -> hash -> payload. Authenticode would only remove the SmartScreen notice at install; it adds
+//     nothing to integrity. ON.
+//   macOS: electron-updater REFUSES to update an app that is not code-signed ("Could not get code
+//     signature for running application"). That is Apple's rule, not ours. ON only when the build
+//     was signed, which release.sh records in BUILD_INFO.json as codeSigned.mac from CSC_LINK.
+//   Linux: manual.
+//
+// Pure so the wall can execute every branch. buildInfo is app/BUILD_INFO.json or null.
+function autoUpdatePolicy(platform, buildInfo) {
+  if (platform === 'win32') return { auto: true, reason: 'windows: manifest signature + sha512 chain' };
+  if (platform === 'darwin') {
+    const signed = !!(buildInfo && buildInfo.codeSigned && buildInfo.codeSigned.mac === true);
+    return signed ? { auto: true, reason: 'macos: build is code-signed' }
+                  : { auto: false, reason: 'macos: unsigned build; electron-updater cannot apply updates without an Apple Developer ID' };
+  }
+  return { auto: false, reason: platform + ': manual updates' };
+}
+
+// The TOCTOU closer. update_verify.js verifies latest-*.yml and its signature; electron-updater then
+// fetches latest-*.yml AGAIN on its own and would trust whatever it gets. Before we let it download,
+// the update it reports must be the one we verified: same version, and every payload hash it intends
+// to check against must appear in the manifest we signed. A host that swapped the manifest between
+// the two fetches gets nothing.
+function updateMatchesVerified(info, verified) {
+  try {
+    if (!info || !verified || verified.status !== 'update') return false;
+    if (String(info.version || '') !== String(verified.version || '')) return false;
+    const ours = new Set((verified.files || []).map(f => String(f.sha512 || '')).filter(Boolean));
+    if (!ours.size) return false;
+    const theirs = (info.files || []).map(f => String((f && f.sha512) || '')).filter(Boolean);
+    if (!theirs.length) return false;
+    return theirs.every(h => ours.has(h));
+  } catch (_) { return false; }
+}
+
+module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified };

@@ -6,7 +6,8 @@
  * preload hands the web bundle, deep-link parsing, the ONE license verifier loaded from the
  * pulled bundle) and checks the shell's structure: no second license system, no seeded
  * identity/tier/token, DevTools off in packaged builds, safetylab:// registered, updates gated by
- * an independently-signed manifest (S24) and manual until a native certificate exists, and app/
+ * an independently-signed manifest (S24), auto-applied only where the platform allows it (Windows
+ * now; macOS once code-signed) and pinned to the verified manifest, and app/
  * pulled by pull-web.sh from a stripped web build.
  *
  * Run: node tests/regression_desktop_shell.test.js     (release.sh runs every tests/*.test.js)
@@ -41,7 +42,27 @@ const main = read('main.js'), preload = read('preload-app.js'), pkg = JSON.parse
   check('egress guard cancels anything not allowed (webRequest.onBeforeRequest → cancel:true)', /onBeforeRequest\(\{ urls: \['<all_urls>'\] \}[\s\S]{0,500}cb\(\{ cancel: true \}\)/.test(main));
   check('the license verifier is the PULLED web module (shell_rules.loadVerifier over app/)', /R\.loadVerifier\(path\.join\(__dirname, 'app'\)\)/.test(main) && !/createPublicKey|crypto\.verify\(/.test(main));
   check('config sanity runs BEFORE the window opens (openMainApp → configProblem → Settings)', /function openMainApp\(\) \{[\s\S]{0,400}configProblem\(cfg\)[\s\S]{0,300}openSettings\(\); return;/.test(main));
-  check('updates need a native cert to auto-install (AUTO_UPDATE_SIGNED=false; no launch-time background check without it)', /const AUTO_UPDATE_SIGNED = false;/.test(main) && /if \(!AUTO_UPDATE_SIGNED\) \{\s*\n\s*if \(!manual\) return;/.test(main) && /if \(AUTO_UPDATE_SIGNED\) setTimeout/.test(main));
+  check('the update policy is decided by shell_rules.autoUpdatePolicy, not a hardcoded flag', /const UPDATE_POLICY = R\.autoUpdatePolicy\(process\.platform, readBuildInfo\(\)\);/.test(main) && !/AUTO_UPDATE_SIGNED/.test(main));
+  check('policy OFF = manual only, no background check', /if \(!UPDATE_POLICY\.auto\) \{\s*\n\s*if \(!manual\) return;/.test(main) && /if \(UPDATE_POLICY\.auto\) setTimeout/.test(main));
+  check('policy ON never auto-downloads blind: autoDownload=false and the download is pinned to the verified manifest', /autoUpdater\.autoDownload = false;/.test(main) && /R\.updateMatchesVerified\(info, _lastVerified\)/.test(main) && /autoUpdater\.downloadUpdate\(\)/.test(main) && !/autoUpdater\.autoDownload = true/.test(main));
+
+  console.log('\n[update policy] executed');
+  const pol = R.autoUpdatePolicy;
+  check('windows: auto ON (manifest signature + sha512 chain needs no certificate)', pol('win32', null).auto === true);
+  check('macos unsigned: auto OFF (electron-updater refuses unsigned apps)', pol('darwin', null).auto === false && pol('darwin', { codeSigned: { mac: false } }).auto === false);
+  check('macos signed: auto ON', pol('darwin', { codeSigned: { mac: true } }).auto === true);
+  check('macos: a truthy-but-not-true flag does not count as signed', pol('darwin', { codeSigned: { mac: 'yes' } }).auto === false && pol('darwin', { codeSigned: { mac: 1 } }).auto === false);
+  check('linux: manual', pol('linux', { codeSigned: { mac: true } }).auto === false);
+  const V = { status: 'update', version: '0.18.0', files: [{ url: 'a.exe', sha512: 'AAA' }, { url: 'b.zip', sha512: 'BBB' }] };
+  const M = R.updateMatchesVerified;
+  check('pin: same version, hashes in the verified manifest -> download', M({ version: '0.18.0', files: [{ sha512: 'AAA' }] }, V) === true);
+  check('pin: version differs -> refuse', M({ version: '0.18.1', files: [{ sha512: 'AAA' }] }, V) === false);
+  check('pin: hash not in the verified manifest -> refuse (swapped payload)', M({ version: '0.18.0', files: [{ sha512: 'ZZZ' }] }, V) === false);
+  check('pin: one good hash and one bad -> refuse (every hash must match)', M({ version: '0.18.0', files: [{ sha512: 'AAA' }, { sha512: 'ZZZ' }] }, V) === false);
+  check('pin: electron-updater reports no hashes -> refuse (nothing to bind to)', M({ version: '0.18.0', files: [] }, V) === false && M({ version: '0.18.0' }, V) === false);
+  check('pin: no verified manifest / not an update -> refuse', M({ version: '0.18.0', files: [{ sha512: 'AAA' }] }, null) === false && M({ version: '0.18.0', files: [{ sha512: 'AAA' }] }, { status: 'current', version: '0.18.0' }) === false);
+  check('pin: verified manifest with no hashes -> refuse (never bind to an empty set)', M({ version: '0.18.0', files: [{ sha512: 'AAA' }] }, { status: 'update', version: '0.18.0', files: [] }) === false);
+  check('release.sh stamps codeSigned.mac from CSC_LINK into BUILD_INFO before packaging', /MAC_SIGNED=false; \[ -n "\$\{CSC_LINK:-\}" \] && MAC_SIGNED=true/.test(read('release.sh')) && /b\.codeSigned=\{mac:process\.argv\[1\]==="true"/.test(read('release.sh')));
 
   console.log('\n[S24] independent update-manifest verification');
   check('update_verify.js ships (in package.json files) and exists', (pkg.build.files || []).includes('update_verify.js') && exists('update_verify.js'));

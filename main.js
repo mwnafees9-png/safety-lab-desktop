@@ -423,19 +423,25 @@ function buildMenu() {
 //     so it cannot announce, hide, or (when the native path is on) push an update. Until a real
 //     public key is pasted into update_verify.js the check is fail-closed: nothing is offered.
 //
-//   AUTO_UPDATE_SIGNED — a native code-signing certificate exists (Apple Developer ID / Windows
-//     Authenticode) so electron-updater can auto-download and verify the payload's OWN signature.
-//     Still false: no certificate yet. Until then updates are MANUAL — the app only tells the user a
-//     verified newer version exists and opens the download page; nothing downloads or installs
-//     silently. Flip this to true once CSC_LINK/APPLE_ID (mac) or a Windows cert are configured; the
-//     manifest lock still applies on top, so the two are belt and suspenders.
-const AUTO_UPDATE_SIGNED = false;
+//   UPDATE_POLICY — whether this build may download and install on its own (shell_rules.autoUpdatePolicy).
+//     Windows: ON. electron-updater checks the installer's SHA-512 against latest.yml, and we have
+//     already verified latest.yml against our own key, so the chain is our key -> manifest -> hash ->
+//     payload. No certificate needed for integrity; Authenticode only removes the SmartScreen notice.
+//     macOS: ON only when the build is code-signed (BUILD_INFO.codeSigned.mac, stamped by release.sh
+//     from CSC_LINK). electron-updater refuses to update an unsigned Mac app; that is Apple's rule.
+//     Where the policy is OFF, updates are MANUAL: the app tells the user a verified newer version
+//     exists and opens the download page; nothing downloads or installs silently.
+//   The download is PINNED to the verified manifest (shell_rules.updateMatchesVerified): electron-
+//   updater re-fetches latest-*.yml on its own, so before it may download, the update it reports must
+//   match the version and payload hashes in the manifest we verified. Closes the window between the
+//   two fetches.
+const UPDATE_POLICY = R.autoUpdatePolicy(process.platform, readBuildInfo());
 const AUTO_UPDATE_MANIFEST_VERIFIED = true;
 const UPDATE_FEED = 'https://updates.safetylabaero.com/desktop/';
 const UV = require('./update_verify.js');
 let autoUpdater = null;
 try { autoUpdater = require('electron-updater').autoUpdater; } catch (_) { autoUpdater = null; }
-let _updaterWired = false, _manualCheck = false;
+let _updaterWired = false, _manualCheck = false, _lastVerified = null;
 
 function updateManifestName() { return process.platform === 'win32' ? 'latest.yml' : (process.platform === 'linux' ? 'latest-linux.yml' : 'latest-mac.yml'); }
 
@@ -470,9 +476,9 @@ async function initAutoUpdater(manual) {
     console.log('[updater] manifest ' + verified.status + ' ' + (verified.version || verified.reason || ''));
   }
 
-  // No native certificate yet: never download. Act on the verified result only, and never in the
-  // background (no launch-time nagging until a certificate exists).
-  if (!AUTO_UPDATE_SIGNED) {
+  // Policy OFF on this platform/build: never download. Act on the verified result only, and never in
+  // the background.
+  if (!UPDATE_POLICY.auto) {
     if (!manual) return;
     if (verified.status === 'update') return _tellUpdateAvailable(verified.version);
     if (verified.status === 'current') return void dialog.showMessageBox({ type: 'info', message: "You're up to date", detail: 'No newer version is available right now.' });
@@ -480,8 +486,9 @@ async function initAutoUpdater(manual) {
     return void dialog.showMessageBox({ type: 'info', message: 'Update check failed', detail: 'Could not check for updates right now.' });
   }
 
-  // Native path (a certificate exists): electron-updater downloads and verifies the payload's own
-  // code signature. Lock 2 stacks on lock 1 — refuse to proceed if the manifest did not verify.
+  // Policy ON: electron-updater may download and apply. Lock 2 stacks on lock 1 — refuse to proceed if
+  // the manifest did not verify, and refuse to download unless what electron-updater reports matches
+  // the manifest we verified.
   if (!autoUpdater) { if (manual) dialog.showMessageBox({ type: 'info', message: 'Updates unavailable', detail: 'The updater module is not installed in this build.' }); return; }
   if (AUTO_UPDATE_MANIFEST_VERIFIED && verified.status === 'unverified') {
     console.log('[updater] refusing auto-update: manifest unverified (' + verified.reason + ')');
@@ -489,10 +496,20 @@ async function initAutoUpdater(manual) {
     return;
   }
   try {
-    autoUpdater.autoDownload = true;
+    autoUpdater.autoDownload = false;          // we decide, after pinning to the verified manifest
     autoUpdater.autoInstallOnAppQuit = true;
+    _lastVerified = verified;
     if (!_updaterWired) {
       _updaterWired = true;
+      autoUpdater.on('update-available', (info) => {
+        if (R.updateMatchesVerified(info, _lastVerified)) {
+          console.log('[updater] update ' + info.version + ' matches the verified manifest; downloading');
+          autoUpdater.downloadUpdate().catch((e) => console.log('[updater] download failed:', (e && e.message) || e));
+        } else {
+          console.log('[updater] REFUSED: electron-updater reported ' + (info && info.version) + ' but it does not match the verified manifest');
+          if (_manualCheck) dialog.showMessageBox({ type: 'warning', message: 'Update not applied', detail: 'The update offered by the server did not match the signed release manifest and was not downloaded.' });
+        }
+      });
       autoUpdater.on('update-downloaded', (info) => {
         dialog.showMessageBox({ type: 'info', buttons: ['Restart now', 'Later'], defaultId: 0, cancelId: 1, message: 'Update ready', detail: 'Safety Lab Aero ' + (info && info.version ? info.version : '') + ' has been downloaded. Restart to apply it.' })
           .then((r) => { if (r.response === 0) autoUpdater.quitAndInstall(); });
@@ -516,7 +533,7 @@ else {
     const link = process.argv.find(a => typeof a === 'string' && a.startsWith(PROTOCOL + '://'));
     if (link) _pendingDeepLink = link;
     routeStartup();
-    if (AUTO_UPDATE_SIGNED) setTimeout(() => { try { initAutoUpdater(false); } catch (_) {} }, 4000);
+    if (UPDATE_POLICY.auto) setTimeout(() => { try { initAutoUpdater(false); } catch (_) {} }, 4000);
     app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) routeStartup(); });
   });
   app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
