@@ -58,6 +58,14 @@ cp -R "$HERE/vendor-libs/." "$APP/vendor"/
 python3 "$HERE/patch-index.py" "$APP/index.html"
 find "$APP" -name '.DS_Store' -delete 2>/dev/null || true
 
+# Regenerate agreements/ from the ONE legal source in the web repo. main.js reads these off disk
+# in the Node process, before any window exists, so it cannot use window.SL_EULA from app/ and
+# needs its own copy. Deriving that copy here is what stops it going stale: hand-maintained
+# duplicates of agreement text are exactly how the withdrawn SL-LICENSE-0001 kept a training grant
+# the EULA had already dropped. Fail the pull rather than ship a desktop build whose first-launch
+# screen shows different terms from the web.
+node "$WEB/legal/build_agreement.mjs" || die "the agreement build failed; agreements/ would be stale"
+
 echo "── 6/6 build info + verifier check ──────────────────"
 node - "$APP" "$WEB_COMMIT" <<'NODE'
 const fs = require('fs'), path = require('path'), crypto = require('crypto');

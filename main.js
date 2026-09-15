@@ -106,13 +106,16 @@ function saveActivation(a) {
   catch (e) { console.error('[slab] activation write failed:', e); }
 }
 
-// ---- agreements --------------------------------------------------------------------------
+// ---- agreement -------------------------------------------------------------------------
+// ONE agreement since 15 Sep 2026: SL-LICENSE-0001 was withdrawn and folded into SL-EULA-0004.
+// agreements/eula.html + eula.version are GENERATED from safety-lab-deploy/legal/SL-EULA-0004.html
+// by legal/build_agreement.mjs (pull-web.sh re-runs it on every sync) -- never hand-edit them.
+// A missing file yields a sentinel version that can never match a recorded acceptance, so the app
+// fails CLOSED into onboarding rather than silently treating an unread agreement as accepted.
 function readAgreement(name, def) { try { return fs.readFileSync(path.join(__dirname, 'agreements', name), 'utf8'); } catch (_) { return def || ''; } }
 const AGREEMENTS = {
-  eulaVersion: (readAgreement('eula.version', 'SL-EULA-0001-A') || '').trim(),
-  eulaHtml: readAgreement('eula.html', '<p>EULA text unavailable.</p>'),
-  licenseVersion: (readAgreement('license.version', 'SL-LICENSE-0001-A') || '').trim(),
-  licenseHtml: readAgreement('license-agreement.html', '<p>License agreement text unavailable.</p>')
+  eulaVersion: (readAgreement('eula.version', 'SL-EULA-UNAVAILABLE') || 'SL-EULA-UNAVAILABLE').trim(),
+  eulaHtml: readAgreement('eula.html', '<p>Agreement text unavailable. Please reinstall Safety Lab Aero.</p>')
 };
 
 // ---- the ONE license verifier: app/slab_license.js, loaded in Node (see shell_rules.loadVerifier) ----
@@ -149,8 +152,7 @@ async function activationStatus() {
   const a = loadActivation(), cfg = readConfig();
   const lic = a.license ? await verifyLicense(a.license, cfg) : { valid: false, reason: 'no license', plain: 'No license has been loaded on this computer yet.' };
   const okEula = a.acceptances && a.acceptances.eula && a.acceptances.eula.version === AGREEMENTS.eulaVersion;
-  const okLic = a.acceptances && a.acceptances.license && a.acceptances.license.version === AGREEMENTS.licenseVersion;
-  if (lic.valid && okEula && okLic) return { state: cfg.passcodeHash ? 'lock' : 'app', a, lic, cfg };
+  if (lic.valid && okEula) return { state: cfg.passcodeHash ? 'lock' : 'app', a, lic, cfg };
   return { state: 'onboard', a, lic, cfg };
 }
 async function routeStartup() {
@@ -355,9 +357,9 @@ ipcMain.handle('gate:complete', async (_e, data) => {
   data = data || {};
   const inst = await installLicense(String(data.license || '').trim());
   if (!inst.ok) return { ok: false, error: inst.error || 'License invalid.' };
-  if (!data.acceptEula || !data.acceptLicense) return { ok: false, error: 'You must accept both agreements to continue.' };
+  if (!data.acceptEula) return { ok: false, error: 'You must accept the agreement to continue.' };
   const a = loadActivation();
-  a.acceptances = { eula: { version: AGREEMENTS.eulaVersion, at: new Date().toISOString() }, license: { version: AGREEMENTS.licenseVersion, at: new Date().toISOString() } };
+  a.acceptances = { eula: { version: AGREEMENTS.eulaVersion, at: new Date().toISOString() } };
   saveActivation(a);
   if (data.passcode !== undefined) { const cfg = readConfig(); cfg.passcodeHash = data.passcode ? hashPasscode(data.passcode) : null; writeConfig(cfg); }
   openMainApp();

@@ -68,9 +68,8 @@
     <span class="brand">Safety Lab Aero</span>
     <div class="steps">
       <span class="step" id="st-0">1 · License</span>
-      <span class="step" id="st-1">2 · EULA</span>
-      <span class="step" id="st-2">3 · Agreement</span>
-      <span class="step" id="st-3">4 · Screen lock</span>
+      <span class="step" id="st-1">2 · Agreement</span>
+      <span class="step" id="st-2">3 · Screen lock</span>
     </div>
   </header>
   <main>
@@ -88,15 +87,9 @@
       <h1>End User License Agreement</h1>
       <p class="meta">Safety Lab Aero · <span id="eula-ver">—</span> · please review before continuing</p>
       <div class="agree-box" id="eula-body">Loading…</div>
-      <label class="chk"><input type="checkbox" id="eula-cb"><span>I have read and agree to the Safety Lab Aero End User License Agreement.</span></label>
+      <label class="chk"><input type="checkbox" id="eula-cb"><span>I have read and agree to the Safety Lab Aero End User License and Subscription Agreement.</span></label>
     </section>
 
-    <section id="panel-agreement" style="display:none">
-      <h1>Software License &amp; Subscription Agreement</h1>
-      <p class="meta">Safety Lab Aero · <span id="lic-ver">—</span> · please review before continuing</p>
-      <div class="agree-box" id="lic-body">Loading…</div>
-      <label class="chk"><input type="checkbox" id="lic-cb"><span>I have read and agree to the Safety Lab Aero License Agreement.</span></label>
-    </section>
 
     <section id="panel-lock" style="display:none">
       <h1>Screen lock (optional)</h1>
@@ -116,15 +109,14 @@
   </footer>
 <script>
   const $ = (id) => document.getElementById(id);
-  const steps = ['license', 'eula', 'agreement', 'lock'];
+  const steps = ['license', 'eula', 'lock'];
   const state = { step: 0, license: '', licenseOk: false };
   function setStatus(id, msg, cls) { const el = $(id); el.textContent = msg || ''; el.className = 'status' + (msg ? ' ' + (cls || 'info') : ''); }
   function passcodeOk() { const a = $('p-pass').value, c = $('p-pass2').value; if (!a && !c) return true; return a.length >= 4 && a === c; }
   function canAdvance() {
     if (state.step === 0) return state.licenseOk;
     if (state.step === 1) return $('eula-cb').checked;
-    if (state.step === 2) return $('lic-cb').checked;
-    if (state.step === 3) return passcodeOk();
+    if (state.step === 2) return passcodeOk();
     return false;
   }
   function updateStepper() { steps.forEach((s, i) => { $('st-' + i).className = 'step' + (i === state.step ? ' active' : '') + (i < state.step ? ' done' : ''); }); }
@@ -152,7 +144,6 @@
   async function init() {
     let b; try { b = await window.gate.getBootstrap(); } catch (e) { return; }
     $('eula-ver').textContent = b.agreements.eulaVersion; $('eula-body').innerHTML = b.agreements.eulaHtml;
-    $('lic-ver').textContent = b.agreements.licenseVersion; $('lic-body').innerHTML = b.agreements.licenseHtml;
     const ex = b.existing && b.existing.license;
     if (ex && ex.valid) { setStatus('lic-status', 'A valid license is already on this computer — press Next, or load a different one.', 'ok'); showLicense(ex); state.licenseOk = true; state.license = ''; }
     else if (ex && !ex.valid) { setStatus('lic-status', ex.plain || 'The license on this computer is no longer valid.', 'err'); }
@@ -161,7 +152,7 @@
   $('btn-loadfile').onclick = async () => { const r = await window.gate.pickLicenseFile(); if (r && r.ok) { $('licblob').value = r.blob; checkLicense(r.blob); } };
   $('btn-check').onclick = () => checkLicense($('licblob').value);
   $('licblob').addEventListener('input', () => { state.licenseOk = false; $('lic-card').style.display = 'none'; setStatus('lic-status', ''); updateNav(); });
-  ['eula-cb', 'lic-cb'].forEach(id => $(id).addEventListener('change', updateNav));
+  ['eula-cb'].forEach(id => $(id).addEventListener('change', updateNav));
   ['p-pass', 'p-pass2'].forEach(id => $(id).addEventListener('input', () => { setStatus('lock-status', passcodeOk() ? '' : 'Passcodes must match and be at least 4 characters.', 'err'); updateNav(); }));
   $('btn-back').onclick = () => showStep(Math.max(0, state.step - 1));
   $('btn-next').onclick = async () => {
@@ -169,7 +160,7 @@
     if (state.step < steps.length - 1) { showStep(state.step + 1); return; }
     $('btn-next').disabled = true;
     let res;
-    try { res = await window.gate.complete({ license: state.license || undefined, acceptEula: $('eula-cb').checked, acceptLicense: $('lic-cb').checked, passcode: $('p-pass').value || '' }); }
+    try { res = await window.gate.complete({ license: state.license || undefined, acceptEula: $('eula-cb').checked, passcode: $('p-pass').value || '' }); }
     catch (e) { res = { ok: false, error: String(e) }; }
     if (!res || !res.ok) { setStatus('lock-status', (res && res.error) || 'Could not finish setup.', 'err'); $('btn-next').disabled = false; }
   };
