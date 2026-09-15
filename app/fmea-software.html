@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="description" content="Functional and piece-part FMEA that links directly to your fault trees and component library: failure modes feed basic-event rates, coverage is checked, and the loop back to the FHA is closed.">
+<meta name="description" content="Functional and piece-part FMEA linked to your fault trees: failure modes feed basic-event rates, coverage is checked, and the loop back to the FHA is closed.">
 <meta name="keywords" content="FMEA software, aerospace FMEA, piece-part FMEA, functional FMEA, failure modes and effects analysis, FMECA, component failure rate, alpha factor">
-<title>FMEA Software for Aerospace — Functional &amp; Piece-Part | Safety Lab Aero</title>
+<title>Aerospace FMEA Software: Functional and Piece-Part | Safety Lab Aero</title>
 <link rel="canonical" href="https://safetylabaero.com/fmea-software">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Safety Lab Aero">
-<meta property="og:title" content="FMEA Software for Aerospace — Functional &amp; Piece-Part | Safety Lab Aero">
-<meta property="og:description" content="Functional and piece-part FMEA that links directly to your fault trees and component library: failure modes feed basic-event rates, coverage is checked, and the loop back to the FHA is closed.">
+<meta property="og:title" content="Aerospace FMEA Software: Functional and Piece-Part | Safety Lab Aero">
+<meta property="og:description" content="Functional and piece-part FMEA linked to your fault trees: failure modes feed basic-event rates, coverage is checked, and the loop back to the FHA is closed.">
 <meta property="og:url" content="https://safetylabaero.com/fmea-software">
 <meta property="og:image" content="https://safetylabaero.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="FMEA Software for Aerospace — Functional &amp; Piece-Part | Safety Lab Aero">
-<meta name="twitter:description" content="Functional and piece-part FMEA that links directly to your fault trees and component library: failure modes feed basic-event rates, coverage is checked, and the loop back to the FHA is closed.">
+<meta name="twitter:title" content="Aerospace FMEA Software: Functional and Piece-Part | Safety Lab Aero">
+<meta name="twitter:description" content="Functional and piece-part FMEA linked to your fault trees: failure modes feed basic-event rates, coverage is checked, and the loop back to the FHA is closed.">
 <meta name="twitter:image" content="https://safetylabaero.com/og.png">
 <script type="application/ld+json">
 {
@@ -27,7 +27,7 @@
       "@type": "WebPage",
       "@id": "https://safetylabaero.com/fmea-software#webpage",
       "url": "https://safetylabaero.com/fmea-software",
-      "name": "FMEA Software for Aerospace \u2014 Functional & Piece-Part | Safety Lab Aero",
+      "name": "FMEA Software for Aerospace — Functional & Piece-Part | Safety Lab Aero",
       "description": "Functional and piece-part FMEA that links directly to your fault trees and component library: failure modes feed basic-event rates, coverage is checked, and the loop back to the FHA is closed.",
       "isPartOf": {
         "@id": "https://safetylabaero.com/#software"
@@ -65,6 +65,22 @@
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "What is FMEA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Failure Mode and Effects Analysis (FMEA) is a bottom-up method: for each function or component, list the ways it can fail (the failure modes), then work out the local effect, the effect on the next level up, and the end effect on the aircraft, along with how the failure is detected and any compensating provisions. In the ARP 4761A process the FMEA provides the failure rates and the evidence that feed the system safety assessment; the FMES groups modes with the same end effect so the fault tree can use them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does FMEA differ from fault tree analysis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They work in opposite directions. FMEA starts at the bottom, from individual failure modes, and asks what each one causes. Fault tree analysis starts at the top, from an undesired event, and asks what combinations of failures could cause it. FMEA is exhaustive about single failures but cannot by itself express combinations; the fault tree handles combinations and quantifies them. In practice the two are connected: piece-part FMEA modes supply the rates for the fault tree's basic events."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Does the FMEA connect to the fault tree?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -85,9 +101,6 @@
 }
 </script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/seo.css?v=2">
 <link rel="stylesheet" href="/marketing.css?v=1">
 </head>
@@ -112,26 +125,26 @@
 </div></header>
 <main class="container"><article>
 
-<p>FMEA is your bottom-up evidence — the systematic walk through how components and functions fail and what those failures do. Its value multiplies when it connects to the top-down fault tree analysis above it, which is exactly where most toolchains break the link. Safety Lab Aero keeps them connected.</p>
+<p>FMEA is your bottom-up evidence: the systematic walk through how components and functions fail and what those failures do. Its value multiplies when it connects to the top-down fault tree analysis above it, which is exactly where most toolchains break the link. Safety Lab Aero keeps them connected.</p>
 
 <h2>Functional FMEA</h2>
-<p>Each row links to an aircraft sub-function and records the function failure mode — loss, erroneous, inadvertent, degraded — and its effects. Optionally link the row to the FHA failure condition it contributes to, closing the loop from functional FMEA back to the hazard assessment.</p>
+<p>Each row links to an aircraft sub-function and records the function failure mode (loss, erroneous, inadvertent, degraded) and its effects. Optionally link the row to the FHA failure condition it contributes to, closing the loop from functional FMEA back to the hazard assessment.</p>
 
 <h2>Piece-part (hardware) FMEA</h2>
 <ul>
 <li>Each row links to a fault-tree basic event and records a component failure mode with its failure-mode fraction and rate.</li>
 <li>A component basic event takes the sum of its failure-mode rates, so multiple modes aggregate correctly rather than overwriting one another.</li>
 <li>Optionally choose a parent library component; the mode rate is computed from the component rate and the failure-mode fraction, and the published mode menu pre-fills the fractions.</li>
-<li>A coverage check warns when the failure-mode fractions for a basic event do not sum to one — i.e. part of the component failure rate is unmodeled.</li>
+<li>A coverage check warns when the failure-mode fractions for a basic event do not sum to one: i.e. part of the component failure rate is unmodeled.</li>
 </ul>
 
 <h2>One source of truth for failure data</h2>
-<p>The component library catalogs failure rates from public-domain sources (MIL-HDBK-217F, MIL-HDBK-338B, NPRD/EPRD-style data, NUREG-CR-6928 and others), with environment, quality and temperature factors. When several basic events reference the same library entry, Safety Lab Aero flags the shared dependency so you can decide whether it needs common-cause treatment — see <a href="/common-cause-analysis">CMA, PRA and ZSA</a>.</p>
+<p>The component library catalogs failure rates from public-domain sources (MIL-HDBK-217F, MIL-HDBK-338B, NPRD/EPRD-style data, NUREG-CR-6928 and others), with environment, quality and temperature factors. When several basic events reference the same library entry, Safety Lab Aero flags the shared dependency so you can decide whether it needs common-cause treatment, see <a href="/common-cause-analysis">CMA, PRA and ZSA</a>.</p>
 
-<h2>Frequently asked questions</h2><h3>Does the FMEA connect to the fault tree?</h3><p>Yes. Piece-part FMEA rows link to fault-tree basic events and supply their rates, and functional FMEA rows can link to the FHA failure condition they contribute to. The FMEA is part of the same model, not a separate file.</p><h3>How does it handle a component with several failure modes?</h3><p>The basic event takes the sum of its failure-mode rates, and a coverage check warns if the failure-mode fractions do not sum to one, so unmodeled portions of the component rate are visible rather than hidden.</p>
+<h2>Frequently asked questions</h2><h3>What is FMEA?</h3><p>Failure Mode and Effects Analysis (FMEA) is a bottom-up method: for each function or component, list the ways it can fail (the failure modes), then work out the local effect, the effect on the next level up, and the end effect on the aircraft, along with how the failure is detected and any compensating provisions. In the ARP 4761A process the FMEA provides the failure rates and the evidence that feed the system safety assessment; the FMES groups modes with the same end effect so the fault tree can use them.</p><h3>How does FMEA differ from fault tree analysis?</h3><p>They work in opposite directions. FMEA starts at the bottom, from individual failure modes, and asks what each one causes. Fault tree analysis starts at the top, from an undesired event, and asks what combinations of failures could cause it. FMEA is exhaustive about single failures but cannot by itself express combinations; the fault tree handles combinations and quantifies them. In practice the two are connected: piece-part FMEA modes supply the rates for the fault tree's basic events.</p><h3>Does the FMEA connect to the fault tree?</h3><p>Yes. Piece-part FMEA rows link to fault-tree basic events and supply their rates, and functional FMEA rows can link to the FHA failure condition they contribute to. The FMEA is part of the same model, not a separate file.</p><h3>How does it handle a component with several failure modes?</h3><p>The basic event takes the sum of its failure-mode rates, and a coverage check warns if the failure-mode fractions do not sum to one, so unmodeled portions of the component rate are visible rather than hidden.</p>
 <div class="cta-band">
   <h2>See it on your own analysis</h2>
-  <p>Safety Lab Aero keeps functions, hazards, fault trees, FMEA, common-cause, requirements and verification in one connected model — from FHA to a certification-ready evidence package.</p>
+  <p>Safety Lab Aero keeps functions, hazards, fault trees, FMEA, common-cause, requirements and verification in one connected model, from FHA to a certification-ready evidence package.</p>
   <p><a href="/app" class="btn btn-primary">Start free trial</a></p>
 </div>
 </article></main>

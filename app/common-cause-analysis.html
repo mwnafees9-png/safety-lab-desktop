@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="description" content="Run the ARP 4761A common-cause analyses — Common Mode Analysis, Particular Risk Analysis and Zonal Safety Analysis — connected to your fault trees so independence claims and shared threats actually affect the numbers.">
+<meta name="description" content="Run the ARP 4761A common-cause analyses (CMA, PRA, ZSA) connected to your fault trees, so independence claims and shared threats actually change the numbers.">
 <meta name="keywords" content="common cause analysis, common mode analysis software, particular risk analysis, zonal safety analysis, CMA PRA ZSA, beta factor, independence, ARP 4761A">
-<title>Common-Cause, Particular Risk &amp; Zonal Analysis (CMA / PRA / ZSA) | Safety Lab Aero</title>
+<title>Common Cause Analysis Software: CMA, PRA and ZSA | Safety Lab Aero</title>
 <link rel="canonical" href="https://safetylabaero.com/common-cause-analysis">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Safety Lab Aero">
-<meta property="og:title" content="Common-Cause, Particular Risk &amp; Zonal Analysis (CMA / PRA / ZSA) | Safety Lab Aero">
-<meta property="og:description" content="Run the ARP 4761A common-cause analyses — Common Mode Analysis, Particular Risk Analysis and Zonal Safety Analysis — connected to your fault trees so independence claims and shared threats actually affect the numbers.">
+<meta property="og:title" content="Common Cause Analysis Software: CMA, PRA and ZSA | Safety Lab Aero">
+<meta property="og:description" content="Run the ARP 4761A common-cause analyses (CMA, PRA, ZSA) connected to your fault trees, so independence claims and shared threats actually change the numbers.">
 <meta property="og:url" content="https://safetylabaero.com/common-cause-analysis">
 <meta property="og:image" content="https://safetylabaero.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Common-Cause, Particular Risk &amp; Zonal Analysis (CMA / PRA / ZSA) | Safety Lab Aero">
-<meta name="twitter:description" content="Run the ARP 4761A common-cause analyses — Common Mode Analysis, Particular Risk Analysis and Zonal Safety Analysis — connected to your fault trees so independence claims and shared threats actually affect the numbers.">
+<meta name="twitter:title" content="Common Cause Analysis Software: CMA, PRA and ZSA | Safety Lab Aero">
+<meta name="twitter:description" content="Run the ARP 4761A common-cause analyses (CMA, PRA, ZSA) connected to your fault trees, so independence claims and shared threats actually change the numbers.">
 <meta name="twitter:image" content="https://safetylabaero.com/og.png">
 <script type="application/ld+json">
 {
@@ -28,7 +28,7 @@
       "@id": "https://safetylabaero.com/common-cause-analysis#webpage",
       "url": "https://safetylabaero.com/common-cause-analysis",
       "name": "Common-Cause, Particular Risk & Zonal Analysis (CMA / PRA / ZSA) | Safety Lab Aero",
-      "description": "Run the ARP 4761A common-cause analyses \u2014 Common Mode Analysis, Particular Risk Analysis and Zonal Safety Analysis \u2014 connected to your fault trees so independence claims and shared threats actually affect the numbers.",
+      "description": "Run the ARP 4761A common-cause analyses — Common Mode Analysis, Particular Risk Analysis and Zonal Safety Analysis — connected to your fault trees so independence claims and shared threats actually affect the numbers.",
       "isPartOf": {
         "@id": "https://safetylabaero.com/#software"
       },
@@ -65,6 +65,14 @@
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "What is common cause analysis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Common cause analysis (CCA) is the part of the ARP 4761A process that checks whether failures assumed to be independent really are. A fault tree may show two independent branches multiplying to a very small probability, but if one event can fail both branches at once, the true probability is far higher. CCA has three parts: zonal safety analysis (ZSA) for installation and interference effects within a physical zone, particular risk analysis (PRA) for single external threats such as fire, rotor burst, HIRF and lightning, and common mode analysis (CMA) for shared design, manufacturing, maintenance or environmental causes."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "What is the difference between CMA, PRA and ZSA?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -76,7 +84,7 @@
           "name": "Does a common-mode finding actually change the fault-tree result?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. When a CMA compromises a gate\\u2019s independence, the quantification switches to a common-cause-aware treatment and the requirements derived from that gate are flagged for re-verification \u2014 it is not just a documentation step."
+            "text": "Yes. When a CMA compromises a gate\\u2019s independence, the quantification switches to a common-cause-aware treatment and the requirements derived from that gate are flagged for re-verification; it is not just a documentation step."
           }
         }
       ]
@@ -85,9 +93,6 @@
 }
 </script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/seo.css?v=2">
 <link rel="stylesheet" href="/marketing.css?v=1">
 </head>
@@ -107,29 +112,29 @@
 <header class="page-hero"><div class="container">
   <p class="eyebrow">Common-cause analyses</p>
   <h1>Common-cause, particular-risk and <span class="grad-text">zonal safety analysis</span></h1>
-  <p class="lede">CMA, PRA and ZSA that are connected to the fault trees they affect — so a compromised independence claim changes the result, not just a checklist.</p>
+  <p class="lede">CMA, PRA and ZSA that are connected to the fault trees they affect, so a compromised independence claim changes the result, not just a checklist.</p>
   <div class="related"><a href="/fault-tree-analysis">Fault Tree Analysis</a><a href="/fmea-software">FMEA</a><a href="/arp-4761a">ARP 4761A</a></div>
 </div></header>
 <main class="container"><article>
 
-<p>The common-cause analyses are where a safety case is most often quietly wrong. A fault tree can show two independent branches multiplying to a vanishingly small probability — but if a single common cause can fail both, the real number is orders of magnitude larger. ARP 4761A addresses this through three analyses, and Safety Lab Aero connects all three to the quantification they should influence.</p>
+<p>The common-cause analyses are where a safety case is most often quietly wrong. A fault tree can show two independent branches multiplying to a vanishingly small probability, but if a single common cause can fail both, the real number is orders of magnitude larger. ARP 4761A addresses this through three analyses, and Safety Lab Aero connects all three to the quantification they should influence.</p>
 
 <h2>Common Mode Analysis (CMA)</h2>
 <p>CMA examines whether the independence claimed by fault-tree AND gates actually holds. Link a CMA record to the gates it affects; when a CMA identifies a common mode, the gate independence is compromised, the quantification switches to a common-cause-aware treatment, and any requirements derived from the affected gate are flagged for re-verification. An append-only log records each independence-state change.</p>
 
 <h2>Particular Risk Analysis (PRA)</h2>
-<p>PRA addresses single external threats — rotor burst, fire, HIRF, lightning, bird, tire and ice — that can fail multiple items at once. Log each particular risk, the affected zones, the common-source impact and the mitigation; PRA records connect to the zones and functions they expose and produce zonal-protection requirements.</p>
+<p>PRA addresses single external threats (rotor burst, fire, HIRF, lightning, bird, tire and ice) that can fail multiple items at once. Log each particular risk, the affected zones, the common-source impact and the mitigation; PRA records connect to the zones and functions they expose and produce zonal-protection requirements.</p>
 
 <h2>Zonal Safety Analysis (ZSA)</h2>
 <p>ZSA examines installation and interference effects within physical zones. For each zone, record the housed functions and equipment, interference effects and mitigations; zonal analysis connects housed functions to the particular risks affecting their zone and produces separation requirements.</p>
 
 <h2>Common-cause modeling in the quantification</h2>
-<p>For coupled basic events you define a common-cause group and its parameters (beta-factor and the multiple-Greek-letter terms). Safety Lab Aero integrates the common-cause contribution into the quantification — including across multi-page TRANSFER trees — so a single common-cause event correctly fails every group member at once instead of being under-counted.</p>
+<p>For coupled basic events you define a common-cause group and its parameters (beta-factor and the multiple-Greek-letter terms). Safety Lab Aero integrates the common-cause contribution into the quantification (including across multi-page TRANSFER trees) so a single common-cause event correctly fails every group member at once instead of being under-counted.</p>
 
-<h2>Frequently asked questions</h2><h3>What is the difference between CMA, PRA and ZSA?</h3><p>CMA checks whether claimed independence between failures actually holds; PRA addresses single external threats (fire, rotor burst, HIRF, lightning, etc.) that can fail several items at once; ZSA examines installation and interference effects within a physical zone. All three are part of the ARP 4761A process.</p><h3>Does a common-mode finding actually change the fault-tree result?</h3><p>Yes. When a CMA compromises a gate\u2019s independence, the quantification switches to a common-cause-aware treatment and the requirements derived from that gate are flagged for re-verification — it is not just a documentation step.</p>
+<h2>Frequently asked questions</h2><h3>What is common cause analysis?</h3><p>Common cause analysis (CCA) is the part of the ARP 4761A process that checks whether failures assumed to be independent really are. A fault tree may show two independent branches multiplying to a very small probability, but if one event can fail both branches at once, the true probability is far higher. CCA has three parts: zonal safety analysis (ZSA) for installation and interference effects within a physical zone, particular risk analysis (PRA) for single external threats such as fire, rotor burst, HIRF and lightning, and common mode analysis (CMA) for shared design, manufacturing, maintenance or environmental causes.</p><h3>What is the difference between CMA, PRA and ZSA?</h3><p>CMA checks whether claimed independence between failures actually holds; PRA addresses single external threats (fire, rotor burst, HIRF, lightning, etc.) that can fail several items at once; ZSA examines installation and interference effects within a physical zone. All three are part of the ARP 4761A process.</p><h3>Does a common-mode finding actually change the fault-tree result?</h3><p>Yes. When a CMA compromises a gate\u2019s independence, the quantification switches to a common-cause-aware treatment and the requirements derived from that gate are flagged for re-verification; it is not just a documentation step.</p>
 <div class="cta-band">
   <h2>See it on your own analysis</h2>
-  <p>Safety Lab Aero keeps functions, hazards, fault trees, FMEA, common-cause, requirements and verification in one connected model — from FHA to a certification-ready evidence package.</p>
+  <p>Safety Lab Aero keeps functions, hazards, fault trees, FMEA, common-cause, requirements and verification in one connected model, from FHA to a certification-ready evidence package.</p>
   <p><a href="/app" class="btn btn-primary">Start free trial</a></p>
 </div>
 </article></main>

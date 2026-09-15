@@ -3,7 +3,107 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trust &amp; Security — Safety Lab Aero</title>
+<title>Trust and Security | Safety Lab Aero</title>
+<link rel="canonical" href="https://safetylabaero.com/trust">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Safety Lab Aero">
+<meta property="og:title" content="Trust and Security | Safety Lab Aero">
+<meta property="og:description" content="How Safety Lab Aero protects certification-grade safety data: tenant isolation, encryption, access control, AI guardrails, data residency, and lifecycle.">
+<meta property="og:url" content="https://safetylabaero.com/trust">
+<meta property="og:image" content="https://safetylabaero.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Trust and Security | Safety Lab Aero">
+<meta name="twitter:description" content="How Safety Lab Aero protects certification-grade safety data: tenant isolation, encryption, access control, AI guardrails, data residency, and lifecycle.">
+<meta name="twitter:image" content="https://safetylabaero.com/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://safetylabaero.com/trust#webpage",
+      "url": "https://safetylabaero.com/trust",
+      "name": "Trust and Security | Safety Lab Aero",
+      "description": "How Safety Lab Aero protects certification-grade safety data: tenant isolation, encryption, access control, AI guardrails, data residency, and lifecycle.",
+      "isPartOf": {
+        "@id": "https://safetylabaero.com/#website"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://safetylabaero.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Trust and security",
+          "item": "https://safetylabaero.com/trust"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does the AI decide λ, DAL, or severity?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Those are owned by the deterministic engine and the engineer. The AI may propose a severity with rationale for you to confirm, and may build fault‑tree structure with rates left blank, but it never establishes a safety number as fact."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the AI part of the certification argument?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, by design. The AI drafts, traces, and connects; the deterministic engine and the engineer own the numbers, the allocation, and the safety case. Requirements are allocated by interpreting the fault‑tree logic, not by the AI."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where does my data go?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The model and engine run locally in your browser or desktop app. Only an explicit AI request sends the relevant context to your configured backend: hosted proxy, your own key, or on‑premise. For ITAR projects, cloud backends are blocked server‑side (US‑sovereign cloud routing is planned)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it on ITAR or controlled programs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mark the relevant documents controlled; the AI is then restricted to an on‑premise backend and blocked from every cloud path, enforced server‑side (a US‑sovereign cloud option is planned). For fully air‑gapped work, the on‑premise backend keeps everything inside your boundary."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it replace my DER or my engineers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It is a tool your engineers and DER use; the human owns every judgment and signs the safety case. The platform's job is to make the work faster and the golden thread complete and traceable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What standards does it follow?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ARP 4754B and ARP 4761A, the means of compliance for your cert basis (AC 23.1309 / AC 25.1309 / AC 27 / AC 29 / SC‑VTOL, ASTM F3230), and DO‑178C / DO‑254 development assurance."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <meta name="description" content="How Safety Lab Aero protects certification-grade safety data: tenant isolation, encryption, access control, AI guardrails, data residency, and lifecycle.">
 <style>
   :root{
@@ -108,7 +208,7 @@
       <div class="brandrow"><a class="brandhome" href="/" aria-label="Safety Lab Aero home"><span class="logo" aria-hidden="true"></span><span class="wm">Safety Lab Aero</span></a><a class="home-link" href="/">&larr; Back to safetylabaero.com</a></div>
       <div class="k">Trust &amp; Security</div>
       <h1>Certification-grade data, protected end to end</h1>
-      <p>Safety Lab Aero holds the safety and airworthiness evidence for uncrewed and clean-sheet aircraft programs. This page describes how that data is isolated, encrypted, governed, and — when the time comes — provably destroyed.</p>
+      <p>Safety Lab Aero holds the safety and airworthiness evidence for uncrewed and clean-sheet aircraft programs. This page describes how that data is isolated, encrypted, governed, and (when the time comes) provably destroyed.</p>
       <div class="updated">Last reviewed: July 2026 &nbsp;·&nbsp; Questions: <a href="mailto:waqas.nafees@safetylabaero.com" style="color:#fff;text-decoration:underline;">waqas.nafees@safetylabaero.com</a></div>
     </div>
   </header>
@@ -117,41 +217,41 @@
 
     <div class="posture">
       <h2>Security posture, in one line</h2>
-      <p>Every application table enforces <b>row-level security</b> in the database itself; data is <b>encrypted in transit and at rest</b>; the deterministic engine — not the AI — owns every safety number; and account deletion issues a <b>signed certificate of destruction</b>. Controls marked <span class="badge b-live">LIVE</span> are in production today; those marked <span class="badge b-road">ROADMAP</span> are in progress and dated on request.</p>
+      <p>Every application table enforces <b>row-level security</b> in the database itself; data is <b>encrypted in transit and at rest</b>; the deterministic engine (not the AI) owns every safety number; and account deletion issues a <b>signed certificate of destruction</b>. Controls marked <span class="badge b-live">LIVE</span> are in production today; those marked <span class="badge b-road">ROADMAP</span> are in progress and dated on request.</p>
     </div>
 
     <div class="lede">What's in production today</div>
 
     <div class="card">
       <h3><span class="dot"></span>Tenant isolation &amp; access control</h3>
-      <div class="lead">Separation is enforced by the database, not just the application — so a bug in the UI can't leak another customer's data.</div>
+      <div class="lead">Separation is enforced by the database, not just the application, so a bug in the UI can't leak another customer's data.</div>
       <ul class="controls">
-        <li><b>Row-level security on every table</b> — all application tables run RLS; access is filtered per row.</li>
-        <li><b>Workspace &amp; project scoping</b> — membership and role are checked in the database on every read and write.</li>
-        <li><b>Least-privilege roles</b> — owner / admin / editor / reviewer / member, evaluated server-side.</li>
-        <li><b>No shared tenancy in the client</b> — the browser only ever holds a public, anon-scoped key; privileged keys never reach it.</li>
+        <li><b>Row-level security on every table</b>: all application tables run RLS; access is filtered per row.</li>
+        <li><b>Workspace &amp; project scoping</b>: membership and role are checked in the database on every read and write.</li>
+        <li><b>Least-privilege roles</b>: owner / admin / editor / reviewer / member, evaluated server-side.</li>
+        <li><b>No shared tenancy in the client</b>: the browser only ever holds a public, anon-scoped key; privileged keys never reach it.</li>
       </ul>
     </div>
 
     <div class="card">
       <h3><span class="dot"></span>Encryption</h3>
       <ul class="controls">
-        <li><b>In transit</b> — TLS 1.2+ on every connection to the application and API.</li>
-        <li><b>At rest</b> — AES-256 encryption of the database and stored objects.</li>
-        <li><b>Managed key handling</b> — encryption keys are managed by the hosting platform, not embedded in the app.</li>
-        <li><b>No secrets in the browser</b> — AI and privileged operations run behind a server-side proxy.</li>
+        <li><b>In transit</b>: TLS 1.2+ on every connection to the application and API.</li>
+        <li><b>At rest</b>: AES-256 encryption of the database and stored objects.</li>
+        <li><b>Managed key handling</b>: encryption keys are managed by the hosting platform, not embedded in the app.</li>
+        <li><b>No secrets in the browser</b>: AI and privileged operations run behind a server-side proxy.</li>
       </ul>
     </div>
 
     <div class="card">
       <h3><span class="dot"></span>Authentication &amp; account security</h3>
       <ul class="controls">
-        <li><b>Email + password with verification</b> — accounts must confirm their address before use.</li>
-        <li><b>Two-factor authentication (TOTP)</b> — optional authenticator-app second step, enforced at sign-in once enabled.</li>
-        <li><b>Microsoft Entra ID (Azure AD) SSO</b> — work-account sign-in, restricted to an approved-tenant allowlist enforced server-side.</li>
-        <li><b>Idle auto–sign-out</b> — sessions lock after 20 minutes of inactivity, every session, no exemption.</li>
-        <li><b>Forced reset on recovery</b> — a password-reset link cannot become passwordless inbox access; a new password is required.</li>
-        <li><b>Password minimums &amp; safe error handling</b> — no account-existence disclosure on failed sign-in.</li>
+        <li><b>Email + password with verification</b>: accounts must confirm their address before use.</li>
+        <li><b>Two-factor authentication (TOTP)</b>: optional authenticator-app second step, enforced at sign-in once enabled.</li>
+        <li><b>Microsoft Entra ID (Azure AD) SSO</b>: work-account sign-in, restricted to an approved-tenant allowlist enforced server-side.</li>
+        <li><b>Idle auto–sign-out</b>: sessions lock after 20 minutes of inactivity, every session, no exemption.</li>
+        <li><b>Forced reset on recovery</b>: a password-reset link cannot become passwordless inbox access; a new password is required.</li>
+        <li><b>Password minimums &amp; safe error handling</b>: no account-existence disclosure on failed sign-in.</li>
       </ul>
     </div>
 
@@ -159,30 +259,30 @@
       <h3><span class="dot"></span>AI safety &amp; data handling</h3>
       <div class="lead">In a domain where "the model made it up" is disqualifying, the AI is deliberately kept away from the numbers.</div>
       <ul class="controls one">
-        <li><b>The engine owns every number</b> — safety math, allocations, and robustness claims come from a deterministic core that carries its basis and citation. The AI never authors a number, a requirement, or a verdict.</li>
-        <li><b>AI drafts within guardrails</b> — the assistant is scoped to drafting and explanation; its output is reviewable and never silently written into the safety case.</li>
-        <li><b>Server-side proxy</b> — AI calls route through a controlled gateway; the client never holds a model provider key, and requests are logged for audit.</li>
-        <li><b>Customer content may be used to improve our models</b> &mdash; content you submit, including your corrections to AI drafts, may be used to train and evaluate Safety Lab Aero&rsquo;s own models. Content from projects you flag as export-controlled is excluded entirely. We never expose one customer&rsquo;s content to another, and you can opt out at any time. A zero-data-retention addendum with our AI subprocessor is being finalized (see roadmap).</li>
+        <li><b>The engine owns every number</b>: safety math, allocations, and robustness claims come from a deterministic core that carries its basis and citation. The AI never authors a number, a requirement, or a verdict.</li>
+        <li><b>AI drafts within guardrails</b>: the assistant is scoped to drafting and explanation; its output is reviewable and never silently written into the safety case.</li>
+        <li><b>Server-side proxy</b>: AI calls route through a controlled gateway; the client never holds a model provider key, and requests are logged for audit.</li>
+        <li><b>We never train on your content</b> &mdash; Safety Lab Aero never uses your projects, documents, or your corrections to AI drafts to train or fine-tune any model, ours or a third party&rsquo;s. Real customer data stays on your own infrastructure (self-hosted, desktop, or browser-only); our hosted environment holds only trial and demo data. AI drafting is proxied to the model provider for that single request under their API terms and is not used for training, and export-controlled projects never leave your environment at all.</li>
       </ul>
     </div>
 
     <div class="card">
       <h3><span class="dot"></span>Data residency &amp; export control</h3>
       <ul class="controls">
-        <li><b>US-region infrastructure</b> — primary data stores run in a US region (US-East).</li>
-        <li><b>ITAR-aware egress</b> — an egress control governs where flagged content may be sent for processing.</li>
-        <li><b>Subprocessor transparency</b> — the full list is below and kept current.</li>
-        <li><b>GCC High &amp; on-prem</b> — separate deployment tiers for defense programs are on the roadmap.</li>
+        <li><b>US-region infrastructure</b>: primary data stores run in a US region (US-East).</li>
+        <li><b>ITAR-aware egress</b>: an egress control governs where flagged content may be sent for processing.</li>
+        <li><b>Subprocessor transparency</b>: the full list is below and kept current.</li>
+        <li><b>GCC High &amp; on-prem</b>: separate deployment tiers for defense programs are on the roadmap.</li>
       </ul>
     </div>
 
     <div class="card">
       <h3><span class="dot"></span>Data lifecycle, audit &amp; integrity</h3>
       <ul class="controls">
-        <li><b>Self-service erasure</b> — an account owner can permanently erase their account and all analysis data.</li>
-        <li><b>Certificate of destruction</b> — every erasure issues a signed certificate with a SHA-256 manifest of what was deleted.</li>
-        <li><b>Tamper-evident sign-offs</b> — review sign-offs are chained with a verifiable hash chain; the chain can be re-verified on demand.</li>
-        <li><b>Audit logging</b> — workspace and review activity is recorded for accountability.</li>
+        <li><b>Self-service erasure</b>: an account owner can permanently erase their account and all analysis data.</li>
+        <li><b>Certificate of destruction</b>: every erasure issues a signed certificate with a SHA-256 manifest of what was deleted.</li>
+        <li><b>Tamper-evident sign-offs</b>: review sign-offs are chained with a verifiable hash chain; the chain can be re-verified on demand.</li>
+        <li><b>Audit logging</b>: workspace and review activity is recorded for accountability.</li>
       </ul>
     </div>
 
@@ -206,12 +306,25 @@
       <h3><span class="dot"></span>What we're adding next</h3>
       <div class="lead">We share this openly. Dates and current status are available to customers under evaluation on request.</div>
       <ul class="road-list">
-        <li><b>SOC 2 Type II</b> — formal third-party audit of security controls.</li>
-        <li><b>Independent penetration test</b> — scoped; report shareable under NDA.</li>
-        <li><b>Zero-data-retention addendum &amp; DPAs</b> — signed data-processing terms with AI and cloud subprocessors.</li>
-        <li><b>On-prem / air-gapped tier</b> — a deployment where data never leaves the customer's environment, for ITAR &amp; defense programs.</li>
-        <li><b>Published trust portal</b> — self-serve access to this documentation and evidence.</li>
-        <li><b>GCC High tenancy</b> — Azure Government SSO for customers who require it.</li>
+        <li><b>SOC 2 Type II</b>: formal third-party audit of security controls.</li>
+        <li><b>Independent penetration test</b>: scoped; report shareable under NDA.</li>
+        <li><b>Zero-data-retention addendum &amp; DPAs</b>: signed data-processing terms with AI and cloud subprocessors.</li>
+        <li><b>On-prem / air-gapped tier</b>: a deployment where data never leaves the customer's environment, for ITAR &amp; defense programs.</li>
+        <li><b>Published trust portal</b>: self-serve access to this documentation and evidence.</li>
+        <li><b>GCC High tenancy</b>: Azure Government SSO for customers who require it.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>Common questions</h3>
+      <div class="lead">Short answers to what reviewers ask first. The detail is in the sections above.</div>
+      <ul class="road-list faq-list">
+        <li><b>Does the AI decide λ, DAL, or severity?</b> No. Those are owned by the deterministic engine and the engineer. The AI may propose a severity with rationale for you to confirm, and may build fault‑tree structure with rates left blank, but it never establishes a safety number as fact.</li>
+        <li><b>Is the AI part of the certification argument?</b> No, by design. The AI drafts, traces, and connects; the deterministic engine and the engineer own the numbers, the allocation, and the safety case. Requirements are allocated by interpreting the fault‑tree logic, not by the AI.</li>
+        <li><b>Where does my data go?</b> The model and engine run locally in your browser or desktop app. Only an explicit AI request sends the relevant context to your configured backend: hosted proxy, your own key, or on‑premise. For ITAR projects, cloud backends are blocked server‑side (US‑sovereign cloud routing is planned).</li>
+        <li><b>Can I use it on ITAR or controlled programs?</b> Mark the relevant documents controlled; the AI is then restricted to an on‑premise backend and blocked from every cloud path, enforced server‑side (a US‑sovereign cloud option is planned). For fully air‑gapped work, the on‑premise backend keeps everything inside your boundary.</li>
+        <li><b>Does it replace my DER or my engineers?</b> No. It is a tool your engineers and DER use; the human owns every judgment and signs the safety case. The platform's job is to make the work faster and the golden thread complete and traceable.</li>
+        <li><b>What standards does it follow?</b> ARP 4754B and ARP 4761A, the means of compliance for your cert basis (AC 23.1309 / AC 25.1309 / AC 27 / AC 29 / SC‑VTOL, ASTM F3230), and DO‑178C / DO‑254 development assurance.</li>
       </ul>
     </div>
 

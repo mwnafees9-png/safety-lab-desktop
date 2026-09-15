@@ -8,9 +8,6 @@
     <meta name="robots" content="noindex, follow">
     <title>Safety Lab Aero | Enterprise Safety Platform</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=56.6i">
     <link rel="apple-touch-icon" href="favicon.svg?v=56.6i">
@@ -655,7 +652,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     <div class="grid-2-col">
                         <div>
                             <label>Trace to System Function</label><select id="sys-req-trace"></select>
-                            <label>Requirement Level</label><select id="sys-req-level" title="L1 aircraft · L2 system · L3 item. L4 was offered here until 1 Aug 2026 and no other part of the product recognised it."><option>L1</option><option>L2</option><option>L3</option></select>
+                            <label>Requirement Level</label><select id="sys-req-level" title="L1 aircraft · L2 system · L3 item. L4 was offered here until 1 Aug 2026 and no other part of the product recognized it."><option>L1</option><option>L2</option><option>L3</option></select>
                             
                             <label>Requirement Type <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— ARP4754B §5.3.1 class</span></label><select id="sys-req-type"><option>Safety</option><option>Functional</option><option>Customer</option><option>Operational</option><option>Performance</option><option>Physical and Installation</option><option>Maintainability</option><option>Interface</option><option>Certification</option><option>Derived</option><option>Re-Use</option></select>
                             <label>Derived from analysis <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— optional</span></label><select id="sys-req-analysis"><option value=""></option><option>Probabilistic</option><option>Design Assurance</option><option>Independence</option><option>Maintenance</option><option>Human Factors</option></select>
@@ -1012,10 +1009,10 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     </div>
                 </div>
             </div>
-            <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 6px 0;">This table is the project's phase vocabulary — the FHA forms offer exactly these phases and nothing else. <strong>Nominal</strong> phases sum to the mission duration behind every exposure ratio; <strong>contingency</strong> phases (rejected take-off, go-around) are excluded from that total and hold the full-flight exposure window. The default profile is your project baseline. Add a <strong>special mission profile</strong> (e.g. Long-haul) to analyse extended-exposure / latent-failure risk — same phases, different durations — then a fault tree picks which profile it's built for.</p>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 6px 0;">This table is the project's phase vocabulary — the FHA forms offer exactly these phases and nothing else. <strong>Nominal</strong> phases sum to the mission duration behind every exposure ratio; <strong>contingency</strong> phases (rejected take-off, go-around) are excluded from that total and hold the full-flight exposure window. The default profile is your project baseline. Add a <strong>special mission profile</strong> (e.g. Long-haul) to analyze extended-exposure / latent-failure risk — same phases, different durations — then a fault tree picks which profile it's built for.</p>
             <div id="phases-profile-bar" style="display:flex; align-items:center; gap:10px; margin:6px 0 12px; flex-wrap:wrap;"></div>
             <table id="phases-table">
-                <thead><tr><th>Phase of Flight</th><th>Altitude From</th><th>Unit</th><th>Altitude To</th><th>Unit</th><th>Duration</th><th>Unit</th><th title="HF response window (seconds) — the time the crew actually has to respond in this phase. Feeds INV-36 workload saturation (HIDH §5.7.5.1, 80% red line). Duration is exposure; it is never read as a response window.">HF window (s)</th><th title="How the flight gets out of a failure condition whose effect has not yet been felt in this phase — stop on the ground, reject the take-off before V1, continue to a landing, go-around, or none. The FHA drafter is told these, and a row that is not yet realised, can be escaped, and whose failure does not defeat the escape is No Safety Effect by rule (4 Sep 2026 ruling).">Escape</th><th></th></tr></thead>
+                <thead><tr><th>Phase of Flight</th><th>Altitude From</th><th>Unit</th><th>Altitude To</th><th>Unit</th><th>Duration</th><th>Unit</th><th title="HF response window (seconds) — the time the crew actually has to respond in this phase. Feeds INV-36 workload saturation (HIDH §5.7.5.1, 80% red line). Duration is exposure; it is never read as a response window.">HF window (s)</th><th title="How the flight gets out of a failure condition whose effect has not yet been felt in this phase — stop on the ground, reject the take-off before V1, continue to a landing, go-around, or none. The FHA drafter is told these, and a row that is not yet realized, can be escaped, and whose failure does not defeat the escape is No Safety Effect by rule (4 Sep 2026 ruling).">Escape</th><th></th></tr></thead>
                 <tbody id="phases-body"></tbody>
             </table>
             <div style="margin-top: 10px; display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="action-btn" onclick="addPhaseRow()">+ Add phase</button><button type="button" class="action-btn" onclick="addContingencyPhase()" title="Rejected take-off, go-around, balked landing… — outside the nominal mission, excluded from the mission duration, and exposure stays the full flight.">+ Add contingency phase</button></div>
@@ -1559,7 +1556,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                 <div class="grid-2-col">
                     <div>
                         <label>Trace to Aircraft Sub-Function</label><select id="ac-req-trace"></select>
-                        <label>Requirement Level</label><select id="ac-req-level" title="L1 aircraft · L2 system · L3 item. L4 was offered here until 1 Aug 2026 and no other part of the product recognised it."><option>L1</option><option>L2</option><option>L3</option></select>
+                        <label>Requirement Level</label><select id="ac-req-level" title="L1 aircraft · L2 system · L3 item. L4 was offered here until 1 Aug 2026 and no other part of the product recognized it."><option>L1</option><option>L2</option><option>L3</option></select>
                         
                             <label>Requirement Type <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— ARP4754B §5.3.1 class</span></label><select id="ac-req-type"><option>Safety</option><option>Functional</option><option>Customer</option><option>Operational</option><option>Performance</option><option>Physical and Installation</option><option>Maintainability</option><option>Interface</option><option>Certification</option><option>Derived</option><option>Re-Use</option></select>
                             <label>Derived from analysis <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— optional</span></label><select id="ac-req-analysis"><option value=""></option><option>Probabilistic</option><option>Design Assurance</option><option>Independence</option><option>Maintenance</option><option>Human Factors</option></select>
@@ -2207,7 +2204,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                         <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: var(--s-4); align-items: end; margin-top: var(--s-3);">
                             <div style="display: flex; flex-direction: column;">
                                 <label>Mission Profile</label>
-                                <select id="fta-mission-profile" onchange="onFtaMissionProfileChange()" style="margin-bottom: 0;" title="The mission this tree is analysed under. Its phase durations set the exposure window — the linked FHA still selects WHICH phases. A longer mission (e.g. Long-haul) raises latent / dormant contributions. Manage profiles on the Flight Phases tab.">
+                                <select id="fta-mission-profile" onchange="onFtaMissionProfileChange()" style="margin-bottom: 0;" title="The mission this tree is analyzed under. Its phase durations set the exposure window — the linked FHA still selects WHICH phases. A longer mission (e.g. Long-haul) raises latent / dormant contributions. Manage profiles on the Flight Phases tab.">
                                     <option value="">Standard (default)</option>
                                 </select>
                             </div>
@@ -2893,8 +2890,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
         <div id="view-hfa-cd" style="display: none;">
             <div class="header-with-export"><h3>Controls &amp; Displays &mdash; &sect;25.1302 / AC 25.1302-1</h3></div>
             <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 var(--s-3) 0; ">
-                Each control, display and automation behaviour the crew uses, evaluated against the four &sect;25.1302 considerations
-                &mdash; the information to perform the task, usability by the qualified crew, predictable and unambiguous behaviour, and error management.
+                Each control, display and automation behavior the crew uses, evaluated against the four &sect;25.1302 considerations
+                &mdash; the information to perform the task, usability by the qualified crew, predictable and unambiguous behavior, and error management.
                 Considerations with no evaluated item are surfaced as a coverage finding.
             </p>
             <div id="hfa-cd-host"></div>
@@ -3270,7 +3267,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                         <label><input type="checkbox" id="ar-gen-gate" checked> <strong>Gate structure</strong> &rarr; AND-independence + OR-SPF requirements</label>
                         <label><input type="checkbox" id="ar-gen-pra" checked> <strong>PRA</strong> &rarr; zonal protection requirements <span style="font-weight: 400; color: var(--color-text-tertiary);">(AC scope only)</span></label>
                         <label><input type="checkbox" id="ar-gen-zsa" checked> <strong>ZSA</strong> &rarr; housed-function separation requirements <span style="font-weight: 400; color: var(--color-text-tertiary);">(AC scope only)</span></label>
-                        <label><input type="checkbox" id="ar-gen-iface" checked> <strong>Interface register</strong> &rarr; interface requirements <span style="font-weight: 400; color: var(--color-text-tertiary);" title="ARP4754B §5.3.1.8 — interconnections plus the characteristics of the information communicated; every input with a source, every output with a destination, and signal behaviour fully described. An edge missing a medium, a direction or an ICD reference still generates a requirement, and that requirement says what is missing.">(ARP4754B &sect;5.3.1.8 &middot; AC scope)</span></label>
+                        <label><input type="checkbox" id="ar-gen-iface" checked> <strong>Interface register</strong> &rarr; interface requirements <span style="font-weight: 400; color: var(--color-text-tertiary);" title="ARP4754B §5.3.1.8 — interconnections plus the characteristics of the information communicated; every input with a source, every output with a destination, and signal behavior fully described. An edge missing a medium, a direction or an ICD reference still generates a requirement, and that requirement says what is missing.">(ARP4754B &sect;5.3.1.8 &middot; AC scope)</span></label>
                         <label><input type="checkbox" id="ar-gen-hf" checked> <strong>HF register</strong> &rarr; operational requirements <span style="font-weight: 400; color: var(--color-text-tertiary);" title="ARP4754B §5.1.8 — a human-performed task relied on to ensure safety is to be identified and recorded in the certification data. §5.3.1.4 names actions, decisions, information requirements and timing; three of the four are derivable from the HF register. Decisions are not — there is no decision field, and deriving one would be invention.">(ARP4754B &sect;5.3.1.4 &middot; actions, timing, information)</span></label>
                         <label><input type="checkbox" id="ar-gen-fcim-mon" checked> <strong>FCIM pairs</strong> &rarr; crew-awareness monitoring requirements <span style="font-weight: 400; color: var(--color-text-tertiary);" title="An aware/unaware pair whose AWARE (lower) risk was chosen to govern takes credit for crew awareness — the credit holds only if the crew is made aware, so the annunciation requirement is owed. Unaware-governs, undecided pairs and standalone Unaware rows owe nothing. ARP4761A §A.3 awareness distinction / §xx.1309 warning information.">(ARP4761A &sect;A.3 &middot; AC scope)</span></label>
                     </div>
@@ -3835,14 +3832,16 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="slab_license.js?v=1.2" defer></script>
     <script src="fn_wrap.js?v=1.0" defer></script>
+    
+    <script src="error_watch.js?v=1.0" defer></script>
     <script src="numbering.js?v=1.0.1" defer></script>
     
-    <script>window.SL_SHOWCASE_SRC = 'demo_showcase.js?v=65.41';</script>
-    <script>window.SL_SHOWCASE_SORA_SRC = 'demo_showcase_sora.js?v=2';</script>
-    <script>window.SL_SHOWCASE_KESTREL25_SRC = 'demo_showcase_kestrel25.js?v=1';</script>
-    <script>window.SL_SHOWCASE_HL1_SRC = 'demo_showcase_hl1.js?v=6';</script>
-    <script>window.SL_SHOWCASE_HALCYON_SRC = 'demo_showcase_halcyon.js?v=5';</script>
-    <script>window.SL_SHOWCASE_VAYU_SRC = 'demo_showcase_vayu.js?v=1';</script>
+    <script>window.SL_SHOWCASE_SRC = 'demo_showcase.js?v=65.42';</script>
+    <script>window.SL_SHOWCASE_SORA_SRC = 'demo_showcase_sora.js?v=3';</script>
+    <script>window.SL_SHOWCASE_KESTREL25_SRC = 'demo_showcase_kestrel25.js?v=2';</script>
+    <script>window.SL_SHOWCASE_HL1_SRC = 'demo_showcase_hl1.js?v=7';</script>
+    <script>window.SL_SHOWCASE_HALCYON_SRC = 'demo_showcase_halcyon.js?v=6';</script>
+    <script>window.SL_SHOWCASE_VAYU_SRC = 'demo_showcase_vayu.js?v=2';</script>
     
     <script>window.SL_CRDT_AUTHORITATIVE = true;</script>
     
@@ -3877,70 +3876,71 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="safety_targets.js?v=1.8" defer></script>
     <script src="severity_rubrics.js?v=1.3" defer></script>
     <script src="reliability_data.js?v=1.1" defer></script>
-    <script src="catalogue_data.js?v=1.10" defer></script>
+    <script src="catalogue_data.js?v=1.11" defer></script>
     <script src="ui_constants.js?v=1.0" defer></script>
     <script src="config_data.js?v=1.1" defer></script>
     <script src="ai_memory.js?v=1.0" defer></script>
-    <script src="importers.js?v=1.5" defer></script>
+    <script src="importers.js?v=1.7" defer></script>
     <script src="core_modules.js?v=1.6" defer></script>
     
-    <script src="fta_quant_modules.js?v=66.16" defer></script>
+    <script src="fta_quant_modules.js?v=66.18" defer></script>
     
     <script src="event_reuse.js?v=1.2" defer></script>
     
-    <script src="mac_lanes.js?v=1.1" defer></script>
+    <script src="mac_lanes.js?v=1.2" defer></script>
     
     <script src="fn_resolver.js?v=1.0" defer></script>
     
     <script src="node_identity.js?v=1.0" defer></script>
-    <script src="node_identity_ui.js?v=1.4" defer></script>
-    <script src="fta_view_modules.js?v=66.37" defer></script>
+    <script src="node_identity_ui.js?v=1.5" defer></script>
+    <script src="fta_view_modules.js?v=66.41" defer></script>
     
     <script src="gt_thread.js?v=0.91" defer></script>
-    <script src="data_ops_modules.js?v=66.41" defer></script>
+    <script src="data_ops_modules.js?v=66.44" defer></script>
     
-    <script src="support_modules.js?v=66.31" defer></script>
+    <script src="support_modules.js?v=66.33" defer></script>
     
-    <script src="helpers_modules.js?v=2.98" defer></script>
-    <script src="cloud_writer.js?v=1.0" defer></script>
-    <script src="severity_axes.js?v=1.34" defer></script>
+    <script src="helpers_modules.js?v=3.4" defer></script>
+    <script src="cloud_writer.js?v=1.1" defer></script>
+    <script src="severity_axes.js?v=1.35" defer></script>
     
-    <script src="fha_derive.js?v=1.1" defer></script>
+    <script src="fha_derive.js?v=1.2" defer></script>
     
-    <script src="bindings_modules.js?v=1.45" defer></script>
+    <script src="bindings_modules.js?v=1.47" defer></script>
     
-    <script src="misc_fn_modules.js?v=66.60" defer></script>
-    <script src="safety_lab.js?v=65.54" defer></script>
+    <script src="misc_fn_modules.js?v=66.64" defer></script>
+    <script src="safety_lab.js?v=65.57" defer></script>
     
     <script src="sl_env.js?v=1.1" defer></script>
     
     <script src="project_stores.js?v=1.0" defer></script>
     <script src="crdt_gc.js?v=1.1" defer></script>
-    <script src="crdt_sync.js?v=1.9" defer></script>
+    <script src="crdt_sync.js?v=2.1" defer></script>
+    <script src="save_watch.js?v=1.2" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
-    <script src="assurance_modules.js?v=1.31" defer></script>
+    <script src="assurance_modules.js?v=1.32" defer></script>
     <script src="engine_modules.js?v=1.3" defer></script>
     
     <script src="ai_badges.js?v=1.4" defer></script>
     <script src="autonomy_metrics.js?v=0.3" defer></script>
-    <script src="reports.js?v=66.10" defer></script>
+    <script src="reports.js?v=66.11" defer></script>
     
-    <script src="ram_modules.js?v=1.8" defer></script>
+    <script src="ram_modules.js?v=1.9" defer></script>
     
-    <script src="fracas_ledger.js?v=0.1" defer></script>
-    <script src="fracas_slas.js?v=0.2" defer></script>
+    <script src="fracas_ledger.js?v=0.3" defer></script>
+    <script src="fracas_slas.js?v=0.3" defer></script>
     
     <script src="ops_mc.js?v=0.2" defer></script>
     
-    <script src="msg3_module.js?v=1.5" defer></script>
+    <script src="msg3_module.js?v=1.6" defer></script>
     
-    <script src="rel_analytics.js?v=1.3" defer></script>
-    <script src="mx_analytics.js?v=1.1" defer></script>
-    <script src="rbd_module.js?v=1.1" defer></script>
-    <script src="tol_derate_module.js?v=1.1" defer></script>
+    <script src="rel_analytics.js?v=1.4" defer></script>
+    <script src="mx_analytics.js?v=1.2" defer></script>
+    <script src="rbd_module.js?v=1.2" defer></script>
+    <script src="tol_derate_module.js?v=1.2" defer></script>
     
-    <script src="ram_derive.js?v=1.1" defer></script>
+    <script src="ram_derive.js?v=1.2" defer></script>
     
     <script src="avail_closedform.js?v=1.1" defer></script>
     
@@ -3950,37 +3950,37 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="evidence_package.js?v=2.8" defer></script>
     
-    <script src="objectives_matrix.js?v=1.1" defer></script>
+    <script src="objectives_matrix.js?v=1.2" defer></script>
     
-    <script src="problem_reports.js?v=1.0" defer></script>
+    <script src="problem_reports.js?v=1.1" defer></script>
     
-    <script src="mmel_module.js?v=1.2" defer></script>
+    <script src="mmel_module.js?v=1.3" defer></script>
     <script src="mel_fha_crosscheck.js?v=1.0" defer></script>
     
-    <script src="mod_impact.js?v=1.9" defer></script>
+    <script src="mod_impact.js?v=1.10" defer></script>
     
-    <script src="vv_validation.js?v=2.3" defer></script>
+    <script src="vv_validation.js?v=2.5" defer></script>
     
     <script src="cea_graph.js?v=1.1" defer></script>
     
-    <script src="sse_export.js?v=1.0" defer></script>
+    <script src="sse_export.js?v=1.1" defer></script>
     
     <script src="items_workspace.js?v=1.0" defer></script>
     
     <script src="rel_mle.js?v=1.1" defer></script>
-    <script src="rbd_mc.js?v=1.0" defer></script>
-    <script src="rel_frameworks.js?v=1.0" defer></script>
-    <script src="lcc_module.js?v=1.0" defer></script>
-    <script src="sneak_module.js?v=1.1" defer></script>
-    <script src="swrel_module.js?v=1.0" defer></script>
-    <script src="msg3_ext.js?v=1.0" defer></script>
-    <script src="ram_settings.js?v=1.1" defer></script>
+    <script src="rbd_mc.js?v=1.2" defer></script>
+    <script src="rel_frameworks.js?v=1.2" defer></script>
+    <script src="lcc_module.js?v=1.2" defer></script>
+    <script src="sneak_module.js?v=1.3" defer></script>
+    <script src="swrel_module.js?v=1.2" defer></script>
+    <script src="msg3_ext.js?v=1.2" defer></script>
+    <script src="ram_settings.js?v=1.3" defer></script>
     
     <script src="ram_cockpit.js?v=1.1" defer></script>
     
-    <script src="budget_ledger.js?v=1.42" defer></script>
+    <script src="budget_ledger.js?v=1.43" defer></script>
     
-    <script src="importance_heat.js?v=2.1" defer></script>
+    <script src="importance_heat.js?v=2.2" defer></script>
     
     <script src="ux_leading.js?v=1.2" defer></script>
     
@@ -3990,26 +3990,26 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     
     
-    <script src="onboarding_tour.js?v=1.5" defer></script>
+    <script src="onboarding_tour.js?v=1.6" defer></script>
     
     <script src="ffs_module.js?v=1.32" defer></script>
     
     <script src="asa_triage.js?v=1.12" defer></script>
     <script src="idp_seed_trees.js?v=1.0" defer></script>
     
-    <script src="gt_integrity.js?v=1.5" defer></script>
+    <script src="gt_integrity.js?v=1.7" defer></script>
     
-    <script src="q_completeness.js?v=1.0" defer></script>
+    <script src="q_completeness.js?v=1.1" defer></script>
     
-    <script src="notify_agents.js?v=1.6" defer></script>
+    <script src="notify_agents.js?v=1.8" defer></script>
     
-    <script src="delete_guard.js?v=1.0" defer></script>
+    <script src="delete_guard.js?v=1.2" defer></script>
     
-    <script src="session_resume.js?v=1.3" defer></script>
+    <script src="session_resume.js?v=1.4" defer></script>
     
-    <script src="cloud_sync.js?v=2.1" defer></script>
+    <script src="cloud_sync.js?v=2.2" defer></script>
     
-    <script src="reqif_import.js?v=1.2" defer></script>
+    <script src="reqif_import.js?v=1.4" defer></script>
     
     <script src="status_back.js?v=1.0" defer></script>
     
@@ -4017,7 +4017,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="xmi_import.js?v=0.9" defer></script>
     
-    <script src="roundtrip_proof.js?v=1.0" defer></script>
+    <script src="roundtrip_proof.js?v=1.1" defer></script>
     <script src="ccf_similarity.js?v=1.3" defer></script>
     
     <script src="alias_registry.js?v=1.1" defer></script>
@@ -4032,23 +4032,23 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ram_predict_data.js?v=0.1" defer></script>
     <script src="ram_predict.js?v=0.6" defer></script>
-    <script src="ram_hub.js?v=1.1" defer></script>
-    <script src="engine_selftest.js?v=1.0" defer></script>
+    <script src="ram_hub.js?v=1.2" defer></script>
+    <script src="engine_selftest.js?v=1.1" defer></script>
     <script src="ram_trace.js?v=1.12" defer></script>
     <script src="model_checks.js?v=1.01" defer></script>
     <script src="fault_sim.js?v=1.22" defer></script>
     <script src="tab_guard.js?v=1.0" defer></script>
-    <script src="journal.js?v=1.0" defer></script>
+    <script src="journal.js?v=1.1" defer></script>
     <script src="change_journal_sync.js?v=1.1" defer></script>
     <script src="pssa_ssa_pages.js?v=1.0" defer></script>
     <script src="nav_sfha_tree.js?v=1.3" defer></script>
     <script src="assumption_moat.js?v=1.4" defer></script>
-    <script src="hf_ergo.js?v=0.1" defer></script>
+    <script src="hf_ergo.js?v=0.2" defer></script>
     <script src="hf_assumptions.js?v=0.9" defer></script>
-    <script src="hf_register_panel.js?v=1.8" defer></script>
-    <script src="hf_analyses.js?v=1.16" defer></script>
-    <script src="field_defs.js?v=1.4" defer></script>
-    <script src="lane_ai_bar.js?v=1.2" defer></script>
+    <script src="hf_register_panel.js?v=1.9" defer></script>
+    <script src="hf_analyses.js?v=1.18" defer></script>
+    <script src="field_defs.js?v=1.5" defer></script>
+    <script src="lane_ai_bar.js?v=1.3" defer></script>
     <script src="hf_evidence.js?v=0.2" defer></script>
     
     <script src="hf_severity_check.js?v=1.2" defer></script>
@@ -4057,60 +4057,60 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="fha_a5.js?v=1.4" defer></script>
     
     <script src="fcim_combined.js?v=1.5" defer></script>
-    <script src="a11_sequencing.js?v=1.3" defer></script>
+    <script src="a11_sequencing.js?v=1.4" defer></script>
     <script src="corpus_retrieve.js?v=1.2" defer></script>
     
-    <script src="stpa_core.js?v=1.1" defer></script>
+    <script src="stpa_core.js?v=1.2" defer></script>
     
     <script src="sora_annex_e_data.js?v=0.1" defer></script>
-    <script src="cert_basis_spine.js?v=1.10" defer></script>
+    <script src="cert_basis_spine.js?v=1.12" defer></script>
     <script src="cert_basis_router.js?v=1.0" defer></script>
-    <script src="sora_core.js?v=0.2" defer></script>
-    <script src="sora_showcase_view.js?v=0.2" defer></script>
+    <script src="sora_core.js?v=0.3" defer></script>
+    <script src="sora_showcase_view.js?v=0.3" defer></script>
     
-    <script src="kestrel_showcase.js?v=1" defer></script>
+    <script src="kestrel_showcase.js?v=2" defer></script>
     
     
     <script src="demo_kit.js?v=2" defer></script>
-    <script src="hl1_showcase.js?v=6" defer></script>
-    <script src="halcyon_showcase.js?v=5" defer></script>
-    <script src="vayu_showcase.js?v=1" defer></script>
-    <script src="demo_picker.js?v=5" defer></script>
-    <script src="first_run.js?v=2" defer></script>
-    <script src="continue_session.js?v=1.0" defer></script>
-    <script src="stpa_panel.js?v=1.41" defer></script>
+    <script src="hl1_showcase.js?v=7" defer></script>
+    <script src="halcyon_showcase.js?v=6" defer></script>
+    <script src="vayu_showcase.js?v=2" defer></script>
+    <script src="demo_picker.js?v=6" defer></script>
+    <script src="first_run.js?v=3" defer></script>
+    <script src="continue_session.js?v=1.1" defer></script>
+    <script src="stpa_panel.js?v=1.43" defer></script>
     <script src="stpa_report.js?v=1.2" defer></script>
     <script src="stpa_ai_apply.js?v=0.2" defer></script>
     
-    <script src="program_plan.js?v=2.5" defer></script>
+    <script src="program_plan.js?v=2.6" defer></script>
     
-    <script src="nav_rail.js?v=1.6" defer></script>
+    <script src="nav_rail.js?v=1.7" defer></script>
     
-    <script src="next_step.js?v=0.6" defer></script>
-    <script src="ml_assurance.js?v=0.4" defer></script>
+    <script src="next_step.js?v=0.7" defer></script>
+    <script src="ml_assurance.js?v=0.5" defer></script>
     
-    <script src="mass_actions.js?v=0.6" defer></script>
+    <script src="mass_actions.js?v=0.8" defer></script>
     <script src="mbsa_schema.js?v=1.1" defer></script>
     <script src="zonal_model.js?v=1.1" defer></script>
     <script src="physical_independence.js?v=1.1" defer></script>
     <script src="independence_claims.js?v=1.0" defer></script>
     <script src="physical_crosscheck.js?v=1.1" defer></script>
-    <script src="zonal_ui.js?v=1.12" defer></script>
-    <script src="equipment_hazards.js?v=1.0" defer></script>
+    <script src="zonal_ui.js?v=1.13" defer></script>
+    <script src="equipment_hazards.js?v=1.1" defer></script>
     <script src="beta_scoring.js?v=1.0" defer></script>
-    <script src="zsa_walkthrough.js?v=1.1" defer></script>
+    <script src="zsa_walkthrough.js?v=1.3" defer></script>
     <script src="cma_walkthrough.js?v=1.31" defer></script>
-    <script src="pra_library.js?v=1.2" defer></script>
-    <script src="pra_canvas.js?v=1.21" defer></script>
+    <script src="pra_library.js?v=1.3" defer></script>
+    <script src="pra_canvas.js?v=1.22" defer></script>
     <script src="msg3_zonal.js?v=1.21" defer></script>
     <script src="mac_l3.js?v=1.0" defer></script>
     
     <script src="mac_flows.js?v=1.1" defer></script>
-    <script src="mac_fcim.js?v=1.0" defer></script>
+    <script src="mac_fcim.js?v=1.1" defer></script>
     <script src="lane_trees.js?v=1.3" defer></script>
-    <script src="stale_watch.js?v=1.1" defer></script>
+    <script src="stale_watch.js?v=1.2" defer></script>
     <script src="mirror_modes.js?v=1.1" defer></script>
-    <script src="phys_hazards.js?v=1.4" defer></script>
+    <script src="phys_hazards.js?v=1.5" defer></script>
     
     <script src="mac_modes.js?v=1.0" defer></script>
     
@@ -4135,43 +4135,43 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="do_credit.js?v=1.0" defer></script>
     <script src="do160_ledger.js?v=1.0" defer></script>
     <script src="ewis_lane.js?v=1.0" defer></script>
-    <script src="event_trees.js?v=1.55" defer></script>
+    <script src="event_trees.js?v=1.56" defer></script>
     
-    <script src="bowtie.js?v=2.71" defer></script>
+    <script src="bowtie.js?v=2.72" defer></script>
     
     <script src="text_scale.js?v=2.2" defer></script>
     
-    <script src="monitor_spec.js?v=1.4" defer></script>
-    <script src="exposure_case.js?v=1.22" defer></script>
-    <script src="cra_matrix.js?v=1.3" defer></script>
-    <script src="fta_proposals.js?v=1.0" defer></script>
+    <script src="monitor_spec.js?v=1.5" defer></script>
+    <script src="exposure_case.js?v=1.24" defer></script>
+    <script src="cra_matrix.js?v=1.5" defer></script>
+    <script src="fta_proposals.js?v=1.2" defer></script>
     <script src="prove_tabs.js?v=1.5" defer></script>
     <script src="fta_tree_picker.js?v=1.2" defer></script>
     
     <script src="nav_return.js?v=1.0" defer></script>
     <script src="fta_freq.js?v=1.32" defer></script>
-    <script src="markov_ctmc.js?v=1.1" defer></script>
+    <script src="markov_ctmc.js?v=1.2" defer></script>
     <script src="mil217f_stress.js?v=1.1" defer></script>
     
     <script src="jama_bridge.js?v=1.7" defer></script>
     <script src="reqif_bridge.js?v=1.3" defer></script>
     
-    <script src="toolchain_plan.js?v=1.4" defer></script>
+    <script src="toolchain_plan.js?v=1.6" defer></script>
     
-    <script src="fc_variants.js?v=1.01" defer></script>
-    <script src="fc_tree_flow.js?v=1.02" defer></script>
+    <script src="fc_variants.js?v=1.02" defer></script>
+    <script src="fc_tree_flow.js?v=1.03" defer></script>
     <script src="cca_models.js?v=1.03" defer></script>
     
     <script src="spec_index.js?v=1.3" defer></script>
     <script src="eval_core.js?v=1.9" defer></script>
-    <script src="ai_skills.js?v=2.12" defer></script>
+    <script src="ai_skills.js?v=2.14" defer></script>
     
-    <script src="ai_loader.js?v=8.54" defer></script>
-    <script src="config_management.js?v=1.10" defer></script>
+    <script src="ai_loader.js?v=8.58" defer></script>
+    <script src="config_management.js?v=1.12" defer></script>
     
-    <script src="numbering_ui.js?v=1.0.1" defer></script>
+    <script src="numbering_ui.js?v=1.0.2" defer></script>
     
-    <script src="numbering_plan.js?v=1.2" defer></script>
+    <script src="numbering_plan.js?v=1.3" defer></script>
     
     
     <script>window.SL_MS_SSO_ENABLED = true;</script>
@@ -4179,11 +4179,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ms_sso.js?v=1.1" defer></script>
     
-    <script src="mfa.js?v=1.1" defer></script>
+    <script src="mfa.js?v=1.2" defer></script>
     
-    <script src="eula_modal.js?v=1.2.0" defer></script>
-    
-    <script src="license_modal.js?v=1.0.7" defer></script>
+    <script src="eula_modal.js?v=1.3.0" defer></script>
     
     <script src="labs_thread_config.js?v=1.1" defer></script>
     <script src="thread_client.js?v=1.1" defer></script>
