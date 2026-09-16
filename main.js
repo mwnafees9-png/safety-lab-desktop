@@ -256,13 +256,19 @@ function handleDeepLink(raw) {
   }
 }
 
-// ---- native project Save / Open (.slab files on the user's disk) ------------------------------
+// ---- native project Save / Open (.sl project files on the user's disk) -----------------------
+// 16 Sep 2026 — the extension is .sl, matching what the web app has always saved. This shell
+// defaulted to .slab and filtered its Open dialog on slab/json with no All Files escape, so a
+// project saved in the browser DID NOT APPEAR in the desktop's file picker, and vice versa: the
+// web's file input accepts .sl/.json, so a .slab was not selectable there either. Same JSON in
+// both; three letters were the whole problem. Both sides now write .sl and open all three, and
+// the Open dialog carries an All Files filter so a picker can never again hide someone's file.
 function setProjectTitle() { if (mainWindow) mainWindow.setTitle('Safety Lab Aero' + (currentProjectPath ? ' — ' + path.basename(currentProjectPath) : '')); }
 async function doSave(saveAs) {
   if (!mainWindow) return;
   let target = currentProjectPath;
   if (saveAs || !target) {
-    const r = await dialog.showSaveDialog(mainWindow, { title: 'Save Safety Lab project', defaultPath: target || 'Untitled.slab', filters: [{ name: 'Safety Lab Project', extensions: ['slab'] }, { name: 'JSON', extensions: ['json'] }] });
+    const r = await dialog.showSaveDialog(mainWindow, { title: 'Save Safety Lab project', defaultPath: target || 'Untitled.sl', filters: [{ name: 'Safety Lab Project', extensions: ['sl', 'slab'] }, { name: 'JSON', extensions: ['json'] }] });
     if (r.canceled || !r.filePath) return;
     target = r.filePath;
   }
@@ -275,7 +281,7 @@ async function doSave(saveAs) {
 }
 async function doOpen() {
   if (!mainWindow) return;
-  const r = await dialog.showOpenDialog(mainWindow, { title: 'Open Safety Lab project', properties: ['openFile'], filters: [{ name: 'Safety Lab Project', extensions: ['slab', 'json'] }] });
+  const r = await dialog.showOpenDialog(mainWindow, { title: 'Open Safety Lab project', properties: ['openFile'], filters: [{ name: 'Safety Lab Project', extensions: ['sl', 'slab', 'json'] }, { name: 'All Files', extensions: ['*'] }] });
   if (r.canceled || !r.filePaths || !r.filePaths[0]) return;
   const p = r.filePaths[0];
   let contents;
