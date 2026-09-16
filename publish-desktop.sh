@@ -48,13 +48,38 @@ for y in latest-mac.yml latest.yml latest-linux.yml; do
 done
 [ "$STALE" = "0" ] || { echo "Nothing published. Fix the build, then run this again." >&2; exit 1; }
 
+# --- CACHE LIFETIME (16 Sep 2026). Two kinds of object live in this bucket and they need
+#     opposite caching:
+#
+#       VERSION-NAMED  "Safety Lab Aero-0.18.1-arm64-mac.zip" — the bytes behind that name never
+#                      change, so cache them forever.
+#       FIXED-NAME     SafetyLabAero-mac-arm64.dmg, the blockmaps, latest*.yml and their .sig —
+#                      the NAME stays put while the CONTENT changes every release. These are what
+#                      the website download buttons and electron-updater point at.
+#
+#     Nothing set Cache-Control at all, so Cloudflare applied its zone default of four hours to
+#     everything. On the 0.18.1 release that meant the site served the 0.18.0 Apple Silicon .dmg
+#     for hours after a SUCCESSFUL publish: the download button handed out the build whose export
+#     and import were broken, which is the exact thing 0.18.1 fixed. A stale latest.yml is the
+#     same risk for auto-update.
+#
+#     This only bites if the zone's Browser Cache TTL is "Respect Existing Headers". If it is
+#     pinned to a fixed value Cloudflare overrides us, and the check at the end will say so.
+cache_control_for () {  # <basename>
+  case "$1" in
+    *[0-9].[0-9]*.[0-9]*) echo "public, max-age=31536000, immutable" ;;   # version in the name
+    *)                    echo "public, max-age=60, must-revalidate" ;;   # name reused every release
+  esac
+}
+
 put () {  # <local file> <content-type>
-  local f="$1" ct="$2" tries=0 max=5
+  local f="$1" ct="$2" tries=0 max=5 cc
   if [ ! -f "$f" ]; then echo "  SKIP (missing): $(basename "$f")"; return 0; fi
-  echo "  ↑ $(basename "$f")  ($(du -h "$f" | cut -f1))"
+  cc="$(cache_control_for "$(basename "$f")")"
+  echo "  ↑ $(basename "$f")  ($(du -h "$f" | cut -f1))  [$cc]"
   # Large DMGs/zips (~100 MB) over wifi occasionally drop mid-PUT ("fetch failed").
   # Retry with backoff so one transient network blip doesn't abort the whole release.
-  until wrangler r2 object put "$BUCKET/$PREFIX/$(basename "$f")" --file="$f" --content-type="$ct" --remote; do
+  until wrangler r2 object put "$BUCKET/$PREFIX/$(basename "$f")" --file="$f" --content-type="$ct" --cache-control="$cc" --remote; do
     tries=$((tries + 1))
     if [ "$tries" -ge "$max" ]; then echo "  ✗ giving up on $(basename "$f") after $max attempts" >&2; return 1; fi
     echo "  … upload dropped — retry $tries/$max in $((tries * 5))s"
@@ -101,6 +126,50 @@ put "$DIST/latest.yml.sig"     "text/plain"
 # --- Update manifests LAST, so clients never fetch one before its payloads exist ---
 put "$DIST/latest-mac.yml" "text/yaml"
 put "$DIST/latest.yml"     "text/yaml"
+
+# --- VERIFY WHAT THE EDGE SERVES (16 Sep 2026). Uploading is not publishing. On 0.18.1 every
+#     upload succeeded and the site still served the previous build, because a copy cached at
+#     Cloudflare's edge outlived the new object. Nothing here noticed; it was caught by hand
+#     afterwards. So the script looks now: for each fixed-name file it compares the byte count the
+#     edge returns against the file on disk. A mismatch is NOT fatal, the bytes in R2 are correct,
+#     but it means a purge is needed before anyone is pointed at the download page.
+echo
+echo "── verifying what the edge actually serves ──────────"
+BASE="https://updates.safetylabaero.com/$PREFIX"
+STALE=""
+UNCHECKED=""
+for f in SafetyLabAero-mac-arm64.dmg SafetyLabAero-mac-x64.dmg SafetyLabAero-win-x64.exe latest-mac.yml latest.yml; do
+  [ -f "$DIST/$f" ] || continue
+  want="$(wc -c < "$DIST/$f" | tr -d ' ')"
+  got="$(curl -sSI -m 60 "$BASE/$f" 2>/dev/null | tr -d '\r' | awk 'tolower($1)=="content-length:"{print $2}')"
+  if [ -z "$got" ]; then
+    # Could not reach the edge at all. That is a network problem here, NOT evidence of a stale
+    # cache, and telling someone to purge URLs that are fine wastes their time and their trust
+    # in this check. Say what actually happened.
+    printf "  ?      %-32s could not reach the edge to check\n" "$f"
+    UNCHECKED="$UNCHECKED $f"
+  elif [ "$got" = "$want" ]; then
+    printf "  OK     %-32s %s bytes\n" "$f" "$want"
+  else
+    printf "  STALE  %-32s edge=%s  expected=%s\n" "$f" "$got" "$want"
+    STALE="$STALE  $BASE/$f
+"
+  fi
+done
+if [ -n "$UNCHECKED" ]; then
+  echo
+  echo "  Could not check:$UNCHECKED"
+  echo "  The upload itself succeeded. Re-check by hand before announcing the download links."
+fi
+if [ -n "$STALE" ]; then
+  echo
+  echo "  The upload is fine, R2 holds the new bytes. Cloudflare's edge is still serving the old"
+  echo "  ones. Purge these before pointing anyone at the download page:"
+  echo "    dashboard > safetylabaero.com > Caching > Configuration > Purge Custom URLs"
+  echo
+  printf "%s" "$STALE"
+  echo
+fi
 
 echo "Done. Live at:"
 echo "  Apple Silicon : https://updates.safetylabaero.com/$PREFIX/SafetyLabAero-mac-arm64.dmg"
