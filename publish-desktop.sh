@@ -127,39 +127,103 @@ put "$DIST/latest.yml.sig"     "text/plain"
 put "$DIST/latest-mac.yml" "text/yaml"
 put "$DIST/latest.yml"     "text/yaml"
 
-# --- VERIFY WHAT THE EDGE SERVES (16 Sep 2026). Uploading is not publishing. On 0.18.1 every
-#     upload succeeded and the site still served the previous build, because a copy cached at
-#     Cloudflare's edge outlived the new object. Nothing here noticed; it was caught by hand
-#     afterwards. So the script looks now: for each fixed-name file it compares the byte count the
-#     edge returns against the file on disk. A mismatch is NOT fatal, the bytes in R2 are correct,
-#     but it means a purge is needed before anyone is pointed at the download page.
+# --- VERIFY WHAT THE EDGE SERVES (16 Sep 2026, rewritten the same night). Uploading is not
+#     publishing. On 0.18.1 every upload succeeded and the site still served the previous build,
+#     because a copy cached at Cloudflare's edge outlived the new object. The first version of
+#     this check compared BYTE COUNTS, which caught that dmg only because the two builds happened
+#     to differ in length. It would have missed the object that actually matters: latest-mac.yml
+#     is 844 bytes in both 0.18.1 and 0.18.2, so a stale manifest -- the one file that decides
+#     whether anyone is offered the update at all -- would have printed OK.
+#
+#     R2 returns the object's MD5 as its ETag for a single-part upload, and Cloudflare passes it
+#     through, so the edge can be checked for CONTENT with a HEAD and no download. Three checks
+#     now, in order of how much they prove:
+#       1. ETag vs the local file's MD5   — exact, free, works on the ~100MB installers
+#       2. the version INSIDE each served manifest vs this release  — semantic, catches a stale
+#          manifest even if some future change makes the hashes agree for the wrong reason
+#       3. byte count                     — the fallback when there is no usable ETag (a multipart
+#          upload's ETag ends in "-N" and is not the file's MD5), reported honestly as weaker
+#
+#     A mismatch is NOT fatal: the bytes in R2 are correct, but a purge is needed before anyone
+#     is pointed at the download page.
 echo
 echo "── verifying what the edge actually serves ──────────"
 BASE="https://updates.safetylabaero.com/$PREFIX"
 STALE=""
 UNCHECKED=""
-for f in SafetyLabAero-mac-arm64.dmg SafetyLabAero-mac-x64.dmg SafetyLabAero-win-x64.exe latest-mac.yml latest.yml; do
+WEAK=""
+
+md5_of () {  # portable: macOS has md5, Linux has md5sum
+  if command -v md5 >/dev/null 2>&1; then md5 -q "$1"
+  elif command -v md5sum >/dev/null 2>&1; then md5sum "$1" | cut -d' ' -f1
+  else echo ""; fi
+}
+
+# The .sig files are checked too. A fresh manifest behind a stale signature is WORSE than a stale
+# manifest: the app requires a valid signature, so it refuses the update and tells the customer it
+# could not be verified. The old loop did not look at them at all.
+for f in SafetyLabAero-mac-arm64.dmg SafetyLabAero-mac-x64.dmg SafetyLabAero-win-x64.exe \
+         latest-mac.yml latest-mac.yml.sig latest.yml latest.yml.sig; do
   [ -f "$DIST/$f" ] || continue
-  want="$(wc -c < "$DIST/$f" | tr -d ' ')"
-  got="$(curl -sSI -m 60 "$BASE/$f" 2>/dev/null | tr -d '\r' | awk 'tolower($1)=="content-length:"{print $2}')"
-  if [ -z "$got" ]; then
+  want_bytes="$(wc -c < "$DIST/$f" | tr -d ' ')"
+  want_md5="$(md5_of "$DIST/$f")"
+  hdrs="$(curl -sSI -m 60 "$BASE/$f" 2>/dev/null | tr -d '\r')"
+  got_bytes="$(printf '%s' "$hdrs" | awk 'tolower($1)=="content-length:"{print $2}')"
+  got_etag="$(printf '%s' "$hdrs"  | awk 'tolower($1)=="etag:"{print $2}' | tr -d '"')"
+
+  if [ -z "$got_bytes" ] && [ -z "$got_etag" ]; then
     # Could not reach the edge at all. That is a network problem here, NOT evidence of a stale
     # cache, and telling someone to purge URLs that are fine wastes their time and their trust
     # in this check. Say what actually happened.
     printf "  ?      %-32s could not reach the edge to check\n" "$f"
     UNCHECKED="$UNCHECKED $f"
-  elif [ "$got" = "$want" ]; then
-    printf "  OK     %-32s %s bytes\n" "$f" "$want"
+    continue
+  fi
+
+  if [ -n "$got_etag" ] && [ -n "$want_md5" ] && [ "${got_etag#*-}" = "$got_etag" ]; then
+    if [ "$got_etag" = "$want_md5" ]; then
+      printf "  OK     %-32s content matches (md5 %s)\n" "$f" "$(printf '%s' "$want_md5" | cut -c1-12)"
+    else
+      printf "  STALE  %-32s edge md5=%s  expected=%s\n" "$f" "$(printf '%s' "$got_etag" | cut -c1-12)" "$(printf '%s' "$want_md5" | cut -c1-12)"
+      STALE="$STALE  $BASE/$f
+"
+    fi
+  elif [ "$got_bytes" = "$want_bytes" ]; then
+    # No usable ETag. Same-size different-content passes here, which is exactly the hole this
+    # rewrite exists to close, so it is reported as the weaker check it is rather than as OK.
+    printf "  size?  %-32s %s bytes (no usable ETag — size only)\n" "$f" "$want_bytes"
+    WEAK="$WEAK $f"
   else
-    printf "  STALE  %-32s edge=%s  expected=%s\n" "$f" "$got" "$want"
+    printf "  STALE  %-32s edge=%s  expected=%s bytes\n" "$f" "$got_bytes" "$want_bytes"
     STALE="$STALE  $BASE/$f
 "
   fi
 done
+
+# The manifest's own contents, which is what the app reads to decide there is an update at all.
+for y in latest-mac.yml latest.yml; do
+  [ -f "$DIST/$y" ] || continue
+  served_v="$(curl -sS -m 60 "$BASE/$y" 2>/dev/null | awk -F': *' '/^version:/{print $2; exit}' | tr -d '\r')"
+  if [ -z "$served_v" ]; then
+    printf "  ?      %-32s could not read the served manifest\n" "$y"
+  elif [ "$served_v" = "$VERSION" ]; then
+    printf "  OK     %-32s served manifest says %s\n" "$y" "$served_v"
+  else
+    printf "  STALE  %-32s served manifest says %s, this release is %s\n" "$y" "$served_v" "$VERSION"
+    case "$STALE" in *"$BASE/$y"*) ;; *) STALE="$STALE  $BASE/$y
+";; esac
+  fi
+done
+
 if [ -n "$UNCHECKED" ]; then
   echo
   echo "  Could not check:$UNCHECKED"
   echo "  The upload itself succeeded. Re-check by hand before announcing the download links."
+fi
+if [ -n "$WEAK" ]; then
+  echo
+  echo "  Checked by size only (no usable ETag):$WEAK"
+  echo "  Size matching is not proof the content matches. Confirm by hand if it matters."
 fi
 if [ -n "$STALE" ]; then
   echo
