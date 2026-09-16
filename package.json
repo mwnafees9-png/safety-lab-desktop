@@ -1,7 +1,7 @@
 {
   "name": "safety-lab-aero-desktop",
   "productName": "Safety Lab Aero",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "Safety Lab Aero — desktop build. Electron shell around the SAME web bundle (pulled from a wall-passed, stripped build), signed-license gate, real sign-in, network egress allowlist, safetylab:// links.",
   "author": "Muhammad Waqas Nafees",
   "license": "UNLICENSED",

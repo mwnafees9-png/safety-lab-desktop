@@ -209,7 +209,7 @@
       <div class="k">Trust &amp; Security</div>
       <h1>Certification-grade data, protected end to end</h1>
       <p>Safety Lab Aero holds the safety and airworthiness evidence for uncrewed and clean-sheet aircraft programs. This page describes how that data is isolated, encrypted, governed, and (when the time comes) provably destroyed.</p>
-      <div class="updated">Last reviewed: July 2026 &nbsp;·&nbsp; Questions: <a href="mailto:waqas.nafees@safetylabaero.com" style="color:#fff;text-decoration:underline;">waqas.nafees@safetylabaero.com</a></div>
+      <div class="updated">Last reviewed: September 2026 &nbsp;·&nbsp; Questions: <a href="mailto:waqas.nafees@safetylabaero.com" style="color:#fff;text-decoration:underline;">waqas.nafees@safetylabaero.com</a></div>
     </div>
   </header>
 
@@ -281,8 +281,8 @@
       <ul class="controls">
         <li><b>Self-service erasure</b>: an account owner can permanently erase their account and all analysis data.</li>
         <li><b>Certificate of destruction</b>: every erasure issues a signed certificate with a SHA-256 manifest of what was deleted.</li>
-        <li><b>Tamper-evident sign-offs</b>: review sign-offs are chained with a verifiable hash chain; the chain can be re-verified on demand.</li>
-        <li><b>Audit logging</b>: workspace and review activity is recorded for accountability.</li>
+        <li><b>Tamper-evident sign-offs</b>: review sign-offs are chained with a verifiable hash chain. Any signed-in member can re-verify the chain on demand, the same check runs over the AI audit log, and a scheduled job re-verifies both every day and records the result of each run.</li>
+        <li><b>Audit logging</b>: baseline cuts, review requests and review decisions are written to a workspace audit trail, and every AI call is written to a hash-chained usage log. Both records carry the actor, the action and the time; neither carries prompt or response content. Update, delete and truncate are revoked on both at the database-privilege level, so the records are append-only by privilege rather than by convention. The operator retains a break-glass path for a one-off correction, and using it writes its own record of who did what and when.</li>
       </ul>
     </div>
 
