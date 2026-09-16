@@ -24,7 +24,10 @@
 // bounds what that bundle can reach. Gate/lock/settings windows are isolated.
 
 'use strict';
-const { app, BrowserWindow, Menu, dialog, ipcMain, shell, session } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain, shell, session, safeStorage } = require('electron');
+const secrets = require('./secrets.js');
+const bridgeMain = require('./bridge_main.js');
+secrets.init(app, safeStorage);
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -303,6 +306,31 @@ function openSettings() {
   settingsWindow.loadFile(path.join(__dirname, 'settings.html'));
   settingsWindow.on('closed', () => { settingsWindow = null; });
 }
+// ---- secrets: OS keychain, write-only from the page (16 Sep 2026) -----------------------
+// The renderer may store a credential and ask whether one is stored. It can never read one
+// back -- there is deliberately no 'slab:getSecret'. Only the main process decrypts, and only
+// to put the credential on the outbound request in bridge_main.js.
+ipcMain.handle('slab:secretsAvailable', () => ({ ok: secrets.available() }));
+ipcMain.handle('slab:secretsStatus', () => { try { return { ok: true, secrets: secrets.status() }; } catch (e) { return { ok: false, error: String(e && e.message || e) }; } });
+ipcMain.handle('slab:saveSecret', (_e, payload) => {
+  try {
+    const kind = payload && payload.kind;
+    if (!kind) return { ok: false, error: 'a secret needs a kind' };
+    return { ok: true, secrets: secrets.save(kind, payload.value, payload.meta) };
+  } catch (e) { return { ok: false, error: String(e && e.message || e) }; }
+});
+ipcMain.handle('slab:deleteSecret', (_e, kind) => {
+  try { return { ok: true, secrets: secrets.remove(kind) }; }
+  catch (e) { return { ok: false, error: String(e && e.message || e) }; }
+});
+
+// ---- the ALM live bridge's outbound GET, run out here where the egress fence does not
+// apply and the credential never reaches the page. See bridge_main.js for why.
+ipcMain.handle('slab:bridgeGet', async (_e, targetUrl) => {
+  try { return await bridgeMain.get(targetUrl); }
+  catch (e) { return { ok: false, error: String(e && e.message || e) }; }
+});
+
 ipcMain.handle('slab:getConfig', () => { const c = readConfig(); return Object.assign({}, c, { hasPasscode: !!c.passcodeHash, passcodeHash: undefined }); });
 ipcMain.handle('slab:saveConfig', (_e, partial) => {
   const cur = readConfig(); const next = Object.assign({}, cur);

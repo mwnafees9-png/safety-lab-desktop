@@ -1,6 +1,6 @@
 {
   "webCommit": "83795539dcbb1822cb699b4a73551ba64cebc426",
-  "pulledAt": "2026-09-16T15:41:24.587Z",
+  "pulledAt": "2026-09-16T15:44:04.534Z",
   "fileCount": 271,
   "manifest": {
     "a11_sequencing.js": "3218d85d5ed70ae0a460f425e37771f5",
@@ -274,5 +274,9 @@
     "zonal_model.js": "861c3acdaaf0060b5548a5a0f3b3897b",
     "zonal_ui.js": "94e16d86d7e2a8d7c42672e2ed8e3fed",
     "zsa_walkthrough.js": "4a81b9939b1634997cabb7c828cfc97d"
+  },
+  "codeSigned": {
+    "mac": false,
+    "win": false
   }
 }

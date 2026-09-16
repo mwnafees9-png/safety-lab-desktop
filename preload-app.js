@@ -7,6 +7,7 @@
 // who you are — the same two things that decide them on the web.
 'use strict';
 const fs = require('fs');
+const { ipcRenderer } = require('electron');
 const R = require('./shell_rules.js');
 
 (function () {
@@ -21,6 +22,20 @@ const R = require('./shell_rules.js');
 
   const o = R.overridesFor(cfg, act && act.license, arg('--slab-version='));
   try { Object.keys(o).forEach(function (k) { window[k] = o[k]; }); } catch (_) {}
+
+  // ---- secrets + the ALM bridge (16 Sep 2026) ------------------------------------------
+  // contextIsolation is false on this window, so these go straight onto window. There is no
+  // read accessor by design: the page can save a credential and ask whether one is saved, and
+  // the value only ever exists in the main process.
+  window.slabSecrets = {
+    available: function () { return ipcRenderer.invoke('slab:secretsAvailable'); },
+    status:    function () { return ipcRenderer.invoke('slab:secretsStatus'); },
+    save:      function (kind, value, meta) { return ipcRenderer.invoke('slab:saveSecret', { kind: kind, value: value, meta: meta }); },
+    remove:    function (kind) { return ipcRenderer.invoke('slab:deleteSecret', kind); }
+  };
+  window.slabBridge = {
+    get: function (targetUrl) { return ipcRenderer.invoke('slab:bridgeGet', String(targetUrl)); }
+  };
 
   // SSO return: the shell receives safetylab://auth-callback?code=… (PKCE) from the system browser
   // and forwards the URL here; supabase-js exchanges the code for a session and fires SIGNED_IN,
