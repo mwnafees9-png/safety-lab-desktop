@@ -18,7 +18,19 @@
 // license format with its own key), the seeded 'Desktop User'/'desktop@local' identity, the
 // seeded 'pro-plus' tier + 'desktop-local' token, the profile step, DevTools in packaged builds.
 //
-// SECURITY NOTE: the app window still runs with contextIsolation:false because the bundle is
+// SECURITY NOTE (17 Sep 2026): contextIsolation is now ON for the app window. It was off, and
+// the reason recorded below was that the bundle is ~230 classic scripts sharing window
+// globals. That reason was wrong. contextIsolation separates the PRELOAD from the page; it
+// does not separate the page's own scripts from each other, so those 230 files still share
+// one window exactly as before and none of them changed. The only real surface was what the
+// preload hands over: eight __SLAB_* config values, slabDesktop, and the two bridges, all of
+// which go through contextBridge now. The one thing that genuinely had to move was the SSO
+// return, which used to be defined in the preload and reach into the page for the Supabase
+// client; it now lives in the page (site/auth_gate.js) and this file still calls it through
+// executeJavaScript, which runs in the page's world and does not care about isolation.
+// It matters more than it did: since 16 Sep the preload also carries the keychain writer and
+// the connector bridge, so what the page can reach is now an explicit list, not everything.
+// OLD NOTE, kept for the record: the app window still runs with contextIsolation:false because the bundle is
 // ~230 classic scripts sharing window globals and the preload must set window.__SLAB_* before
 // they run. It loads only our own first-party bundle from disk; the egress allowlist below
 // bounds what that bundle can reach. Gate/lock/settings windows are isolated.
@@ -200,7 +212,7 @@ function openMainApp() {
     backgroundColor: '#0A1F44', title: 'Safety Lab Aero', icon: path.join(__dirname, 'build', 'icon.png'), show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload-app.js'),
-      contextIsolation: false, nodeIntegration: false, sandbox: false, spellcheck: false,
+      contextIsolation: true, nodeIntegration: false, sandbox: false, spellcheck: false,
       partition: 'persist:slab-app',
       devTools: !app.isPackaged,
       additionalArguments: ['--slab-config-path=' + configPath(), '--slab-activation-path=' + activationPath(), '--slab-version=' + app.getVersion()]

@@ -1,13 +1,25 @@
 // Safety Lab Aero — desktop preload for the MAIN app window. REBUILT 6 Sep 2026.
 //
-// Runs before any page script. With contextIsolation:false it shares the page's window, and its
-// ONLY job is to hand the web bundle the addresses and the license through the one config
+// Its ONLY job is to hand the web bundle the addresses and the license through the one config
 // surface (window.__SLAB_* — read by app/slab_config.js and app/slab_license.js). It seeds NO
 // identity, NO tier, NO token: the signed license decides the tier and the real sign-in decides
 // who you are — the same two things that decide them on the web.
+//
+// 17 Sep 2026 — contextIsolation is now ON for this window, so this file no longer shares the
+// page's window object. Everything it hands over goes through contextBridge instead.
+//
+// WHY THAT MATTERS MORE THAN IT USED TO. Since 16 Sep this preload also exposes the connector
+// bridge and the keychain writer. With isolation off, the page and the preload were one world:
+// anything running in the page could reach the preload's own scope. Isolation puts a real
+// boundary there, and what crosses it is now an explicit list rather than everything.
+//
+// Each __SLAB_* key is exposed UNDER ITS OWN NAME on purpose. The web bundle reads
+// window.__SLAB_SUPABASE_URL__ exactly as it always has, on every door, so nothing in site/
+// needed a desktop special case. The values arrive frozen and read-only, which is correct:
+// nothing in the app has ever written to them.
 'use strict';
 const fs = require('fs');
-const { ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 const R = require('./shell_rules.js');
 
 (function () {
@@ -21,36 +33,29 @@ const R = require('./shell_rules.js');
   cfg = Object.assign({ backend: 'safetylab', ai: 'safetylab' }, cfg || {});
 
   const o = R.overridesFor(cfg, act && act.license, arg('--slab-version='));
-  try { Object.keys(o).forEach(function (k) { window[k] = o[k]; }); } catch (_) {}
+  Object.keys(o).forEach(function (k) {
+    try { contextBridge.exposeInMainWorld(k, o[k]); }
+    catch (e) { try { console.error('[slab preload] could not expose ' + k, e); } catch (_) {} }
+  });
 
-  // ---- secrets + the ALM bridge (16 Sep 2026) ------------------------------------------
-  // contextIsolation is false on this window, so these go straight onto window. There is no
-  // read accessor by design: the page can save a credential and ask whether one is saved, and
-  // the value only ever exists in the main process.
-  window.slabSecrets = {
+  // Secrets: write and ask, never read. There is deliberately no accessor that returns a value;
+  // the credential only ever exists in the main process. See secrets.js.
+  contextBridge.exposeInMainWorld('slabSecrets', {
     available: function () { return ipcRenderer.invoke('slab:secretsAvailable'); },
     status:    function () { return ipcRenderer.invoke('slab:secretsStatus'); },
     save:      function (kind, value, meta) { return ipcRenderer.invoke('slab:saveSecret', { kind: kind, value: value, meta: meta }); },
     remove:    function (kind) { return ipcRenderer.invoke('slab:deleteSecret', kind); }
-  };
-  window.slabBridge = {
-    get: function (targetUrl) { return ipcRenderer.invoke('slab:bridgeGet', String(targetUrl)); }
-  };
+  });
 
-  // SSO return: the shell receives safetylab://auth-callback?code=… (PKCE) from the system browser
-  // and forwards the URL here; supabase-js exchanges the code for a session and fires SIGNED_IN,
-  // which the auth gate handles exactly as on the web.
-  window.__slabAuthCallback = async function (url) {
-    try {
-      const u = new URL(String(url));
-      const code = u.searchParams.get('code');
-      const sb = (typeof window.getSupabaseClient === 'function') ? window.getSupabaseClient() : null;
-      if (!sb || !sb.auth) return false;
-      if (code && typeof sb.auth.exchangeCodeForSession === 'function') { const r = await sb.auth.exchangeCodeForSession(code); return !r.error; }
-      const h = new URLSearchParams(String(u.hash || '').replace(/^#/, ''));
-      const at = h.get('access_token'), rt = h.get('refresh_token');
-      if (at && rt && typeof sb.auth.setSession === 'function') { const r = await sb.auth.setSession({ access_token: at, refresh_token: rt }); return !r.error; }
-    } catch (_) {}
-    return false;
-  };
+  // The ALM bridge: the page asks, the main process holds the credential and makes the request.
+  contextBridge.exposeInMainWorld('slabBridge', {
+    get: function (targetUrl) { return ipcRenderer.invoke('slab:bridgeGet', String(targetUrl)); }
+  });
+
+  // NOTE ON THE SSO RETURN. window.__slabAuthCallback used to be defined HERE, and it reached
+  // into the page for window.getSupabaseClient(). That direction is exactly what isolation
+  // forbids, and it was the only thing in this file that did it. It now lives in the page, in
+  // site/auth_gate.js, where the Supabase client already is. main.js reaches it through
+  // webContents.executeJavaScript, which runs in the page's own world and is unaffected by
+  // isolation — so the shell side did not change at all.
 })();
