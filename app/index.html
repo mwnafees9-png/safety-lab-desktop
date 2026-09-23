@@ -802,13 +802,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                         </select>
                     </div>
                     <div id="proj-class-container">
-                        <label>Part 23 Aircraft Class</label>
-                        <select id="proj-part23-class" onchange="onProjectConfigChange()">
-                            <option value="I">Class I — Single recip, &le; 6,000 lb, &le; 6 occupants</option>
-                            <option value="II">Class II — Multi-engine recip &le; 6,000 lb OR single turboprop &le; 6,000 lb</option>
-                            <option value="III">Class III — Turbojets, multi-engine turboprops, &ge; 6,000 lb</option>
-                            <option value="IV" selected>Class IV — Commuter category (Part 23 Subpart F)</option>
-                        </select>
+                        
+                        <label>Part 23 — certification level and propulsion (ASTM F3230 Table 3 sets the Assessment Level)</label>
+                        <div id="proj-part23-host"></div>
                     </div>
                     
                     <div id="proj-part27-container" style="display: none;">
@@ -1330,6 +1326,30 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                         <label>Spatial Separation Check & Mitigations</label><input type="text" id="zsa-mitigation" placeholder="e.g., Relocated wire bundle 2 inches above hydraulic drip line">
                     </div>
                 </div>
+                
+                <div class="grid-2-col" style="margin-top: var(--s-3);">
+                    <div>
+                        <label>Assessed by</label><input type="text" id="zsa-assessed-by" placeholder="Name or role of the assessor">
+                        <label>Assessment method</label>
+                        <select id="zsa-assess-method">
+                            <option value="">Method…</option>
+                            <option value="drawing-review">Drawing / 3D model review</option>
+                            <option value="mockup">Mock-up inspection</option>
+                            <option value="aircraft">Aircraft inspection</option>
+                            <option value="analysis">Analysis</option>
+                            <option value="other">Other (say which in the mitigation)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Assessed on</label><input type="date" id="zsa-assessed-on">
+                        <label>Finding status</label>
+                        <select id="zsa-finding-status">
+                            <option value="">Open (default)</option>
+                            <option value="open">Open</option>
+                            <option value="closed">Closed (needs assessor, method, date and a mitigation)</option>
+                        </select>
+                    </div>
+                </div>
                 <label style="margin-top: var(--s-3);">Housed AC Sub-Functions <span style="font-weight: 400; color: var(--color-text-tertiary); text-transform: none; letter-spacing: 0;">— tick all that apply; identifies which functions are exposed if the zone is compromised</span></label>
                 <div id="zsa-housed-functions" class="cb-list" role="group" aria-label="Housed functions selection"></div>
 
@@ -1381,7 +1401,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
             </div>
             <div style="overflow-x: auto;">
                 <table id="zsa-table">
-                    <thead><tr><th>Actions</th><th>Zone ID</th><th>Boundaries</th><th>Installed Equipment</th><th>Worst Severity</th><th>Housed Functions</th><th>Interference Profile</th><th>Separation & Mitigations</th></tr></thead>
+                    <thead><tr><th>Actions</th><th>Zone ID</th><th>Boundaries</th><th>Installed Equipment</th><th>Worst Severity</th><th>Housed Functions</th><th>Interference Profile</th><th>Separation & Mitigations</th><th>Status</th><th>Assessed (by · method · date)</th></tr></thead>
                     <tbody id="zsa-body"></tbody>
                 </table>
             </div>
@@ -3841,11 +3861,11 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="secret_store.js?v=1.1" defer></script>
     <script src="numbering.js?v=1.0.1" defer></script>
     
-    <script>window.SL_SHOWCASE_SRC = 'demo_showcase.js?v=65.42';</script>
+    <script>window.SL_SHOWCASE_SRC = 'demo_showcase.js?v=65.43';</script>
     <script>window.SL_SHOWCASE_SORA_SRC = 'demo_showcase_sora.js?v=3';</script>
     <script>window.SL_SHOWCASE_KESTREL25_SRC = 'demo_showcase_kestrel25.js?v=2';</script>
     <script>window.SL_SHOWCASE_HL1_SRC = 'demo_showcase_hl1.js?v=7';</script>
-    <script>window.SL_SHOWCASE_HALCYON_SRC = 'demo_showcase_halcyon.js?v=6';</script>
+    <script>window.SL_SHOWCASE_HALCYON_SRC = 'demo_showcase_halcyon.js?v=7';</script>
     <script>window.SL_SHOWCASE_VAYU_SRC = 'demo_showcase_vayu.js?v=2';</script>
     
     <script>window.SL_CRDT_AUTHORITATIVE = true;</script>
@@ -3885,7 +3905,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="ui_constants.js?v=1.0" defer></script>
     <script src="config_data.js?v=1.1" defer></script>
     <script src="ai_memory.js?v=1.0" defer></script>
-    <script src="importers.js?v=1.7" defer></script>
+    <script src="importers.js?v=1.8" defer></script>
     <script src="core_modules.js?v=1.9" defer></script>
     
     <script src="fta_quant_modules.js?v=66.23" defer></script>
@@ -3901,11 +3921,11 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="fta_view_modules.js?v=66.42" defer></script>
     
     <script src="gt_thread.js?v=0.91" defer></script>
-    <script src="data_ops_modules.js?v=66.46" defer></script>
+    <script src="data_ops_modules.js?v=66.47" defer></script>
     
-    <script src="support_modules.js?v=66.35" defer></script>
+    <script src="support_modules.js?v=66.36" defer></script>
     
-    <script src="helpers_modules.js?v=3.12" defer></script>
+    <script src="helpers_modules.js?v=3.13" defer></script>
     <script src="cloud_writer.js?v=1.1" defer></script>
     <script src="severity_axes.js?v=1.35" defer></script>
     
@@ -3913,8 +3933,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="bindings_modules.js?v=1.49" defer></script>
     
-    <script src="misc_fn_modules.js?v=66.71" defer></script>
-    <script src="safety_lab.js?v=65.59" defer></script>
+    <script src="misc_fn_modules.js?v=66.72" defer></script>
+    <script src="safety_lab.js?v=65.60" defer></script>
     
     <script src="sl_env.js?v=1.1" defer></script>
     
@@ -3924,6 +3944,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="save_watch.js?v=1.2" defer></script>
     <script src="data_change.js?v=1.0" defer></script>
     <script src="render_pass.js?v=1.0" defer></script>
+    <script src="p23_assessment_level.js?v=1.0" defer></script>
+    <script src="zsa_record.js?v=1.0" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
     <script src="assurance_modules.js?v=1.32" defer></script>
@@ -3931,7 +3953,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ai_badges.js?v=1.4" defer></script>
     <script src="autonomy_metrics.js?v=0.3" defer></script>
-    <script src="reports.js?v=66.11" defer></script>
+    <script src="reports.js?v=66.12" defer></script>
     
     <script src="ram_modules.js?v=1.9" defer></script>
     
@@ -4071,7 +4093,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="stpa_core.js?v=1.2" defer></script>
     
     <script src="sora_annex_e_data.js?v=0.1" defer></script>
-    <script src="cert_basis_spine.js?v=1.12" defer></script>
+    <script src="cert_basis_spine.js?v=1.13" defer></script>
     <script src="cert_basis_router.js?v=1.0" defer></script>
     <script src="sora_core.js?v=0.3" defer></script>
     <script src="sora_showcase_view.js?v=0.3" defer></script>
@@ -4081,7 +4103,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="demo_kit.js?v=2" defer></script>
     <script src="hl1_showcase.js?v=7" defer></script>
-    <script src="halcyon_showcase.js?v=6" defer></script>
+    <script src="halcyon_showcase.js?v=7" defer></script>
     <script src="vayu_showcase.js?v=2" defer></script>
     <script src="demo_picker.js?v=6" defer></script>
     <script src="first_run.js?v=3" defer></script>
@@ -4106,7 +4128,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="zonal_ui.js?v=1.13" defer></script>
     <script src="equipment_hazards.js?v=1.1" defer></script>
     <script src="beta_scoring.js?v=1.0" defer></script>
-    <script src="zsa_walkthrough.js?v=1.3" defer></script>
+    <script src="zsa_walkthrough.js?v=1.4" defer></script>
     <script src="cma_walkthrough.js?v=1.31" defer></script>
     <script src="pra_library.js?v=1.3" defer></script>
     <script src="pra_canvas.js?v=1.22" defer></script>
@@ -4174,7 +4196,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="eval_core.js?v=1.9" defer></script>
     <script src="ai_skills.js?v=2.14" defer></script>
     
-    <script src="ai_loader.js?v=8.60" defer></script>
+    <script src="ai_loader.js?v=8.61" defer></script>
     <script src="config_management.js?v=1.12" defer></script>
     
     <script src="numbering_ui.js?v=1.0.2" defer></script>
