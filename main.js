@@ -111,7 +111,14 @@ function readConfig() {
   catch (_) { return Object.assign({}, DEFAULT_CONFIG); }
 }
 function writeConfig(c) {
-  try { fs.mkdirSync(path.dirname(configPath()), { recursive: true }); fs.writeFileSync(configPath(), JSON.stringify(c, null, 2), 'utf8'); }
+  try {
+    fs.mkdirSync(path.dirname(configPath()), { recursive: true });
+    fs.writeFileSync(configPath(), JSON.stringify(c, null, 2), 'utf8');
+    // Owner-only, like secrets.json. Nothing in here is a secret (backendKey is the publishable
+    // key every browser bundle carries; S26 closed 23 Sep 2026 on that reading), but the passcode
+    // hash and the server address are nobody else's business on a shared machine.
+    try { fs.chmodSync(configPath(), 0o600); } catch (_) {}
+  }
   catch (e) { console.error('[slab] config write failed:', e); }
 }
 // activation.json: { license: <blob>, acceptances: {eula:{version,at}, license:{version,at}}, maxIssuedSeen, activatedAt }
