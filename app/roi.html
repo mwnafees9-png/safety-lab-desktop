@@ -139,7 +139,7 @@
 
   <div class="calc">
     <div class="inputs">
-      <h3>Your program</h3>
+      <h2>Your program</h2>
       <div class="row"><label>Number of systems</label><input id="systems" type="number" value="5" min="1" step="1"></div>
       <div class="row"><label>Average system complexity <span class="rangeval" id="cxv">1.0× · typical</span><input id="cx" type="range" min="0.3" max="2" step="0.1" value="1"></label>
         <div class="hint">1.0 = a reference system; sub-1 for small systems (e.g. lighting), &gt;1 for complex (e.g. flight control).</div></div>
@@ -149,7 +149,7 @@
       <div class="row"><label>Safety Lab Aero, annual subscription ($)</label><input id="sub" type="number" value="60000" step="5000"></div>
     </div>
     <div class="results">
-      <h3>Program impact</h3>
+      <h2>Program impact</h2>
       <div class="res"><span class="k">Full-program baseline effort</span><span class="v" id="oBase">—</span></div>
       <div class="res"><span class="k">Blended reduction</span><span class="v" id="oBlend">—</span></div>
       <div class="res"><span class="k">Engineer-hours saved</span><span class="v" id="oHrs">—</span></div>
@@ -181,12 +181,12 @@
 
   <h2>Where the savings come from</h2>
   <div class="stack">
-    <div class="driver"><h4>The iteration loop, not just first drafts</h4><p>Safety assessment is iterative: every design change re-touches FHA, fault trees, CCA and traceability. The golden thread re-propagates and the engine re-quantifies instantly, so the expensive part gets cheap.</p></div>
-    <div class="driver"><h4>One connected model</h4><p>Functions, hazards, fault trees, FMEA, common-cause, requirements and verification share one data model, so nothing is re-entered and nothing drifts.</p></div>
-    <div class="driver"><h4>Deterministic quantification</h4><p>Minimal cut sets, BDD-exact P(top) and DAL allocation are computed, not drafted: the phases (PASA/PSSA/SSA/ASA) where manual effort and error risk are highest.</p></div>
-    <div class="driver"><h4>Automatic traceability</h4><p>The trace web (function → FHA → fault tree → requirement → verification) is built and maintained for you, so change-impact is near-instant.</p></div>
-    <div class="driver"><h4>Fewer errors, less rework</h4><p>A defect caught in-tool costs minutes; the same one caught in cert review costs weeks (the 1 : 10 : 100 rule).</p></div>
-    <div class="driver"><h4>Cert-ready output</h4><p>Signature-ready FHA/PSSA/SSA and a DO-330 dossier in editable Word and PDF, assembled from the model, not hand-built.</p></div>
+    <div class="driver"><h3>The iteration loop, not just first drafts</h3><p>Safety assessment is iterative: every design change re-touches FHA, fault trees, CCA and traceability. The golden thread re-propagates and the engine re-quantifies instantly, so the expensive part gets cheap.</p></div>
+    <div class="driver"><h3>One connected model</h3><p>Functions, hazards, fault trees, FMEA, common-cause, requirements and verification share one data model, so nothing is re-entered and nothing drifts.</p></div>
+    <div class="driver"><h3>Deterministic quantification</h3><p>Minimal cut sets, BDD-exact P(top) and DAL allocation are computed, not drafted: the phases (PASA/PSSA/SSA/ASA) where manual effort and error risk are highest.</p></div>
+    <div class="driver"><h3>Automatic traceability</h3><p>The trace web (function → FHA → fault tree → requirement → verification) is built and maintained for you, so change-impact is near-instant.</p></div>
+    <div class="driver"><h3>Fewer errors, less rework</h3><p>A defect caught in-tool costs minutes; the same one caught in cert review costs weeks (the 1 : 10 : 100 rule).</p></div>
+    <div class="driver"><h3>Cert-ready output</h3><p>Signature-ready FHA/PSSA/SSA and a DO-330 dossier in editable Word and PDF, assembled from the model, not hand-built.</p></div>
   </div>
 
   <div class="close">
@@ -255,5 +255,17 @@
   document.querySelectorAll('input').forEach(function(el){ el.addEventListener('input', calc); });
   calc();
 </script>
+
+<footer class="sf" aria-label="Site footer">
+<style>.sf{margin-top:56px;padding:28px 0 22px;border-top:1px solid rgba(128,128,128,.28);font-size:14px;line-height:1.7}.sf-in{max-width:1080px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 28px}.sf-col{display:flex;flex-direction:column}.sf-h{font-weight:700;margin-bottom:4px}.sf a{color:inherit;opacity:.82;text-decoration:none}.sf a:hover{opacity:1;text-decoration:underline}.sf-copy{max-width:1080px;margin:22px auto 0;padding:0 24px;font-size:13px;opacity:.75}</style>
+  <div class="sf-in">
+    <div class="sf-col"><span class="sf-h">Product</span><a href="/fault-tree-analysis">Fault tree analysis</a><a href="/functional-hazard-assessment">Functional hazard assessment</a><a href="/arp-4761a">ARP 4761A process</a><a href="/arp-4754b">ARP 4754B and DAL allocation</a><a href="/fmea-software">FMEA</a><a href="/common-cause-analysis">CMA, PRA and ZSA</a></div>
+    <div class="sf-col"><span class="sf-h">Resources</span><a href="/resources">Guides</a><a href="/tools">Free calculators</a><a href="/templates">Free templates</a><a href="/roi">ROI calculator</a><a href="/medini-analyze-alternative">Medini Analyze alternative</a></div>
+    <div class="sf-col"><span class="sf-h">Company</span><a href="/trust">Trust and security</a><a href="/ai-guardrails">AI guardrails</a><a href="/#pricing">Pricing</a><a href="/#about">About</a><a href="mailto:waqas.nafees@safetylabaero.com">Contact</a><a href="/app">Sign in</a></div>
+    <div class="sf-col"><span class="sf-h">Legal</span><a href="/legal">License agreement</a><a href="/privacy">Privacy policy</a></div>
+  </div>
+  <p class="sf-copy">&copy; 2026 Safety Lab Aero, Inc. &middot; safetylabaero.com &middot; Integrated aerospace safety analysis on the ARP 4761A / 4754B process.</p>
+</footer>
+
 </body>
 </html>

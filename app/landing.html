@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#14224A" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#14224A" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#14224A">
-<meta name="description" content="Safety Lab Aero is an integrated aerospace safety analysis workspace. AFHA, PSSA, SSA, fault tree analysis, and DO-178C/DO-254 compliance in one tool, built for engineers and certified by math.">
+<meta name="description" content="Aircraft safety analysis software for ARP 4761A and ARP 4754B: FHA, fault trees, FMEA, common cause, DAL allocation and traceability in one workspace.">
 <meta name="keywords" content="ARP 4761A, ARP 4754B, AC 25.1309, fault tree analysis, FTA software, DO-178C, DO-254, DAL allocation, aerospace certification, safety analysis, AAM, eVTOL safety, SC-VTOL">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Safety Lab Aero">
-<meta property="og:title" content="Safety Lab Aero: Aerospace safety analysis, integrated">
+<meta property="og:title" content="Aircraft Safety Analysis Software | Safety Lab Aero">
 <meta property="og:description" content="One workspace for AFHA, PSSA, SSA, FTA, and DO-178C/DO-254 traceability. Built by an aerospace engineer for aerospace engineers.">
-<meta property="og:url" content="https://safetylabaero.com">
+<meta property="og:url" content="https://safetylabaero.com/">
 <meta property="og:image" content="https://safetylabaero.com/og.png">
 <meta property="og:image:secure_url" content="https://safetylabaero.com/og.png">
 <meta property="og:image:type" content="image/png">
@@ -20,10 +20,10 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Safety Lab Aero, the integrated aerospace safety analysis workspace">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Safety Lab Aero: Aerospace safety analysis, integrated">
+<meta name="twitter:title" content="Aircraft Safety Analysis Software | Safety Lab Aero">
 <meta name="twitter:description" content="One workspace for AFHA, PSSA, SSA, FTA, and DO-178C/DO-254 traceability. Built by an aerospace engineer for aerospace engineers.">
 <meta name="twitter:image" content="https://safetylabaero.com/og.png">
-<title>Safety Lab Aero: Aerospace safety analysis, integrated</title>
+<title>Aircraft Safety Analysis Software | Safety Lab Aero</title>
 <link rel="canonical" href="https://safetylabaero.com/">
 
 <script type="application/ld+json">
@@ -50,23 +50,25 @@
         "DO-330 tool-qualification dossier"
       ],
       "keywords": "ARP 4761A software, ARP 4754B, fault tree analysis software, FMEA software, common cause analysis, system safety assessment, DO-178C, DO-254, DAL allocation, eVTOL safety, SC-VTOL",
-      "offers": {
-        "@type": "Offer",
-        "category": "SaaS",
-        "availability": "https://schema.org/PreOrder"
-      },
+      "offers": [
+        { "@type": "Offer", "name": "Education", "price": "0", "priceCurrency": "USD", "category": "SaaS", "availability": "https://schema.org/InStock", "url": "https://safetylabaero.com/#pricing", "description": "Free for verified academic use." },
+        { "@type": "Offer", "name": "Pro", "price": "1500", "priceCurrency": "USD", "category": "SaaS", "availability": "https://schema.org/InStock", "url": "https://safetylabaero.com/#pricing", "description": "Per seat per month. Full classical toolset, 10-day free trial.", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "1500", "priceCurrency": "USD", "unitText": "seat per month" } },
+        { "@type": "Offer", "name": "Pro+", "price": "2500", "priceCurrency": "USD", "category": "SaaS", "availability": "https://schema.org/InStock", "url": "https://safetylabaero.com/#pricing", "description": "Per seat per month. AI-assisted authoring and the DO-330 tool-qualification kit.", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "2500", "priceCurrency": "USD", "unitText": "seat per month" } }
+      ],
       "publisher": { "@id": "https://safetylabaero.com/#org" }
     },
     {
       "@type": "Organization",
       "@id": "https://safetylabaero.com/#org",
-      "name": "Muhammad Waqas Nafees",
+      "name": "Safety Lab Aero, Inc.",
       "alternateName": "Safety Lab Aero",
+      "legalName": "Safety Lab Aero, Inc.",
       "url": "https://safetylabaero.com/",
-      "logo": "https://safetylabaero.com/og.png",
+      "logo": "https://safetylabaero.com/logo-512.png",
       "email": "waqas.nafees@safetylabaero.com",
       "founder": { "@type": "Person", "name": "Waqas Nafees" },
-      "description": "Builder of Safety Lab Aero, an integrated aerospace and system safety analysis workspace for ARP 4761A / 4754B certification programs."
+      "description": "Safety Lab Aero, Inc. builds an integrated aircraft and system safety analysis workspace for ARP 4761A / 4754B certification programs.",
+      "address": { "@type": "PostalAddress", "addressRegion": "CO", "addressCountry": "US" }
     }
   ]
 }
@@ -1100,7 +1102,7 @@ body{text-align:center}
 
 <section class="hero" style="border-top: none;">
     <div class="container hero-inner">
-        <h1>Aerospace safety analysis,<br><span class="grad-text">integrated.</span></h1>
+        <h1>Aircraft safety analysis software,<br><span class="grad-text">integrated.</span></h1>
         <p class="hero-sub">
             One workspace for AFHA, PSSA, SSA, fault tree analysis, and DO-178C/DO-254 traceability. Built by an aerospace engineer for the people who actually have to certify aircraft.
         </p>
@@ -2201,12 +2203,19 @@ body{text-align:center}
             <a href="/resources">Resources</a>
             <a href="/roi">ROI calculator</a>
             <a href="/fault-tree-analysis">Fault Tree Analysis</a>
+            <a href="/functional-hazard-assessment">Functional Hazard Assessment</a>
             <a href="/arp-4761a">ARP 4761A</a>
+            <a href="/arp-4754b">ARP 4754B &amp; DAL</a>
+            <a href="/fmea-software">FMEA</a>
+            <a href="/common-cause-analysis">CMA / PRA / ZSA</a>
+            <a href="/medini-analyze-alternative">Medini Analyze alternative</a>
+            <a href="/ai-guardrails">AI guardrails</a>
             <a href="#pricing">Pricing</a>
             <a href="#about">About</a>
             <a href="/app">Sign in</a>
             <a href="mailto:waqas.nafees@safetylabaero.com">Contact</a>
             <a href="/legal">Legal</a>
+            <a href="/privacy">Privacy</a>
         </div>
     </div>
     <p class="foot-copy">

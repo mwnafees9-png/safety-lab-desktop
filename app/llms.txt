@@ -1,0 +1,40 @@
+# Safety Lab Aero
+
+> Aircraft safety analysis software for ARP 4761A and ARP 4754B certification programs: functional hazard assessment, fault tree analysis, FMEA, common-cause analysis, DAL allocation, safety requirements and verification traceability in one connected workspace, with AI-assisted authoring that drafts prose and never does the math.
+
+Safety Lab Aero, Inc. (Delaware; operating from Colorado, USA). Contact: waqas.nafees@safetylabaero.com
+
+## Product pages
+
+- [Home](https://safetylabaero.com/): what the workspace is, the ARP 4761A spine, integrations, pricing.
+- [Fault tree analysis](https://safetylabaero.com/fault-tree-analysis): static and dynamic gates, direct top-event probability, cut sets, importance measures, Monte Carlo.
+- [Functional hazard assessment](https://safetylabaero.com/functional-hazard-assessment): AFHA and SFHA, per-phase effects, severity to probability target and DAL, import that refuses to guess.
+- [ARP 4761A process](https://safetylabaero.com/arp-4761a): FHA, PASA, PSSA, SSA, FMEA, CMA, PRA and ZSA mapped to the tool.
+- [ARP 4754B and DAL allocation](https://safetylabaero.com/arp-4754b): top-down development assurance level allocation with the AND-gate options.
+- [FMEA](https://safetylabaero.com/fmea-software): functional and piece-part FMEA wired into the fault tree.
+- [Common cause analysis](https://safetylabaero.com/common-cause-analysis): common-mode, particular-risk and zonal safety analysis.
+- [Medini Analyze alternative](https://safetylabaero.com/medini-analyze-alternative): what to test when evaluating a replacement on an aerospace program.
+
+## Resources
+
+- [Guides](https://safetylabaero.com/resources)
+- [Free calculators](https://safetylabaero.com/tools)
+- [Free templates](https://safetylabaero.com/templates): FHA, FMEA, SSPP spreadsheets.
+- [ROI calculator](https://safetylabaero.com/roi)
+- [AI guardrails](https://safetylabaero.com/ai-guardrails): how the AI is bounded, grounded and verified.
+- [Trust and security](https://safetylabaero.com/trust): data isolation, encryption, subprocessors, export control.
+
+## Legal
+
+- [License agreement](https://safetylabaero.com/legal)
+- [Privacy policy](https://safetylabaero.com/privacy)
+
+## Pricing
+
+Education: free for verified academic use. Pro: $1,500 per seat per month. Pro+: $2,500 per seat per month. Enterprise: custom, for organizations on an active type-certification program.
+
+## Facts worth getting right
+
+- Customer data is never used to train or fine-tune any model, by Safety Lab Aero or its language-model providers.
+- Hosted data is stored in the United States; customer-hosted and local-only deployments keep data entirely in the customer's environment.
+- Export-controlled (ITAR) projects are never routed to a public-cloud AI provider.

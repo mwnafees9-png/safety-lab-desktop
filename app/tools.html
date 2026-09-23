@@ -8,12 +8,12 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Safety Lab Aero">
 <meta property="og:title" content="Free Aerospace Safety Calculators | Safety Lab Aero">
-<meta property="og:description" content="Free calculators for aircraft safety engineers: severity to DAL and probability target, failure probability from rate and exposure time, and AND/OR fault-tree gate probability.">
+<meta property="og:description" content="Free aircraft safety calculators: severity to DAL and probability target, failure probability from a rate and exposure time, and fault tree gate probability.">
 <meta property="og:url" content="https://safetylabaero.com/tools">
 <meta property="og:image" content="https://safetylabaero.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Free Aerospace Safety Calculators | Safety Lab Aero">
-<meta name="twitter:description" content="Free calculators for aircraft safety engineers: severity to DAL and probability target, failure probability from rate and exposure time, and AND/OR fault-tree gate probability.">
+<meta name="twitter:description" content="Free aircraft safety calculators: severity to DAL and probability target, failure probability from a rate and exposure time, and fault tree gate probability.">
 <meta name="twitter:image" content="https://safetylabaero.com/og.png">
 <script type="application/ld+json">
 {
@@ -24,7 +24,7 @@
       "@id": "https://safetylabaero.com/tools#webpage",
       "url": "https://safetylabaero.com/tools",
       "name": "Free Aerospace Safety Calculators | Safety Lab Aero",
-      "description": "Free calculators for aircraft safety engineers: severity to DAL and probability target, failure probability from rate and exposure time, and AND/OR fault-tree gate probability.",
+      "description": "Free aircraft safety calculators: severity to DAL and probability target, failure probability from a rate and exposure time, and fault tree gate probability.",
       "isPartOf": {
         "@id": "https://safetylabaero.com/#website"
       },
@@ -51,7 +51,7 @@
 }
 </script>
 
-<meta name="description" content="Free calculators for aircraft safety engineers: severity to DAL and probability target, failure probability from rate and exposure time, and AND/OR fault-tree gate probability.">
+<meta name="description" content="Free aircraft safety calculators: severity to DAL and probability target, failure probability from a rate and exposure time, and fault tree gate probability.">
 <style>
 :root{
     --brand-blue:#007aff; --brand-purple:#af52de;
@@ -106,6 +106,7 @@ footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:
 @media (max-width:560px){.field label{min-width:0;width:100%;}}
 </style>
 <link rel="stylesheet" href="/marketing.css?v=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 <body>
 
@@ -117,13 +118,14 @@ footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:
 <section class="hero"><div class="container">
     <span class="eyebrow">Free safety tools</span>
     <h1>Aircraft safety calculators</h1>
+<p class="lede">Quick versions of three calculations the workspace does in full: see <a href="/arp-4754b">DAL allocation under ARP 4754B</a>, <a href="/functional-hazard-assessment">functional hazard assessment</a> and <a href="/fault-tree-analysis">fault tree quantification</a> for the connected versions.</p>
     <p class="lead">Quick-reference calculators for everyday safety-assessment work: severity to DAL, failure probability, and fault-tree gate probability. They run right here, no sign-up. The full traceable versions live inside Safety Lab Aero.</p>
 </div></section>
 
 <section><div class="container"><div class="calc-grid">
 
     <div class="calc">
-        <h2>Severity → DAL &amp; probability target</h2>
+        <h2 id="dal">Severity → DAL &amp; probability target</h2>
         <p class="desc">Map a failure-condition severity to its top-level Development Assurance Level and the quantitative probability target for transport-category aircraft (CS/FAR-25 &middot; AC 25.1309).</p>
         <div class="field">
             <label for="sev">Failure-condition severity</label>
@@ -181,10 +183,18 @@ footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:
     </div>
 </div></section>
 
-<footer><div class="container">
-    <span>© <span id="yr"></span> Safety Lab Aero</span>
-    <span><a href="/">Home</a> &middot; <a href="/app">Open the app</a></span>
-</div></footer>
+
+<footer class="sf" aria-label="Site footer">
+<style>.sf{margin-top:56px;padding:28px 0 22px;border-top:1px solid rgba(128,128,128,.28);font-size:14px;line-height:1.7}.sf-in{max-width:1080px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 28px}.sf-col{display:flex;flex-direction:column}.sf-h{font-weight:700;margin-bottom:4px}.sf a{color:inherit;opacity:.82;text-decoration:none}.sf a:hover{opacity:1;text-decoration:underline}.sf-copy{max-width:1080px;margin:22px auto 0;padding:0 24px;font-size:13px;opacity:.75}</style>
+  <div class="sf-in">
+    <div class="sf-col"><span class="sf-h">Product</span><a href="/fault-tree-analysis">Fault tree analysis</a><a href="/functional-hazard-assessment">Functional hazard assessment</a><a href="/arp-4761a">ARP 4761A process</a><a href="/arp-4754b">ARP 4754B and DAL allocation</a><a href="/fmea-software">FMEA</a><a href="/common-cause-analysis">CMA, PRA and ZSA</a></div>
+    <div class="sf-col"><span class="sf-h">Resources</span><a href="/resources">Guides</a><a href="/tools">Free calculators</a><a href="/templates">Free templates</a><a href="/roi">ROI calculator</a><a href="/medini-analyze-alternative">Medini Analyze alternative</a></div>
+    <div class="sf-col"><span class="sf-h">Company</span><a href="/trust">Trust and security</a><a href="/ai-guardrails">AI guardrails</a><a href="/#pricing">Pricing</a><a href="/#about">About</a><a href="mailto:waqas.nafees@safetylabaero.com">Contact</a><a href="/app">Sign in</a></div>
+    <div class="sf-col"><span class="sf-h">Legal</span><a href="/legal">License agreement</a><a href="/privacy">Privacy policy</a></div>
+  </div>
+  <p class="sf-copy">&copy; 2026 Safety Lab Aero, Inc. &middot; safetylabaero.com &middot; Integrated aerospace safety analysis on the ARP 4761A / 4754B process.</p>
+</footer>
+
 
 <script>
 (function(){

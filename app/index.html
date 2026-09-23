@@ -1760,10 +1760,12 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                             <div>
                                 <label>Anthropic API Key</label>
                                 <input type="password" id="ai-anthropic-key" placeholder="sk-ant-api03-…" autocomplete="off">
+                                <div id="ai-anthropic-key-status" style="font-size:11px; color:var(--color-text-tertiary); margin-top:4px;"></div>
                             </div>
                             <div>
                                 <label>Voyage AI Key <span style="font-weight: 400; color: var(--color-text-tertiary); text-transform: none; letter-spacing: 0;">— for learning memory</span></label>
                                 <input type="password" id="ai-voyage-key" placeholder="pa-…" autocomplete="off">
+                                <div id="ai-voyage-key-status" style="font-size:11px; color:var(--color-text-tertiary); margin-top:4px;"></div>
                                 <label>Voyage Model</label>
                                 <select id="ai-voyage-model">
                                     <option value="voyage-3-large">voyage-3-large</option>
@@ -3834,6 +3836,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="fn_wrap.js?v=1.0" defer></script>
     
     <script src="error_watch.js?v=1.0" defer></script>
+    <script src="lazy_render.js?v=1.0" defer></script>
+    
+    <script src="secret_store.js?v=1.1" defer></script>
     <script src="numbering.js?v=1.0.1" defer></script>
     
     <script>window.SL_SHOWCASE_SRC = 'demo_showcase.js?v=65.42';</script>
@@ -3865,7 +3870,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="trade_study.js?v=1.1" defer></script>
     
-    <script src="lod_zoom.js?v=1.0" defer></script>
+    <script src="lod_zoom.js?v=1.1" defer></script>
     
     <script src="mc_crosscheck.js?v=1.0" defer></script>
     
@@ -3881,9 +3886,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="config_data.js?v=1.1" defer></script>
     <script src="ai_memory.js?v=1.0" defer></script>
     <script src="importers.js?v=1.7" defer></script>
-    <script src="core_modules.js?v=1.8" defer></script>
+    <script src="core_modules.js?v=1.9" defer></script>
     
-    <script src="fta_quant_modules.js?v=66.18" defer></script>
+    <script src="fta_quant_modules.js?v=66.21" defer></script>
     
     <script src="event_reuse.js?v=1.2" defer></script>
     
@@ -3893,23 +3898,23 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="node_identity.js?v=1.0" defer></script>
     <script src="node_identity_ui.js?v=1.5" defer></script>
-    <script src="fta_view_modules.js?v=66.41" defer></script>
+    <script src="fta_view_modules.js?v=66.42" defer></script>
     
     <script src="gt_thread.js?v=0.91" defer></script>
-    <script src="data_ops_modules.js?v=66.45" defer></script>
+    <script src="data_ops_modules.js?v=66.46" defer></script>
     
-    <script src="support_modules.js?v=66.33" defer></script>
+    <script src="support_modules.js?v=66.34" defer></script>
     
-    <script src="helpers_modules.js?v=3.7" defer></script>
+    <script src="helpers_modules.js?v=3.11" defer></script>
     <script src="cloud_writer.js?v=1.1" defer></script>
     <script src="severity_axes.js?v=1.35" defer></script>
     
     <script src="fha_derive.js?v=1.2" defer></script>
     
-    <script src="bindings_modules.js?v=1.47" defer></script>
+    <script src="bindings_modules.js?v=1.49" defer></script>
     
-    <script src="misc_fn_modules.js?v=66.68" defer></script>
-    <script src="safety_lab.js?v=65.58" defer></script>
+    <script src="misc_fn_modules.js?v=66.69" defer></script>
+    <script src="safety_lab.js?v=65.59" defer></script>
     
     <script src="sl_env.js?v=1.1" defer></script>
     
@@ -3917,6 +3922,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="crdt_gc.js?v=1.1" defer></script>
     <script src="crdt_sync.js?v=2.1" defer></script>
     <script src="save_watch.js?v=1.2" defer></script>
+    <script src="data_change.js?v=1.0" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
     <script src="assurance_modules.js?v=1.32" defer></script>
@@ -3978,9 +3984,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ram_cockpit.js?v=1.1" defer></script>
     
-    <script src="budget_ledger.js?v=1.43" defer></script>
+    <script src="budget_ledger.js?v=1.44" defer></script>
     
-    <script src="importance_heat.js?v=2.2" defer></script>
+    <script src="importance_heat.js?v=2.3" defer></script>
     
     <script src="ux_leading.js?v=1.2" defer></script>
     
@@ -3995,7 +4001,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="ffs_module.js?v=1.32" defer></script>
     
     <script src="asa_triage.js?v=1.12" defer></script>
-    <script src="idp_seed_trees.js?v=1.0" defer></script>
+    <script src="idp_seed_trees.js?v=1.2" defer></script>
     
     <script src="gt_integrity.js?v=1.7" defer></script>
     
@@ -4013,7 +4019,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="status_back.js?v=1.0" defer></script>
     
-    <script src="live_bridge.js?v=1.1" defer></script>
+    <script src="live_bridge.js?v=1.2" defer></script>
     
     <script src="xmi_import.js?v=0.9" defer></script>
     
@@ -4035,7 +4041,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="ram_hub.js?v=1.2" defer></script>
     <script src="engine_selftest.js?v=1.1" defer></script>
     <script src="ram_trace.js?v=1.12" defer></script>
-    <script src="model_checks.js?v=1.01" defer></script>
+    <script src="model_checks.js?v=1.02" defer></script>
     <script src="fault_sim.js?v=1.22" defer></script>
     <script src="tab_guard.js?v=1.0" defer></script>
     <script src="journal.js?v=1.1" defer></script>
@@ -4054,7 +4060,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="hf_severity_check.js?v=1.2" defer></script>
     <script src="hf_severity_badge.js?v=1.21" defer></script>
     
-    <script src="fha_a5.js?v=1.4" defer></script>
+    <script src="fha_a5.js?v=1.5" defer></script>
     
     <script src="fcim_combined.js?v=1.5" defer></script>
     <script src="a11_sequencing.js?v=1.4" defer></script>
@@ -4078,7 +4084,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="demo_picker.js?v=6" defer></script>
     <script src="first_run.js?v=3" defer></script>
     <script src="continue_session.js?v=1.1" defer></script>
-    <script src="stpa_panel.js?v=1.43" defer></script>
+    <script src="stpa_panel.js?v=1.44" defer></script>
     <script src="stpa_report.js?v=1.2" defer></script>
     <script src="stpa_ai_apply.js?v=0.2" defer></script>
     
@@ -4105,14 +4111,14 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="msg3_zonal.js?v=1.21" defer></script>
     <script src="mac_l3.js?v=1.0" defer></script>
     
-    <script src="mac_flows.js?v=1.1" defer></script>
-    <script src="mac_fcim.js?v=1.1" defer></script>
-    <script src="lane_trees.js?v=1.3" defer></script>
-    <script src="stale_watch.js?v=1.2" defer></script>
+    <script src="mac_flows.js?v=1.2" defer></script>
+    <script src="mac_fcim.js?v=1.2" defer></script>
+    <script src="lane_trees.js?v=1.4" defer></script>
+    <script src="stale_watch.js?v=1.3" defer></script>
     <script src="mirror_modes.js?v=1.1" defer></script>
     <script src="phys_hazards.js?v=1.5" defer></script>
     
-    <script src="mac_modes.js?v=1.0" defer></script>
+    <script src="mac_modes.js?v=1.1" defer></script>
     
     <script src="mbsa_cockpit.js?v=1.1" defer></script>
     
@@ -4144,13 +4150,13 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="monitor_spec.js?v=1.5" defer></script>
     <script src="exposure_case.js?v=1.24" defer></script>
     <script src="cra_matrix.js?v=1.5" defer></script>
-    <script src="fta_proposals.js?v=1.2" defer></script>
+    <script src="fta_proposals.js?v=1.3" defer></script>
     <script src="prove_tabs.js?v=1.5" defer></script>
     <script src="fta_tree_picker.js?v=1.2" defer></script>
     
     <script src="nav_return.js?v=1.0" defer></script>
     <script src="fta_freq.js?v=1.32" defer></script>
-    <script src="markov_ctmc.js?v=1.2" defer></script>
+    <script src="markov_ctmc.js?v=1.3" defer></script>
     <script src="mil217f_stress.js?v=1.1" defer></script>
     
     <script src="jama_bridge.js?v=1.7" defer></script>
@@ -4158,7 +4164,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="toolchain_plan.js?v=1.6" defer></script>
     
-    <script src="fc_variants.js?v=1.02" defer></script>
+    <script src="fc_variants.js?v=1.05" defer></script>
     <script src="fc_tree_flow.js?v=1.03" defer></script>
     <script src="cca_models.js?v=1.03" defer></script>
     
@@ -4186,7 +4192,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="labs_thread_config.js?v=1.1" defer></script>
     <script src="thread_client.js?v=1.1" defer></script>
-    <script src="thread_bridge.js?v=1.1" defer></script>
+    <script src="thread_bridge.js?v=1.2" defer></script>
     
     <script src="ynwa.js?v=1.3" defer></script>
     <script>(function(){var y=document.getElementById('footer-year');if(y)y.textContent=new Date().getFullYear();})();</script>

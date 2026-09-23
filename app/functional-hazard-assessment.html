@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="description" content="Functional hazard assessment software for ARP 4761A: AFHA and SFHA with per-phase effects, severity to DAL and probability target, traced to the fault trees.">
+<meta name="keywords" content="functional hazard assessment software, FHA tool, AFHA, SFHA, ARP 4761A FHA, failure condition classification, severity to DAL, AC 25.1309, SC-VTOL">
+<title>Functional Hazard Assessment Software | Safety Lab Aero</title>
+<link rel="canonical" href="https://safetylabaero.com/functional-hazard-assessment">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Safety Lab Aero">
+<meta property="og:title" content="Functional Hazard Assessment Software | Safety Lab Aero">
+<meta property="og:description" content="Functional hazard assessment software for ARP 4761A: AFHA and SFHA with per-phase effects, severity to DAL and probability target, traced to the fault trees.">
+<meta property="og:url" content="https://safetylabaero.com/functional-hazard-assessment">
+<meta property="og:image" content="https://safetylabaero.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Safety Lab Aero, the integrated aerospace safety analysis workspace">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Functional Hazard Assessment Software | Safety Lab Aero">
+<meta name="twitter:description" content="Functional hazard assessment software for ARP 4761A: AFHA and SFHA with per-phase effects, severity to DAL and probability target, traced to the fault trees.">
+<meta name="twitter:image" content="https://safetylabaero.com/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://safetylabaero.com/functional-hazard-assessment#webpage",
+      "url": "https://safetylabaero.com/functional-hazard-assessment",
+      "name": "Functional Hazard Assessment Software | Safety Lab Aero",
+      "description": "Functional hazard assessment software for ARP 4761A: AFHA and SFHA with per-phase effects, severity to DAL and probability target, traced to the fault trees.",
+      "isPartOf": { "@id": "https://safetylabaero.com/#software" },
+      "about": { "@id": "https://safetylabaero.com/#software" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://safetylabaero.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Resources", "item": "https://safetylabaero.com/resources" },
+        { "@type": "ListItem", "position": 3, "name": "Functional Hazard Assessment", "item": "https://safetylabaero.com/functional-hazard-assessment" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a functional hazard assessment?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A functional hazard assessment (FHA) is the first step of the ARP 4761A safety process. For each aircraft or system function, it identifies the ways the function can fail (loss, malfunction, inadvertent operation), describes the effect of each failure condition on the aircraft, the crew and the occupants in each phase of flight, and classifies its severity: Catastrophic, Hazardous, Major, Minor or No Safety Effect. The severity sets the probability the design must meet and the development assurance level the implementing systems must achieve." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between an AFHA and an SFHA?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The aircraft functional hazard assessment (AFHA) works at the aircraft level: functions such as controlling pitch or providing cabin pressure, and their failure conditions across the whole aircraft. The system functional hazard assessment (SFHA) repeats the exercise for each system that implements those functions, after the architecture has allocated them. In Safety Lab Aero the SFHA rows trace up to the AFHA failure conditions they support, so a system-level classification that is milder than the aircraft-level one it inherits is flagged." }
+        },
+        {
+          "@type": "Question",
+          "name": "How is severity mapped to a probability target and a DAL?",
+          "acceptedAnswer": { "@type": "Answer", "text": "By the certification basis the project declares. Under AC 25.1309 a Catastrophic failure condition must be extremely improbable (on the order of 1e-9 per flight hour) and is assigned DAL A; Hazardous is extremely remote (1e-7) at DAL B; Major is remote (1e-5) at DAL C; Minor is probable at DAL D. AC 23.1309 scales the targets by aircraft class, and SC-VTOL uses its own table for eVTOL. Safety Lab Aero carries the project's basis and applies the matching targets to every FHA row, so the target on a fault tree is never typed in by hand." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can severity differ by phase of flight?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, and ARP 4761A's own worked example depends on it: loss of high-lift is Catastrophic on takeoff and approach and has no effect at the gate. Safety Lab Aero captures effects and severity per flight phase on the FHA row (the Table A5 matrix) while keeping one governing severity for the row, and checks that the governing severity is never milder than the worst phase." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I import an existing FHA?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Failure conditions import from spreadsheets and from requirements tools over ReqIF (Jama Connect, Polarion, IBM DOORS) with their identifiers, attributes and trace links. The importer maps severity wording to the five classes only when the mapping is unambiguous; anything it cannot map with certainty arrives unclassified with a warning rather than guessed, because a misread classification is worse than a blank one." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/seo.css?v=2">
+<link rel="stylesheet" href="/marketing.css?v=1">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a href="/" class="nav-brand" aria-label="Safety Lab Aero home">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="32,16 48,48 16,48" fill="#fff"/></svg></span>
+    Safety Lab Aero
+  </a>
+  <div class="nav-links">
+    <a href="/resources">Resources</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#about">About</a>
+    <a href="/app" class="nav-cta">Sign in</a>
+  </div>
+</div></nav>
+<header class="page-hero"><div class="container">
+  <p class="eyebrow">Functional Hazard Assessment</p>
+  <h1>Functional hazard assessment, from aircraft function to <span class="grad-text">DAL</span></h1>
+  <p class="lede">Build the AFHA and SFHA that every other analysis hangs from, with per-phase effects, severities that carry their own probability target, and traces that reach the fault trees and requirements underneath.</p>
+  <div class="related"><a href="/arp-4761a">ARP 4761A process</a><a href="/fault-tree-analysis">Fault tree analysis</a><a href="/arp-4754b">DAL allocation</a><a href="/templates">FHA template</a></div>
+</div></header>
+<main class="container"><article>
+
+<p>The functional hazard assessment is where an aircraft safety program starts and where most of its later trouble is decided. Every failure condition you classify here becomes a top event with a probability target, a set of development assurance levels for the systems that implement the function, and a stack of safety requirements that has to be verified before certification. Classify one condition a band too mild and the error is invisible until a fault tree closes against the wrong target.</p>
+<p>Safety Lab Aero treats the FHA (ARP4761A, SAE ARP 4761A) as the spine of the program, not a spreadsheet at the front of it. Rows carry their basis, their traces and their sign-off, and everything downstream reads from them.</p>
+
+<h2>AFHA and SFHA in one connected workbook</h2>
+<ul>
+<li>Aircraft-level functions and failure conditions (loss, malfunction, inadvertent operation) in the AFHA; system-level conditions in the SFHA, each traced to the aircraft-level condition it supports.</li>
+<li>Effects on the aircraft, the crew and the occupants captured per flight phase, following the ARP 4761A Table A5 matrix, with one governing severity per row.</li>
+<li>An advisory invariant that flags any governing severity milder than the worst of its own phases: an understatement wearing a reviewed look.</li>
+<li>Detection, crew action, exposure and classification rationale on the row, so the reasoning travels with the classification.</li>
+</ul>
+
+<h2>Severity that carries its own numbers</h2>
+<p>The project declares its certification basis once: AC 25.1309 for transport category, AC 23.1309 by aircraft class, or SC-VTOL for eVTOL. Every FHA row then carries the probability target and the development assurance level that its basis assigns to its severity. When a failure condition becomes the top event of a fault tree, the tree inherits the target; when DAL is allocated under ARP 4754B, the allocation starts from the FHA classification. Nothing is retyped between the three.</p>
+
+<h2>Classification by rule where a rule exists</h2>
+<p>Two safety engineers given the same function will not always agree on a severity, and the same engineer on two programs will not either. Safety Lab Aero derives the two axes that can be derived. The aircraft axis is graded from the minimum acceptable configuration for the function: a partial loss that leaves the rule held is slight, significant or large depending on how much redundancy remains. The crew axis is read from the crew task analysis: the tasks the condition demands, against the time the phase allows, expressed as workload. Where no rule exists the engineer's judgment stands, and it lands in the assumptions register as an assumption to be validated, not as a fact.</p>
+
+<h2>Import that refuses to guess</h2>
+<p>Existing FHAs import from spreadsheets and from requirements tools over ReqIF (Jama Connect, Polarion, IBM DOORS), with identifiers, attributes, hierarchy and trace links intact. Severity wording that maps unambiguously to the five classes is classified; anything else arrives unclassified with a warning. Rows deleted at the source are flagged for disposition, never silently removed while a fault tree still references them.</p>
+
+<h2>What the FHA connects to</h2>
+<ul>
+<li><a href="/fault-tree-analysis">Fault trees</a>: each failure condition is a top event with an inherited target.</li>
+<li><a href="/arp-4754b">DAL allocation</a>: severity seeds the top-down allocation, including the ARP 4754B AND-gate options.</li>
+<li>Safety requirements: derived from the classification and traced back to it, so a change in severity flags every requirement it touches.</li>
+<li>Human factors: severity is reconciled against crew workload, and a Minor classification sitting under a task the model says drives excessive workload is called out on the row.</li>
+<li>Dispatch: the MEL cross-check flags any credited protection the MMEL allows to be dispatched inoperative, because the dispatched aircraft is not the aircraft that was classified.</li>
+</ul>
+
+<h2>Frequently asked questions</h2>
+<h3>What is a functional hazard assessment?</h3><p>A functional hazard assessment (FHA) is the first step of the ARP 4761A safety process. For each aircraft or system function, it identifies the ways the function can fail (loss, malfunction, inadvertent operation), describes the effect of each failure condition on the aircraft, the crew and the occupants in each phase of flight, and classifies its severity: Catastrophic, Hazardous, Major, Minor or No Safety Effect. The severity sets the probability the design must meet and the development assurance level the implementing systems must achieve.</p>
+<h3>What is the difference between an AFHA and an SFHA?</h3><p>The aircraft functional hazard assessment (AFHA) works at the aircraft level: functions such as controlling pitch or providing cabin pressure, and their failure conditions across the whole aircraft. The system functional hazard assessment (SFHA) repeats the exercise for each system that implements those functions, after the architecture has allocated them. In Safety Lab Aero the SFHA rows trace up to the AFHA failure conditions they support, so a system-level classification that is milder than the aircraft-level one it inherits is flagged.</p>
+<h3>How is severity mapped to a probability target and a DAL?</h3><p>By the certification basis the project declares. Under AC 25.1309 a Catastrophic failure condition must be extremely improbable (on the order of 1e-9 per flight hour) and is assigned DAL A; Hazardous is extremely remote (1e-7) at DAL B; Major is remote (1e-5) at DAL C; Minor is probable at DAL D. AC 23.1309 scales the targets by aircraft class, and SC-VTOL uses its own table for eVTOL. Safety Lab Aero carries the project's basis and applies the matching targets to every FHA row, so the target on a fault tree is never typed in by hand.</p>
+<h3>Can severity differ by phase of flight?</h3><p>Yes, and ARP 4761A's own worked example depends on it: loss of high-lift is Catastrophic on takeoff and approach and has no effect at the gate. Safety Lab Aero captures effects and severity per flight phase on the FHA row (the Table A5 matrix) while keeping one governing severity for the row, and checks that the governing severity is never milder than the worst phase.</p>
+<h3>Can I import an existing FHA?</h3><p>Yes. Failure conditions import from spreadsheets and from requirements tools over ReqIF (Jama Connect, Polarion, IBM DOORS) with their identifiers, attributes and trace links. The importer maps severity wording to the five classes only when the mapping is unambiguous; anything it cannot map with certainty arrives unclassified with a warning rather than guessed, because a misread classification is worse than a blank one.</p>
+
+<div class="cta-band">
+  <h2>Start with your own FHA</h2>
+  <p>Bring a spreadsheet or a ReqIF export and see the rows arrive with their traces, or download the <a href="/templates">free FHA template</a> to start from a clean workbook.</p>
+  <p><a href="/app" class="btn btn-primary">Start free trial</a></p>
+</div>
+</article></main>
+
+<footer class="sf" aria-label="Site footer">
+<style>.sf{margin-top:56px;padding:28px 0 22px;border-top:1px solid rgba(128,128,128,.28);font-size:14px;line-height:1.7}.sf-in{max-width:1080px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 28px}.sf-col{display:flex;flex-direction:column}.sf-h{font-weight:700;margin-bottom:4px}.sf a{color:inherit;opacity:.82;text-decoration:none}.sf a:hover{opacity:1;text-decoration:underline}.sf-copy{max-width:1080px;margin:22px auto 0;padding:0 24px;font-size:13px;opacity:.75}</style>
+  <div class="sf-in">
+    <div class="sf-col"><span class="sf-h">Product</span><a href="/fault-tree-analysis">Fault tree analysis</a><a href="/functional-hazard-assessment">Functional hazard assessment</a><a href="/arp-4761a">ARP 4761A process</a><a href="/arp-4754b">ARP 4754B and DAL allocation</a><a href="/fmea-software">FMEA</a><a href="/common-cause-analysis">CMA, PRA and ZSA</a></div>
+    <div class="sf-col"><span class="sf-h">Resources</span><a href="/resources">Guides</a><a href="/tools">Free calculators</a><a href="/templates">Free templates</a><a href="/roi">ROI calculator</a><a href="/medini-analyze-alternative">Medini Analyze alternative</a></div>
+    <div class="sf-col"><span class="sf-h">Company</span><a href="/trust">Trust and security</a><a href="/ai-guardrails">AI guardrails</a><a href="/#pricing">Pricing</a><a href="/#about">About</a><a href="mailto:waqas.nafees@safetylabaero.com">Contact</a><a href="/app">Sign in</a></div>
+    <div class="sf-col"><span class="sf-h">Legal</span><a href="/legal">License agreement</a><a href="/privacy">Privacy policy</a></div>
+  </div>
+  <p class="sf-copy">&copy; 2026 Safety Lab Aero, Inc. &middot; safetylabaero.com &middot; Integrated aerospace safety analysis on the ARP 4761A / 4754B process.</p>
+</footer>
+
+</body>
+</html>
