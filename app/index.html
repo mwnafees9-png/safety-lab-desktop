@@ -1174,6 +1174,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                         <div onclick="exportData('AC_FHA', 'pdf')">Export PDF</div>
                         <div onclick="openTemplateEditor()">🧩 Templates…</div>
                         <div onclick="Reports.open('AFHA')">Generate AFHA Report…</div>
+                        <div onclick="SLUsoc.open()">Unsafe operating conditions (F3061 X2)…</div>
+                        <div onclick="SLUsoc.download()">Export unsafe operating conditions (CSV)</div>
                         <div onclick="Reports.open('PASA')">Generate PASA Report…</div>
                         <div onclick="Reports.open('ASA')">Generate ASA Report…</div>
                     </div>
@@ -2682,6 +2684,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
             <div class="header-with-export">
                 <h3>Requirements Repository</h3>
                 <div class="action-group">
+                    <button onclick="SLStimuli.open()" class="btn-ghost" title="ARP4754B 4.6.4: strategy and stimuli for finding unintended behavior at integration">Unintended behavior tests…</button>
+                    <button onclick="SLStimuli.download()" class="btn-ghost">↓ Stimuli CSV</button>
                     <button onclick="exportData('All_Requirements', 'excel')" class="btn-cyan">↓ Export Excel</button>
                     <button onclick="exportData('All_Requirements', 'pdf')" class="btn-cyan">↓ Export PDF</button>
                 </div>
@@ -3117,6 +3121,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
         <div id="view-appa" style="display: none;">
             <div class="header-with-export"><h3>ARP4754B Process Objectives — Appendix A Matrix</h3></div>
             <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0 0 var(--s-3) 0;">Every development-assurance objective against live evidence: computed rows recompute from the model on every view, attestation rows are signed human acts. The audit-opening artifact, always current.</p>
+            <div style="display:flex; gap:8px; margin: 0 0 var(--s-3) 0;"><button type="button" class="btn-cyan" style="font-size:12px;" onclick="SLPaAudit.open()">Process assurance audits…</button><button type="button" class="ckpt-m-btn" style="font-size:12px;" onclick="SLPaAudit.download()">Export audits (CSV)</button></div>
             <div id="appa-host"></div>
         </div>
 
@@ -3948,7 +3953,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="bindings_modules.js?v=1.50" defer></script>
     
     <script src="misc_fn_modules.js?v=66.73" defer></script>
-    <script src="safety_lab.js?v=65.61" defer></script>
+    <script src="safety_lab.js?v=65.62" defer></script>
     
     <script src="sl_env.js?v=1.1" defer></script>
     
@@ -3962,14 +3967,17 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="zsa_record.js?v=1.0" defer></script>
     <script src="ai_audit.js?v=1.1" defer></script>
     <script src="pra_scenarios.js?v=1.0" defer></script>
+    <script src="usoc.js?v=1.0" defer></script>
+    <script src="pa_audit.js?v=1.0" defer></script>
+    <script src="ub_stimuli.js?v=1.0" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
-    <script src="assurance_modules.js?v=1.34" defer></script>
+    <script src="assurance_modules.js?v=1.35" defer></script>
     <script src="engine_modules.js?v=1.3" defer></script>
     
     <script src="ai_badges.js?v=1.4" defer></script>
     <script src="autonomy_metrics.js?v=0.3" defer></script>
-    <script src="reports.js?v=66.13" defer></script>
+    <script src="reports.js?v=66.14" defer></script>
     
     <script src="ram_modules.js?v=1.9" defer></script>
     
@@ -3995,7 +4003,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="evidence_package.js?v=2.8" defer></script>
     
-    <script src="objectives_matrix.js?v=1.2" defer></script>
+    <script src="objectives_matrix.js?v=1.4" defer></script>
     
     <script src="problem_reports.js?v=1.2" defer></script>
     
