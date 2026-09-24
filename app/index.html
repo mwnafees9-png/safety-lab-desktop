@@ -1175,6 +1175,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                         <div onclick="openTemplateEditor()">🧩 Templates…</div>
                         <div onclick="Reports.open('AFHA')">Generate AFHA Report…</div>
                         <div onclick="SLUsoc.open()">Unsafe operating conditions (F3061 X2)…</div>
+                        <div onclick="SLQualArg.download()">Export qualitative arguments (F3230 X2, CSV)</div>
                         <div onclick="SLUsoc.download()">Export unsafe operating conditions (CSV)</div>
                         <div onclick="Reports.open('PASA')">Generate PASA Report…</div>
                         <div onclick="Reports.open('ASA')">Generate ASA Report…</div>
@@ -3423,6 +3424,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     </div>
 
                     <div id="fha-chart-outcome" style="font-size: 12px; margin-top: 14px; padding: 10px; border-radius: var(--r-md); background: var(--color-surface-2);"></div>
+                    <div style="margin-top: 8px; font-size: 12px;"><button type="button" class="btn-ghost" onclick="SLQualArg.openFromChart()" title="ASTM F3230 X2: conventional, simple, why not expected, common cause">Qualitative argument (F3230 X2)…</button> <span style="color: var(--color-text-tertiary);">Record why qualitative-only is enough for this condition.</span></div>
 
                     <div style="display:flex; justify-content: flex-end; gap: 8px; margin-top: 18px;">
                         <button class="btn-ghost" onclick="closeFhaChartModal()">Cancel</button>
@@ -3970,6 +3972,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="usoc.js?v=1.0" defer></script>
     <script src="pa_audit.js?v=1.0" defer></script>
     <script src="ub_stimuli.js?v=1.0" defer></script>
+    <script src="qual_arg.js?v=1.0" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
     <script src="assurance_modules.js?v=1.35" defer></script>
@@ -3977,7 +3980,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ai_badges.js?v=1.4" defer></script>
     <script src="autonomy_metrics.js?v=0.3" defer></script>
-    <script src="reports.js?v=66.14" defer></script>
+    <script src="reports.js?v=66.15" defer></script>
     
     <script src="ram_modules.js?v=1.9" defer></script>
     
