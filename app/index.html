@@ -1751,6 +1751,13 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
 
                 
                 <div class="controls" style="border-left-color: var(--color-purple); margin-top: 14px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; text-transform:none; letter-spacing:0; font-size:13px;">
+                        <input type="checkbox" id="ai-project-off" style="width:16px; height:16px;">
+                        <span><b>Switch AI off for this project</b> &mdash; no AI call is made for this project, on any backend, until this is unticked. Use it when a program or customer does not allow AI. Save to apply.</span>
+                    </label>
+                </div>
+                
+                <div class="controls" style="border-left-color: var(--color-purple); margin-top: 14px;">
                     <h5 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600;">Usage &amp; Cost <span style="font-weight: 400; font-size: 11px; color: var(--color-text-tertiary);">— informational summary; AI calls are uncapped by default</span></h5>
                     <div class="grid-3-col">
                         <div>
@@ -3913,7 +3920,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="config_data.js?v=1.1" defer></script>
     <script src="ai_memory.js?v=1.0" defer></script>
     <script src="importers.js?v=1.8" defer></script>
-    <script src="core_modules.js?v=1.9" defer></script>
+    <script src="core_modules.js?v=1.10" defer></script>
     
     <script src="fta_quant_modules.js?v=66.23" defer></script>
     
@@ -3932,13 +3939,13 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="support_modules.js?v=66.38" defer></script>
     
-    <script src="helpers_modules.js?v=3.14" defer></script>
+    <script src="helpers_modules.js?v=3.15" defer></script>
     <script src="cloud_writer.js?v=1.1" defer></script>
     <script src="severity_axes.js?v=1.35" defer></script>
     
     <script src="fha_derive.js?v=1.2" defer></script>
     
-    <script src="bindings_modules.js?v=1.49" defer></script>
+    <script src="bindings_modules.js?v=1.50" defer></script>
     
     <script src="misc_fn_modules.js?v=66.73" defer></script>
     <script src="safety_lab.js?v=65.60" defer></script>
@@ -3953,7 +3960,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="render_pass.js?v=1.0" defer></script>
     <script src="p23_assessment_level.js?v=1.0" defer></script>
     <script src="zsa_record.js?v=1.0" defer></script>
-    <script src="ai_audit.js?v=1.0" defer></script>
+    <script src="ai_audit.js?v=1.1" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
     <script src="assurance_modules.js?v=1.33" defer></script>
@@ -4204,7 +4211,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="eval_core.js?v=1.9" defer></script>
     <script src="ai_skills.js?v=2.14" defer></script>
     
-    <script src="ai_loader.js?v=8.62" defer></script>
+    <script src="ai_loader.js?v=8.63" defer></script>
     <script src="config_management.js?v=1.12" defer></script>
     
     <script src="numbering_ui.js?v=1.0.2" defer></script>
