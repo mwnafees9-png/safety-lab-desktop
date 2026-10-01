@@ -656,6 +656,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                             
                             <label>Requirement Type <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— ARP4754B §5.3.1 class</span></label><select id="sys-req-type"><option>Safety</option><option>Functional</option><option>Customer</option><option>Operational</option><option>Performance</option><option>Physical and Installation</option><option>Maintainability</option><option>Interface</option><option>Certification</option><option>Derived</option><option>Re-Use</option></select>
                             <label>Derived from analysis <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— optional</span></label><select id="sys-req-analysis"><option value=""></option><option>Probabilistic</option><option>Design Assurance</option><option>Independence</option><option>Maintenance</option><option>Human Factors</option></select>
+                            <label>Source analysis <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— which analysis this comes from; generated rows are tagged automatically</span></label><select id="sys-req-source"><option value="">(from the generator, or none)</option><option>FHA</option><option>PSSA</option><option>CMA</option><option>PRA</option><option>ZSA</option><option>HF</option></select>
                             
                             <label>Derivation Type</label>
                             <select id="sys-req-derivation-type">
@@ -1589,6 +1590,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                         
                             <label>Requirement Type <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— ARP4754B §5.3.1 class</span></label><select id="ac-req-type"><option>Safety</option><option>Functional</option><option>Customer</option><option>Operational</option><option>Performance</option><option>Physical and Installation</option><option>Maintainability</option><option>Interface</option><option>Certification</option><option>Derived</option><option>Re-Use</option></select>
                             <label>Derived from analysis <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— optional</span></label><select id="ac-req-analysis"><option value=""></option><option>Probabilistic</option><option>Design Assurance</option><option>Independence</option><option>Maintenance</option><option>Human Factors</option></select>
+                            <label>Source analysis <span style="font-weight:400;color:var(--color-text-tertiary);font-size:11px;">— which analysis this comes from; generated rows are tagged automatically</span></label><select id="ac-req-source"><option value="">(from the generator, or none)</option><option>FHA</option><option>PSSA</option><option>CMA</option><option>PRA</option><option>ZSA</option><option>HF</option></select>
                         
                         <label>Derivation Type <span style="font-weight: 400; color: var(--color-text-tertiary); text-transform: none; letter-spacing: 0;">— ARP 4754B §6.1.1</span></label>
                         <select id="ac-req-derivation-type">
@@ -3872,6 +3874,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="slab_config.js?v=1.3" defer></script>
     
+    <script src="license_token.js?v=1.0" defer></script>
+    
     <script src="slab_license.js?v=1.3" defer></script>
     <script src="fn_wrap.js?v=1.0" defer></script>
     
@@ -3973,6 +3977,20 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="pa_audit.js?v=1.0" defer></script>
     <script src="ub_stimuli.js?v=1.0" defer></script>
     <script src="qual_arg.js?v=1.0" defer></script>
+    
+    <script src="critical_gates.js?v=1.0" defer></script>
+    
+    <script src="req_basis.js?v=1.1" defer></script>
+    
+    <script src="crew_credit.js?v=1.0" defer></script>
+    
+    <script src="req_lint.js?v=1.0" defer></script>
+    
+    <script src="pra_framing.js?v=1.1" defer></script>
+    
+    <script src="zonal_threats.js?v=1.1" defer></script>
+    
+    <script src="design_baseline.js?v=1.0" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
     <script src="assurance_modules.js?v=1.35" defer></script>
@@ -4221,9 +4239,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="spec_index.js?v=1.3" defer></script>
     <script src="eval_core.js?v=1.9" defer></script>
-    <script src="ai_skills.js?v=2.14" defer></script>
+    <script src="ai_skills.js?v=2.15" defer></script>
     
-    <script src="ai_loader.js?v=8.63" defer></script>
+    <script src="ai_loader.js?v=8.64" defer></script>
     <script src="config_management.js?v=1.12" defer></script>
     
     <script src="numbering_ui.js?v=1.0.2" defer></script>

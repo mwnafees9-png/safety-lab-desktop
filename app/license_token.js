@@ -1,0 +1,1 @@
+(function(W){"use strict";if(W){var LEGACY="safetyLab.license.token",_token="";try{W.localStorage&&W.localStorage.removeItem(LEGACY)}catch{}W.SLLicenseToken={get:function(){return _token},set:function(t){_token=t==null?"":String(t)},clear:function(){_token=""},has:function(){return!!_token}}}})(typeof window<"u"?window:null);

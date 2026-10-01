@@ -54,6 +54,12 @@ docker run --rm \
   electronuserland/builder:wine \
   /bin/bash -lc "npm install --no-audit --no-fund && npx electron-builder --win --x64"
 
+# 1 Oct 2026. Check what the container actually packaged, not what is on disk here. See the note
+# in release.sh: 0.18.2 went out with two required modules missing from app.asar.
+echo "── packaged artifact ────────────────────────────────"
+SLAB_CHECK_ASAR=1 node "$HERE/tests/regression_package_closure.test.js" \
+  || { echo "BUILD REJECTED — the packaged app.asar is missing a required file."; exit 1; }
+
 VERSION="$(node -p "require('$HERE/package.json').version")"
 echo
 echo "✓ Windows build complete: v$VERSION"

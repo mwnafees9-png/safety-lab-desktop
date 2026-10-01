@@ -44,6 +44,14 @@ fs.writeFileSync(p,JSON.stringify(b,null,2));console.log("codeSigned",JSON.strin
 echo "── package ──────────────────────────────────────────"
 if [ "$WIN" = "1" ]; then npx electron-builder --win --x64; else CSC_IDENTITY_AUTO_DISCOVERY="${CSC_IDENTITY_AUTO_DISCOVERY:-false}" npx electron-builder --mac; fi
 
+# 1 Oct 2026. The one check that looks at what was actually PACKAGED rather than at the source
+# tree. 0.18.2 shipped to both platforms with secrets.js and bridge_main.js missing from app.asar
+# (build.files is an allowlist and nobody added them), and every installed copy died on launch for
+# two weeks. The wall, the smoke gate and pull-web all passed, because all three read the source.
+echo "── packaged artifact ────────────────────────────────"
+SLAB_CHECK_ASAR=1 node "$HERE/tests/regression_package_closure.test.js" \
+  || { echo "NOT PUBLISHING — the packaged app.asar is missing a required file."; exit 1; }
+
 if [ "$PUBLISH" = "1" ]; then
   echo "── publish ──────────────────────────────────────────"
   bash "$HERE/publish-desktop.sh"

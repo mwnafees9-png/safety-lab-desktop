@@ -25,6 +25,8 @@
     "productName": "Safety Lab Aero",
     "files": [
       "main.js",
+    "secrets.js",
+    "bridge_main.js",
       "shell_rules.js",
       "update_verify.js",
       "preload-app.js",
