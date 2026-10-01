@@ -23,6 +23,17 @@ VERSION="$(node -p "require('$HERE/package.json').version")"
 
 echo "Publishing Safety Lab Aero desktop v$VERSION  →  r2://$BUCKET/$PREFIX/"
 
+# --- REFUSE an incomplete package (1 Oct 2026). The stale-feed check below catches a manifest
+#     from an old build. It does NOT look inside the package. 0.18.3's predecessor shipped with
+#     secrets.js and bridge_main.js missing from app.asar, because build.files is an allowlist and
+#     nobody added them; every installed copy died on launch and it was live for two weeks. The
+#     wall, the smoke gate and pull-web all read the SOURCE TREE, where the files are present.
+#     release.sh and build-win-docker.sh now run this after packaging, but this script is also run
+#     on its own, so it refuses here too. Nothing is uploaded unless the asar is complete.
+echo "── packaged artifact ────────────────────────────────"
+SLAB_CHECK_ASAR=1 node "$HERE/tests/regression_package_closure.test.js" \
+  || { echo "  REFUSED: the packaged app.asar is missing a required file. Rebuild before publishing." >&2; exit 1; }
+
 # --- REFUSE a stale feed (15 Sep 2026). This script uploads and SIGNS whatever dist/latest*.yml it
 #     finds. Twice tonight the Windows build had not run, dist/latest.yml still said 0.15.0 from
 #     August, and the publish went ahead: the August installer was re-uploaded and the August
