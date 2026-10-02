@@ -33,6 +33,8 @@ function allowedHosts(cfg) {
   if (cfg.backend === 'safetylab') hosts.add(HOSTED.dbHost);
   if (cfg.backend === 'own' && cfg.backendUrl) hosts.add(hostOf(cfg.backendUrl));
   if (cfg.ai === 'own' && cfg.aiEndpoint) hosts.add(hostOf(cfg.aiEndpoint));
+  // ai === 'key' adds NOTHING here on purpose: the page never calls Anthropic. The main process
+  // does, with the key from the keychain (ai_main.js), outside the renderer's fence.
   if (cfg.ai === 'safetylab' && cfg.backend === 'safetylab') hosts.add(HOSTED.aiHost);
   hosts.delete('');
   return hosts;
@@ -49,7 +51,8 @@ function egressAllowed(url, cfg) {
 function configProblem(cfg) {
   cfg = cfg || {};
   if (!['safetylab', 'own', 'files'].includes(cfg.backend)) return 'Choose where your data lives: Safety Lab\'s trial cloud, your organization\'s server, or files only.';
-  if (!['safetylab', 'own', 'off'].includes(cfg.ai)) return 'Choose an AI setting.';
+  if (!['safetylab', 'own', 'off', 'key'].includes(cfg.ai)) return 'Choose an AI setting.';
+  if (cfg.ai === 'key' && cfg.backend === 'safetylab') return 'Your own AI key is for your organization\'s server or files-only installs; the trial cloud uses Safety Lab\'s AI.';
   if (cfg.backend === 'own') {
     if (!cfg.backendUrl || !cfg.backendKey) return 'Your organization\'s server address and key are both required.';
     if (!/^https:\/\//i.test(cfg.backendUrl)) return 'Your organization\'s server address must start with https://.';
@@ -76,6 +79,7 @@ function overridesFor(cfg, licenseBlob, version) {
   if (cfg.backend === 'files') o.__SLAB_LOCAL_ONLY__ = true;
   if (cfg.ai === 'own' && cfg.aiEndpoint) o.__SLAB_AI_ENDPOINT__ = String(cfg.aiEndpoint).replace(/\/+$/, '');
   if (cfg.ai === 'off') o.__SLAB_AI_OFF__ = true;
+  if (cfg.ai === 'key') o.__SLAB_AI_DESKTOP_KEY__ = true;   // the page routes AI through slabAi; no endpoint
   if (cfg.backend === 'own' && cfg.webAppUrl) o.__SLAB_WEB_APP_URL__ = String(cfg.webAppUrl).replace(/\/+$/, '');
   o.slabDesktop = { isDesktop: true, version: String(version || ''), backend: cfg.backend, ai: cfg.ai, ssoRedirect: 'safetylab://auth-callback' };
   return o;

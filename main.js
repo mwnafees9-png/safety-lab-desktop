@@ -39,6 +39,7 @@
 const { app, BrowserWindow, Menu, dialog, ipcMain, shell, session, safeStorage } = require('electron');
 const secrets = require('./secrets.js');
 const bridgeMain = require('./bridge_main.js');
+const aiMain = require('./ai_main.js');       // the user's own AI key, used out here (2 Oct 2026)
 secrets.init(app, safeStorage);
 const fs = require('fs');
 const path = require('path');
@@ -347,6 +348,18 @@ ipcMain.handle('slab:saveSecret', (_e, payload) => {
 ipcMain.handle('slab:deleteSecret', (_e, kind) => {
   try { return { ok: true, secrets: secrets.remove(kind) }; }
   catch (e) { return { ok: false, error: String(e && e.message || e) }; }
+});
+
+// ---- the user's own AI key (2 Oct 2026): the page asks, the main process holds the key and
+// makes the streaming call. See ai_main.js. The chunks go back over one channel per request.
+ipcMain.handle('slab:aiMessages', async (e, req) => {
+  const id = String((req && req.id) || '');
+  if (!id) return { ok: false, error: 'malformed request' };
+  const wc = e.sender;
+  const emit = (buf) => { try { if (!wc.isDestroyed()) wc.send('slab:aiChunk', { id, chunk: buf }); } catch (_) {} };
+  const head = (h) => { try { if (!wc.isDestroyed()) wc.send('slab:aiHead', { id, status: h.status, contentType: h.contentType }); } catch (_) {} };
+  try { return await aiMain.messages(readConfig(), req.body, req.meta || {}, emit, head); }
+  catch (err) { return { ok: false, error: String(err && err.message || err) }; }
 });
 
 // ---- the ALM live bridge's outbound GET, run out here where the egress fence does not

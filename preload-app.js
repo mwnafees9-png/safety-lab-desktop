@@ -47,6 +47,51 @@ const R = require('./shell_rules.js');
     remove:    function (kind) { return ipcRenderer.invoke('slab:deleteSecret', kind); }
   });
 
+  // The user's own AI key (2 Oct 2026): same shape as the ALM bridge. The page hands over the
+  // request body; the main process adds the key and streams the answer back; the page gets a
+  // Response it can read exactly as it reads a proxy's. Only exposed when the config says so,
+  // so a page on any other AI setting has no such surface at all.
+  if (cfg.ai === 'key') {
+    const pending = {};
+    ipcRenderer.on('slab:aiHead', function (_e, m) {
+      const p = m && pending[m.id]; if (!p || p.headed) return;
+      p.headed = true;
+      p.resolve(new Response(p.stream, { status: m.status, headers: { 'content-type': m.contentType || 'application/json' } }));
+    });
+    ipcRenderer.on('slab:aiChunk', function (_e, m) {
+      const p = m && pending[m.id]; if (!p) return;
+      try { p.controller.enqueue(new Uint8Array(m.chunk)); } catch (_) {}
+    });
+    contextBridge.exposeInMainWorld('slabAi', {
+      messages: function (body, meta) {
+        const id = String(Date.now()) + '-' + Math.random().toString(16).slice(2);
+        let controller;
+        const stream = new ReadableStream({ start: function (c) { controller = c; } });
+        return new Promise(function (resolve) {
+          const p = { controller: controller, stream: stream, resolve: resolve, headed: false };
+          pending[id] = p;
+          ipcRenderer.invoke('slab:aiMessages', { id: id, body: body, meta: { feature: (meta && meta.feature) || 'messages', itar: !!(meta && meta.itar) } }).then(function (r) {
+            delete pending[id];
+            if (!p.headed) {
+              // Refused or unreachable before any header: answer with the same JSON shape the
+              // page already handles for a proxy error.
+              try { controller.close(); } catch (_) {}
+              const errBody = JSON.stringify({ error: { type: 'desktop_ai', message: (r && r.error) || 'AI call failed' } });
+              resolve(new Response(errBody, { status: (r && r.status) || 502, headers: { 'content-type': 'application/json' } }));
+              return;
+            }
+            if (r && r.ok) { try { controller.close(); } catch (_) {} }
+            else { try { controller.error(new Error((r && r.error) || 'stream failed')); } catch (_) {} }
+          }, function (e) {
+            delete pending[id];
+            if (!p.headed) { try { controller.close(); } catch (_) {} resolve(new Response(JSON.stringify({ error: { type: 'desktop_ai', message: String(e && e.message || e) } }), { status: 502, headers: { 'content-type': 'application/json' } })); }
+            else { try { controller.error(e); } catch (_) {} }
+          });
+        });
+      }
+    });
+  }
+
   // The ALM bridge: the page asks, the main process holds the credential and makes the request.
   contextBridge.exposeInMainWorld('slabBridge', {
     get: function (targetUrl) { return ipcRenderer.invoke('slab:bridgeGet', String(targetUrl)); }

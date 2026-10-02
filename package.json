@@ -27,6 +27,7 @@
       "main.js",
     "secrets.js",
     "bridge_main.js",
+    "ai_main.js",
       "shell_rules.js",
       "update_verify.js",
       "preload-app.js",
