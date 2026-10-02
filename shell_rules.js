@@ -158,6 +158,42 @@ function updateMatchesVerified(info, verified) {
   } catch (_) { return false; }
 }
 
+// ---- the pinned server certificate (2 Oct 2026) ------------------------------------------------
+// A customer's own server often has no certificate from a public or corporate CA; the install
+// script then makes its own root and signs the server with it. Rather than every user installing
+// that root by hand, the setup file carries the root's SHA-256 fingerprint and the desktop trusts
+// THAT root for THAT server name only. It is tighter than a CA, not looser: one exact root, one
+// exact host, nothing else changes. A pin is only ever consulted when the normal check failed;
+// a server that already has a valid certificate never touches it.
+//
+// Fingerprints arrive as Electron gives them ("sha256/<base64>") or as the install script writes
+// them (64 hex chars); both normalize to lowercase hex so a pin can be compared byte for byte.
+function normalizeFingerprint(fp) {
+  const s = String(fp || '').trim();
+  if (/^sha256\//i.test(s)) { try { return Buffer.from(s.slice(7), 'base64').toString('hex').toLowerCase(); } catch (_) { return ''; } }
+  const hex = s.replace(/[:\s]/g, '').toLowerCase();
+  return /^[0-9a-f]{64}$/.test(hex) ? hex : '';
+}
+// Returns the value Electron's setCertificateVerifyProc wants: 0 = trust, -3 = use Chromium's own
+// verdict. chainFingerprints: the presented chain, leaf first, as Electron fingerprints.
+// cfg.backendPin: one or more fingerprints, comma-separated (the install writes the root it made
+// and the server certificate it signed, both long-lived). Accept when ANY pinned fingerprint is
+// anywhere in the presented chain; Chromium may or may not hand us the root itself.
+function normalizePins(list) {
+  return String(list || '').split(',').map(normalizeFingerprint).filter(Boolean);
+}
+function pinDecision(hostname, chainFingerprints, cfg) {
+  try {
+    if (!cfg || cfg.backend !== 'own' || !cfg.backendPin) return -3;
+    const pins = normalizePins(cfg.backendPin); if (!pins.length) return -3;
+    const host = String(hostname || '').toLowerCase();
+    if (!host || host !== hostOf(cfg.backendUrl)) return -3;
+    const chain = (chainFingerprints || []).map(normalizeFingerprint).filter(Boolean);
+    if (!chain.length) return -3;
+    return chain.some(f => pins.includes(f)) ? 0 : -3;
+  } catch (_) { return -3; }
+}
+
 // ---- the setup file (2 Oct 2026) -----------------------------------------------------------------
 // One file from the customer's own install, so a user configures the desktop with one click instead
 // of typing three addresses and hunting for a license. It may carry ONLY what a browser bundle already
@@ -166,7 +202,7 @@ function updateMatchesVerified(info, verified) {
 // secret, if it points at a Safety Lab address on a customer install, or if its shape is wrong.
 // The caller still runs the license through the ONE verifier against this config before saving.
 const SETUP_FORMAT = 'safetylab-setup/1';
-const SETUP_FIELDS = ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl'];
+const SETUP_FIELDS = ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl', 'backendPin'];
 function parseSetupFile(text) {
   let j;
   try { j = JSON.parse(String(text || '')); } catch (_) { return { ok: false, error: 'This is not a Safety Lab Aero setup file.' }; }
@@ -191,10 +227,17 @@ function parseSetupFile(text) {
   for (const k of ['backendUrl', 'aiEndpoint', 'webAppUrl']) {
     if (cfg[k] && /[?#]/.test(cfg[k])) return { ok: false, error: 'An address in the setup file carries extra parameters; it must be a plain https address.' };
   }
+  if (cfg.backendPin) {
+    const raw = cfg.backendPin.split(',').map(x => x.trim()).filter(Boolean);
+    const n = normalizePins(cfg.backendPin);
+    if (!n.length || n.length !== raw.length) return { ok: false, error: 'A server certificate fingerprint in the setup file is malformed. Ask whoever made it to regenerate it.' };
+    if (cfg.backend !== 'own') return { ok: false, error: 'A certificate fingerprint only makes sense with a server address.' };
+    cfg.backendPin = n.join(',');
+  }
   const problem = configProblem(cfg);
   if (problem) return { ok: false, error: problem };
   const license = j.license == null ? '' : String(j.license).trim();
   return { ok: true, config: cfg, license };
 }
 
-module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT };
+module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT, normalizeFingerprint, normalizePins, pinDecision };

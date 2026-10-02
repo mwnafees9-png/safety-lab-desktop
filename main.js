@@ -105,8 +105,24 @@ const DEFAULT_CONFIG = {
   ai: 'safetylab',           // 'safetylab' | 'own' | 'off'   (own = the customer's AI endpoint: Claude/Bedrock, Azure or their own LLM behind the packaged proxy)
   aiEndpoint: '',            // own: https://<their AI proxy>/v1/ai
   webAppUrl: '',             // own: where "Open on the web" goes (blank = hidden); safetylab: our site
+  backendPin: '',            // own: SHA-256 (hex) of the server's own root certificate, from the setup file; '' = none
   passcodeHash: null         // optional screen lock (scrypt salt:hash)
 };
+// The pinned server root (2 Oct 2026): only consulted when Chromium's own verdict is a failure,
+// only for the configured server name, only for the exact root the setup file named. See
+// shell_rules.pinDecision. -3 hands every other case back to Chromium untouched.
+function installCertificatePin(part, cfg) {
+  try {
+    part.setCertificateVerifyProc((request, callback) => {
+      try {
+        if (!cfg || !cfg.backendPin || request.verificationResult === 'net::OK' || request.errorCode === 0) return callback(-3);
+        const chain = []; let c = request.certificate;
+        while (c && chain.length < 8) { chain.push(c.fingerprint); c = c.issuerCert; }
+        return callback(R.pinDecision(request.hostname, chain, cfg));
+      } catch (_) { return callback(-3); }
+    });
+  } catch (e) { console.error('[slab] certificate pin not installed:', e); }
+}
 function readConfig() {
   try { return Object.assign({}, DEFAULT_CONFIG, JSON.parse(fs.readFileSync(configPath(), 'utf8'))); }
   catch (_) { return Object.assign({}, DEFAULT_CONFIG); }
@@ -215,6 +231,7 @@ function openMainApp() {
   buildMenu();
   const part = session.fromPartition('persist:slab-app');
   installEgressGuard(part, cfg);
+  installCertificatePin(part, cfg);
   mainWindow = new BrowserWindow({
     width: 1440, height: 900, minWidth: 1024, minHeight: 680,
     backgroundColor: '#0A1F44', title: 'Safety Lab Aero', icon: path.join(__dirname, 'build', 'icon.png'), show: false,
@@ -372,7 +389,8 @@ ipcMain.handle('slab:bridgeGet', async (_e, targetUrl) => {
 ipcMain.handle('slab:getConfig', () => { const c = readConfig(); return Object.assign({}, c, { hasPasscode: !!c.passcodeHash, passcodeHash: undefined }); });
 ipcMain.handle('slab:saveConfig', (_e, partial) => {
   const cur = readConfig(); const next = Object.assign({}, cur);
-  for (const k of ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl']) if (partial && partial[k] != null) next[k] = String(partial[k]).trim();
+  for (const k of ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl', 'backendPin']) if (partial && partial[k] != null) next[k] = String(partial[k]).trim();
+  if (next.backendPin) { const pins = R.normalizePins(next.backendPin); if (!pins.length) return { ok: false, error: 'The server certificate fingerprint is malformed.' }; next.backendPin = pins.join(','); }
   if (partial && partial.passcode !== undefined) next.passcodeHash = partial.passcode ? hashPasscode(partial.passcode) : null;
   const problem = configProblem(next);
   if (problem) return { ok: false, error: problem };
