@@ -100,6 +100,12 @@
   </fieldset>
 
   <fieldset>
+    <legend>Setup file from your organization</legend>
+    <p class="hint" style="margin:0 0 8px">One file that sets the server, the AI endpoint and the license in one go (it ends in <code>.safetylab-setup</code>). Everything above is filled in from it.</p>
+    <div class="btnrow"><button id="btn-setupfile" type="button">Choose setup file…</button><span class="hint" id="setup-msg"></span></div>
+  </fieldset>
+
+  <fieldset>
     <legend>Screen lock</legend>
     <p class="hint" id="lock-state" style="margin:0 0 8px"></p>
     <div class="row2">
@@ -148,6 +154,12 @@
     const r = await window.slabSettings.replaceLicense();
     if (r && r.ok) { $('lic-msg').textContent = 'License replaced.'; showLicense(); }
     else if (r && r.error) { $('lic-msg').textContent = r.error; }
+  };
+  $('btn-setupfile').onclick = async () => {
+    $('setup-msg').textContent = '';
+    let r; try { r = await window.slabSettings.applySetupFile(); } catch (_) { r = { ok: false, error: 'Could not read the setup file.' }; }
+    if (r && r.ok) { $('setup-msg').textContent = 'Applied. Press Save & reload.'; await init(); }
+    else if (r && r.error) { $('setup-msg').textContent = r.error; }
   };
   $('btn-cancel').onclick = () => window.close();
   $('btn-save').onclick = async () => {

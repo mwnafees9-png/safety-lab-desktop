@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('slabSettings', {
   save: (cfg) => ipcRenderer.invoke('slab:saveConfig', cfg),
   licenseInfo: () => ipcRenderer.invoke('slab:licenseInfo'),
   replaceLicense: () => ipcRenderer.invoke('slab:replaceLicense'),
+  applySetupFile: () => ipcRenderer.invoke('slab:applySetupFile'),
   version: () => ipcRenderer.invoke('slab:version'),
   applyAndReload: () => ipcRenderer.send('slab:applyAndReload')
 });

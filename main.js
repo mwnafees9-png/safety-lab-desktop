@@ -406,6 +406,43 @@ ipcMain.handle('gate:pickLicenseFile', async () => {
   if (r.canceled || !r.filePaths[0]) return { ok: false };
   try { return { ok: true, blob: fs.readFileSync(r.filePaths[0], 'utf8').trim() }; } catch (e) { return { ok: false, error: String(e) }; }
 });
+// The setup file (2 Oct 2026): one file from the customer's own install configures this desktop
+// and loads the license in one click. Pure parsing + the config sanity check live in shell_rules
+// (parseSetupFile); here we only read the file, verify the license against THAT server with the
+// ONE verifier, and save. Nothing is saved unless both pass. Addresses and a publishable key only;
+// the parser refuses anything that looks like a secret.
+async function applySetupFileText(text) {
+  const parsed = R.parseSetupFile(text);
+  if (!parsed.ok) return { ok: false, error: parsed.error };
+  const cfg = Object.assign({}, readConfig(), parsed.config);
+  let info = null;
+  if (parsed.license) {
+    const v = await verifyLicense(parsed.license, cfg);
+    if (!v.valid) return { ok: false, error: 'The license inside the setup file is not valid for that server: ' + (v.plain || v.reason) };
+    info = licenseSummary(v);
+  }
+  writeConfig(cfg);
+  return { ok: true, config: { backend: cfg.backend, backendUrl: cfg.backendUrl, ai: cfg.ai, aiEndpoint: cfg.aiEndpoint }, license: parsed.license || '', info };
+}
+ipcMain.handle('gate:pickSetupFile', async () => {
+  const win = gateWindow || BrowserWindow.getFocusedWindow();
+  const r = await dialog.showOpenDialog(win, { title: 'Choose the Safety Lab Aero setup file from your organization', properties: ['openFile'], filters: [{ name: 'Safety Lab setup file', extensions: ['safetylab-setup', 'json'] }] });
+  if (r.canceled || !r.filePaths[0]) return { ok: false };
+  let text; try { text = fs.readFileSync(r.filePaths[0], 'utf8'); } catch (e) { return { ok: false, error: String(e) }; }
+  return applySetupFileText(text);
+});
+ipcMain.handle('gate:applySetupText', async (_e, text) => applySetupFileText(String(text || '')));
+// Same file from the settings window of an already set-up desktop: config saved, license installed.
+ipcMain.handle('slab:applySetupFile', async () => {
+  const win = settingsWindow || BrowserWindow.getFocusedWindow();
+  const r = await dialog.showOpenDialog(win, { title: 'Choose the Safety Lab Aero setup file from your organization', properties: ['openFile'], filters: [{ name: 'Safety Lab setup file', extensions: ['safetylab-setup', 'json'] }] });
+  if (r.canceled || !r.filePaths[0]) return { ok: false };
+  let text; try { text = fs.readFileSync(r.filePaths[0], 'utf8'); } catch (e) { return { ok: false, error: String(e) }; }
+  const applied = await applySetupFileText(text);
+  if (!applied.ok) return applied;
+  if (applied.license) { const inst = await installLicense(applied.license); if (!inst.ok) return inst; }
+  return { ok: true };
+});
 ipcMain.handle('gate:complete', async (_e, data) => {
   data = data || {};
   const inst = await installLicense(String(data.license || '').trim());

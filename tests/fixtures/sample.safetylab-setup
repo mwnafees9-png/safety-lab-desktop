@@ -1,0 +1,11 @@
+{
+  "format": "safetylab-setup/1",
+  "note": "Safety Lab Aero setup file for safetylab.test.local. Open it in the desktop app (Choose setup file). It carries no secrets.",
+  "backend": "own",
+  "backendUrl": "https://safetylab.test.local",
+  "backendKey": "sb_publishable_E8MpuoTYXt1mTALL9-PRe2_fth9bR3B",
+  "ai": "own",
+  "aiEndpoint": "https://safetylab.test.local/v1/ai",
+  "license": "eyJ0ZXN0Ijoibm90LWEtcmVhbC1saWNlbnNlIn0.sig",
+  "webAppUrl": ""
+}

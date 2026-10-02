@@ -154,4 +154,43 @@ function updateMatchesVerified(info, verified) {
   } catch (_) { return false; }
 }
 
-module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified };
+// ---- the setup file (2 Oct 2026) -----------------------------------------------------------------
+// One file from the customer's own install, so a user configures the desktop with one click instead
+// of typing three addresses and hunting for a license. It may carry ONLY what a browser bundle already
+// carries in the open: the server address, the server's PUBLISHABLE key, the AI endpoint, the web
+// address, and the signed license blob. It is refused if it carries anything that looks like a
+// secret, if it points at a Safety Lab address on a customer install, or if its shape is wrong.
+// The caller still runs the license through the ONE verifier against this config before saving.
+const SETUP_FORMAT = 'safetylab-setup/1';
+const SETUP_FIELDS = ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl'];
+function parseSetupFile(text) {
+  let j;
+  try { j = JSON.parse(String(text || '')); } catch (_) { return { ok: false, error: 'This is not a Safety Lab Aero setup file.' }; }
+  if (!j || typeof j !== 'object' || Array.isArray(j)) return { ok: false, error: 'This is not a Safety Lab Aero setup file.' };
+  if (j.format !== SETUP_FORMAT) return { ok: false, error: 'This setup file is for a different version of Safety Lab Aero.' };
+  for (const k of Object.keys(j)) {
+    if (k === 'format' || k === 'license' || k === 'note' || SETUP_FIELDS.includes(k)) continue;
+    return { ok: false, error: 'The setup file carries a field it must not (' + k + '). Ask whoever made it to regenerate it.' };
+  }
+  const cfg = {};
+  for (const k of SETUP_FIELDS) cfg[k] = j[k] == null ? '' : String(j[k]).trim();
+  if (!cfg.backend) cfg.backend = cfg.backendUrl ? 'own' : 'files';
+  if (!cfg.ai) cfg.ai = cfg.aiEndpoint ? 'own' : 'off';
+  if (cfg.backend === 'safetylab' || cfg.ai === 'safetylab') return { ok: false, error: 'A setup file is for your organization\'s own server; it cannot point at Safety Lab.' };
+  // A publishable key is public by design. Anything else in that slot is someone's secret, and a
+  // secret must never travel in a file that is handed around; refuse rather than store it.
+  const key = cfg.backendKey;
+  if (key && !/^sb_publishable_[A-Za-z0-9_-]+$/.test(key) && !/^eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(key)) {
+    return { ok: false, error: 'The server key in this setup file is not a publishable key. Ask whoever made it to regenerate it.' };
+  }
+  if (/^sb_secret_/.test(key) || /service_role/.test(key)) return { ok: false, error: 'The setup file carries a server secret. It must not. Ask whoever made it to regenerate it.' };
+  for (const k of ['backendUrl', 'aiEndpoint', 'webAppUrl']) {
+    if (cfg[k] && /[?#]/.test(cfg[k])) return { ok: false, error: 'An address in the setup file carries extra parameters; it must be a plain https address.' };
+  }
+  const problem = configProblem(cfg);
+  if (problem) return { ok: false, error: problem };
+  const license = j.license == null ? '' : String(j.license).trim();
+  return { ok: true, config: cfg, license };
+}
+
+module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT };

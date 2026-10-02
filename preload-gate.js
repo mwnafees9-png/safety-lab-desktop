@@ -5,6 +5,8 @@ contextBridge.exposeInMainWorld('gate', {
   getBootstrap: () => ipcRenderer.invoke('gate:getBootstrap'),
   checkLicense: (blob) => ipcRenderer.invoke('gate:checkLicense', blob),
   pickLicenseFile: () => ipcRenderer.invoke('gate:pickLicenseFile'),
+  pickSetupFile: () => ipcRenderer.invoke('gate:pickSetupFile'),
+  applySetupText: (text) => ipcRenderer.invoke('gate:applySetupText', text),
   complete: (data) => ipcRenderer.invoke('gate:complete', data),
   unlock: (data) => ipcRenderer.invoke('gate:unlock', data),
   reactivate: () => ipcRenderer.send('gate:reactivate'),

@@ -74,9 +74,12 @@
   </header>
   <main>
     <section id="panel-license" style="display:none">
-      <h1>Load your license</h1>
-      <p class="sub">Your license is a small file from Safety Lab Aero (it ends in <code>.lic</code>). It is checked on this computer and never sent anywhere. Trials use a temporary license with an end date.</p>
-      <div class="btnrow"><button class="primary" id="btn-loadfile" type="button">Choose license file…</button><span class="hint">or paste its contents below</span></div>
+      <h1>Set up this computer</h1>
+      <p class="sub">If your organization gave you a <b>setup file</b> (it ends in <code>.safetylab-setup</code>), that is all you need: it carries your server address and your license. Choose it, or drop it anywhere on this window.</p>
+      <div class="btnrow"><button class="primary" id="btn-setupfile" type="button">Choose setup file…</button><span class="hint">one click, nothing to type</span></div>
+      <div class="status" id="setup-status"></div>
+      <p class="sub" style="margin-top:18px"><b>No setup file?</b> Load your license on its own. It is a small file from Safety Lab Aero (it ends in <code>.lic</code>), checked on this computer and never sent anywhere. Trials use a temporary license with an end date.</p>
+      <div class="btnrow"><button id="btn-loadfile" type="button">Choose license file…</button><span class="hint">or paste its contents below</span></div>
       <label class="fld" style="margin-top:12px"><span>License</span><textarea id="licblob" spellcheck="false" placeholder="paste the contents of your .lic file"></textarea></label>
       <div class="btnrow"><button id="btn-check" type="button">Check license</button></div>
       <div class="status" id="lic-status"></div>
@@ -150,6 +153,25 @@
     showStep(0);
   }
   $('btn-loadfile').onclick = async () => { const r = await window.gate.pickLicenseFile(); if (r && r.ok) { $('licblob').value = r.blob; checkLicense(r.blob); } };
+  function setupApplied(r) {
+    if (!(r && r.ok)) { setStatus('setup-status', (r && r.error) || 'Could not read the setup file.', 'err'); return; }
+    const c = r.config || {};
+    const where = c.backend === 'own' ? ('your server at ' + c.backendUrl) : 'files on this computer';
+    const ai = c.ai === 'own' ? ', AI through ' + c.aiEndpoint : ', AI off';
+    setStatus('setup-status', 'Set up for ' + where + ai + '.', 'ok');
+    if (r.license) { $('licblob').value = r.license; state.license = r.license; state.licenseOk = true; setStatus('lic-status', 'License accepted.', 'ok'); showLicense(r.info || {}); }
+    else { setStatus('lic-status', 'The setup file carried no license. Load your license file below.', 'info'); }
+    updateNav();
+  }
+  $('btn-setupfile').onclick = async () => { let r; try { r = await window.gate.pickSetupFile(); } catch (e) { r = { ok: false, error: 'Could not read the setup file.' }; } if (r && (r.ok || r.error)) setupApplied(r); };
+  document.addEventListener('dragover', e => { e.preventDefault(); });
+  document.addEventListener('drop', e => {
+    e.preventDefault();
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = async () => { const text = String(rd.result || ''); if (/^\s*\{/.test(text)) setupApplied(await window.gate.applySetupText(text)); else { $('licblob').value = text.trim(); checkLicense(text.trim()); } };
+    rd.readAsText(f);
+  });
   $('btn-check').onclick = () => checkLicense($('licblob').value);
   $('licblob').addEventListener('input', () => { state.licenseOk = false; $('lic-card').style.display = 'none'; setStatus('lic-status', ''); updateNav(); });
   ['eula-cb'].forEach(id => $(id).addEventListener('change', updateNav));
