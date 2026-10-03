@@ -14,6 +14,7 @@ const HOSTED = Object.freeze({
 });
 
 function hostOf(u) { try { return new URL(u).host.toLowerCase(); } catch (_) { return ''; } }
+function hostnameOf(u) { try { return new URL(u).hostname.toLowerCase(); } catch (_) { return ''; } }
 function isSafetyLabHost(h) { h = String(h || '').toLowerCase(); return h === HOSTED.dbHost || /(^|\.)safetylabaero\.com$/.test(h); }
 
 // The desktop's three backend cases → the web's config modes:
@@ -177,8 +178,19 @@ function normalizeFingerprint(fp) {
 // Returns the value Electron's setCertificateVerifyProc wants: 0 = trust, -3 = use Chromium's own
 // verdict. chainFingerprints: the presented chain, leaf first, as Electron fingerprints.
 // cfg.backendPin: one or more fingerprints, comma-separated (the install writes the root it made
-// and the server certificate it signed, both long-lived). Accept when ANY pinned fingerprint is
-// anywhere in the presented chain; Chromium may or may not hand us the root itself.
+// and the server certificate it signed). ONLY THE LEAF COUNTS: the leaf is the certificate the
+// server proved it holds the private key for in the TLS handshake. The rest of the chain is just
+// bytes the server chose to send, so a fake server could append the customer's public root and
+// an "anywhere in the chain" rule would wave it through (found 3 Oct 2026 in review, before any
+// customer ran it). So the install writes only the leaf's fingerprint into the setup file
+// (install.sh, 3 Oct 2026). A pin list that also names the root is still read, but the root is
+// never matched on its own. If the install re-signs the server certificate, it writes a new
+// setup file and every desktop takes that one.
+//
+// The name compared is the HOST NAME, without a port. Electron hands the verify proc the bare
+// host name; the configured address may carry a port (https://safety.acme.local:8443). Comparing
+// "host:port" to "host" never matched, so a pin on any non-443 server silently did nothing
+// (found 3 Oct 2026 in review).
 function normalizePins(list) {
   return String(list || '').split(',').map(normalizeFingerprint).filter(Boolean);
 }
@@ -187,10 +199,10 @@ function pinDecision(hostname, chainFingerprints, cfg) {
     if (!cfg || cfg.backend !== 'own' || !cfg.backendPin) return -3;
     const pins = normalizePins(cfg.backendPin); if (!pins.length) return -3;
     const host = String(hostname || '').toLowerCase();
-    if (!host || host !== hostOf(cfg.backendUrl)) return -3;
-    const chain = (chainFingerprints || []).map(normalizeFingerprint).filter(Boolean);
-    if (!chain.length) return -3;
-    return chain.some(f => pins.includes(f)) ? 0 : -3;
+    if (!host || host !== hostnameOf(cfg.backendUrl)) return -3;
+    const leaf = normalizeFingerprint((chainFingerprints || [])[0]);
+    if (!leaf) return -3;
+    return pins.includes(leaf) ? 0 : -3;
   } catch (_) { return -3; }
 }
 
@@ -226,6 +238,7 @@ function parseSetupFile(text) {
   if (/^sb_secret_/.test(key) || /service_role/.test(key)) return { ok: false, error: 'The setup file carries a server secret. It must not. Ask whoever made it to regenerate it.' };
   for (const k of ['backendUrl', 'aiEndpoint', 'webAppUrl']) {
     if (cfg[k] && /[?#]/.test(cfg[k])) return { ok: false, error: 'An address in the setup file carries extra parameters; it must be a plain https address.' };
+    if (cfg[k] && !/^https:\/\//i.test(cfg[k])) return { ok: false, error: 'An address in the setup file does not start with https://. The desktop refuses anything else.' };
   }
   if (cfg.backendPin) {
     const raw = cfg.backendPin.split(',').map(x => x.trim()).filter(Boolean);
@@ -240,4 +253,106 @@ function parseSetupFile(text) {
   return { ok: true, config: cfg, license };
 }
 
-module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT, normalizeFingerprint, normalizePins, pinDecision };
+// ---- 3 Oct 2026 hardening (security review of 2 Oct, batch 2) ---------------------------------
+// Pure, so the desktop wall executes every rule. main.js is the only consumer.
+
+// What the page may put in the keychain. Before this, any kind with any value and any meta was
+// written: a page bug or an injected script could replace the user's AI key with another one (the
+// next AI call would then run on someone else's account, with this project's text in it) or fill
+// the disk with entries. Now: four kinds, each with its value shape, and meta limited to four
+// plain fields. The Jama host is checked here as a public host name, by the same rule the bridge
+// applies to the request, so the stored host can never point the credential at a private address.
+const SECRET_KINDS = Object.freeze({ jama: 'object', jama_token: 'string', anthropic_key: 'string', voyage_key: 'string' });
+const SECRET_META_KEYS = Object.freeze(['baseHost', 'user', 'last4', 'label']);
+const SECRET_MAX_CHARS = 8192;
+function publicHostProblem(host) {
+  const h = String(host || '').toLowerCase();
+  if (!h) return 'no host';
+  if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(h)) return 'not a host name';
+  if (/^\d+(\.\d+)*$/.test(h) || h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal') || h.endsWith('.localhost')) return 'not a public host';
+  return '';
+}
+function checkSecret(kind, value, meta) {
+  const k = String(kind || '');
+  if (!Object.prototype.hasOwnProperty.call(SECRET_KINDS, k)) return { ok: false, error: 'unknown secret kind' };
+  let v;
+  if (SECRET_KINDS[k] === 'string') {
+    if (typeof value !== 'string' || !value || value.length > SECRET_MAX_CHARS) return { ok: false, error: 'malformed secret' };
+    v = value;
+  } else {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return { ok: false, error: 'malformed secret' };
+    const user = value.user == null ? '' : value.user, token = value.token;
+    if (typeof user !== 'string' || typeof token !== 'string' || !token || user.length > 512 || token.length > SECRET_MAX_CHARS) return { ok: false, error: 'malformed secret' };
+    v = { user: user, token: token };
+  }
+  const m = {};
+  if (meta != null && (typeof meta !== 'object' || Array.isArray(meta))) return { ok: false, error: 'malformed secret details' };
+  for (const key of Object.keys(meta || {})) {
+    if (!SECRET_META_KEYS.includes(key)) return { ok: false, error: 'unexpected secret detail: ' + key };
+    const val = meta[key];
+    if (val == null || val === '') continue;
+    if (typeof val !== 'string' || val.length > 256) return { ok: false, error: 'malformed secret details' };
+    m[key] = val;
+  }
+  if (k === 'jama' || (k === 'jama_token' && m.baseHost)) {
+    const host = String(m.baseHost || '').toLowerCase();
+    const prob = publicHostProblem(host);
+    if (prob) return { ok: false, error: 'the connector address must be a public host name (' + prob + ')' };
+    m.baseHost = host;
+  } else if (m.baseHost) {
+    return { ok: false, error: 'unexpected secret detail: baseHost' };
+  }
+  return { ok: true, kind: k, value: v, meta: m };
+}
+
+// The own-key AI request (ai_main.js). The page builds it; the main process adds the key. Bounded
+// so a page cannot hand the main process an unbounded payload, and limited to a Claude model so the
+// key is only ever spent on what the app asks for. 32 MB is Anthropic's own request ceiling.
+const AI_MAX_BODY_BYTES = 32 * 1024 * 1024;
+function aiBodyProblem(body) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return 'malformed request';
+  if (typeof body.model !== 'string' || !/^claude-[a-z0-9.\-]{1,80}$/.test(body.model)) return 'malformed request: model';
+  if (!Array.isArray(body.messages) || !body.messages.length) return 'malformed request: messages';
+  let size;
+  try { size = Buffer.byteLength(JSON.stringify(body), 'utf8'); } catch (_) { return 'malformed request'; }
+  if (size > AI_MAX_BODY_BYTES) return 'the request is too large to send';
+  return '';
+}
+
+// Where a window may navigate. The app window may only ever show files from its own bundle
+// directory; before this, any file:// address was allowed, and a page in this window gets the
+// keychain writer and the AI bridge. A gate or settings window may only show its own page.
+function fileUrlInside(url, dir) {
+  try {
+    const u = new URL(String(url));
+    if (u.protocol !== 'file:') return false;
+    const p = path.resolve(require('url').fileURLToPath(u));
+    const root = path.resolve(String(dir));
+    return p === root || p.startsWith(root + path.sep);
+  } catch (_) { return false; }
+}
+function fileUrlIs(url, file) {
+  try {
+    const u = new URL(String(url));
+    if (u.protocol !== 'file:') return false;
+    return path.resolve(require('url').fileURLToPath(u)) === path.resolve(String(file));
+  } catch (_) { return false; }
+}
+
+// Which window may call which IPC channel. Each window's preload only exposes its own channels,
+// and isolation keeps the page away from ipcRenderer; this is the main process refusing anyway,
+// so a channel is answered only for the window it was built for, from that window's top frame,
+// showing that window's own page.
+function ipcSenderOk(sender, expected) {
+  try {
+    if (!sender || !expected || !expected.webContents) return false;
+    if (sender.webContents !== expected.webContents) return false;
+    if (!sender.isMainFrame) return false;
+    if (expected.dir) return fileUrlInside(sender.url, expected.dir);
+    if (expected.file) return fileUrlIs(sender.url, expected.file);
+    return false;
+  } catch (_) { return false; }
+}
+
+module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT, normalizeFingerprint, normalizePins, pinDecision, hostnameOf,
+  SECRET_KINDS, SECRET_META_KEYS, publicHostProblem, checkSecret, AI_MAX_BODY_BYTES, aiBodyProblem, fileUrlInside, fileUrlIs, ipcSenderOk };

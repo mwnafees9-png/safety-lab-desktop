@@ -42,6 +42,8 @@ check('Safety Lab host as the server refused', !R.parseSetupFile(variant({ backe
 check('Safety Lab AI refused', !R.parseSetupFile(variant({ ai: 'safetylab' })).ok);
 check('http (not https) refused', !R.parseSetupFile(variant({ backendUrl: 'http://safetylab.test.local' })).ok);
 check('address with query parameters refused', !R.parseSetupFile(variant({ aiEndpoint: base.aiEndpoint + '?token=x' })).ok);
+check('http AI endpoint refused (the fence would refuse it anyway; say so up front)', !R.parseSetupFile(variant({ aiEndpoint: 'http://safetylab.test.local/v1/ai' })).ok);
+check('http web address refused', !R.parseSetupFile(variant({ webAppUrl: 'http://safetylab.test.local/app' })).ok);
 check('files-only setup file (no server) accepted with AI off', (() => { const r = R.parseSetupFile(JSON.stringify({ format: 'safetylab-setup/1', backend: 'files', ai: 'off' })); return r.ok && r.config.backend === 'files'; })());
 check('no license is fine (loaded separately)', (() => { const r = R.parseSetupFile(variant({ license: undefined })); return r.ok && r.license === ''; })());
 

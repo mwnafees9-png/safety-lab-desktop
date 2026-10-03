@@ -22,12 +22,13 @@ const chain = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'sampl
 console.log('\n[pin] the real setup file and the real chain');
 const parsed = R.parseSetupFile(setup);
 check('setup file with pins accepted', parsed.ok, parsed.error);
-check('two pins carried (root and server certificate), normalized to hex', parsed.ok && parsed.config.backendPin.split(',').length === 2 && /^[0-9a-f]{64},[0-9a-f]{64}$/.test(parsed.config.backendPin));
+check('one pin carried, the server certificate itself, normalized to hex', parsed.ok && /^[0-9a-f]{64}$/.test(parsed.config.backendPin));
 const cfg = parsed.config;
 check('the chain the server presents is trusted for the server name', R.pinDecision(chain.host, chain.chain, cfg) === 0);
 check('leaf alone (Chromium may withhold the root) is still trusted', R.pinDecision(chain.host, [chain.chain[0]], cfg) === 0);
-check('root alone is still trusted', R.pinDecision(chain.host, [chain.chain[1]], cfg) === 0);
-check('electron base64 form and hex form agree', R.normalizeFingerprint(chain.chain[1]) === cfg.backendPin.split(',')[0]);
+check('root alone is NOT trusted: the leaf is the only certificate the server proved it owns', R.pinDecision(chain.host, [chain.chain[1]], cfg) === -3);
+check('a fake leaf with the real root appended is refused', R.pinDecision(chain.host, ['sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', chain.chain[1]], cfg) === -3);
+check('electron base64 form and hex form agree', R.normalizeFingerprint(chain.chain[0]) === cfg.backendPin);
 
 console.log('\n[pin] refusals hand the verdict back to Chromium (-3), never trust');
 check('another host, same chain', R.pinDecision('evil.example.com', chain.chain, cfg) === -3);
@@ -36,23 +37,30 @@ check('no pin configured', R.pinDecision(chain.host, chain.chain, Object.assign(
 check('trial cloud never pins', R.pinDecision(chain.host, chain.chain, Object.assign({}, cfg, { backend: 'safetylab' })) === -3);
 check('empty chain', R.pinDecision(chain.host, [], cfg) === -3);
 check('garbage pin is ignored', R.pinDecision(chain.host, chain.chain, Object.assign({}, cfg, { backendPin: 'not-a-fingerprint' })) === -3);
-check('malformed pin in a setup file is refused outright', !R.parseSetupFile(setup.replace(cfg.backendPin.split(',')[0], 'zz')).ok);
+check('malformed pin in a setup file is refused outright', !R.parseSetupFile(setup.replace(cfg.backendPin, 'zz')).ok);
 check('pin without a server address is refused', !R.parseSetupFile(JSON.stringify({ format: 'safetylab-setup/1', backend: 'files', ai: 'off', backendPin: 'a'.repeat(64) })).ok);
 
 console.log('\n[pin] the shell is wired');
 const main = fs.readFileSync(path.join(ROOT, 'main.js'), 'utf8');
-check('verify proc installed on the app partition from the live config', /installCertificatePin\(part, cfg\)/.test(main) && /setCertificateVerifyProc/.test(main));
+check('verify proc installed on the app partition, reading the config live on every check (3 Oct 2026)', /installCertificatePin\(part\);/.test(main) && /setCertificateVerifyProc\(\(request, callback\) => \{\s*try \{\s*const cfg = readConfig\(\);/.test(main));
 check('only consulted when Chromium already failed the certificate', /verificationResult === 'net::OK' \|\| request\.errorCode === 0\) return callback\(-3\)/.test(main));
 check('the decision is shell_rules.pinDecision, nothing else', /callback\(R\.pinDecision\(request\.hostname, chain, cfg\)\)/.test(main));
 check('config carries backendPin and saveConfig normalizes it', /backendPin: ''/.test(main) && /R\.normalizePins\(next\.backendPin\)/.test(main));
 
-console.log('\n[pin] MUTATION — with the host check gone the pin applies to any server');
+console.log('\n[pin] MUTATIONS');
 {
   const src = fs.readFileSync(path.join(ROOT, 'shell_rules.js'), 'utf8');
-  const mutated = src.replace("if (!host || host !== hostOf(cfg.backendUrl)) return -3;", "");
-  check('mutation site present', mutated !== src);
-  const m = new module.constructor(); m.paths = module.paths; m.filename = path.join(ROOT, 'shell_rules_mut.js'); m._compile(mutated, m.filename);
-  check('mutation proven', m.exports.pinDecision('evil.example.com', chain.chain, cfg) === 0);
+  const load = (t, n) => { const m = new module.constructor(); m.paths = module.paths; m.filename = path.join(ROOT, n); m._compile(t, m.filename); return m.exports; };
+  const m1 = src.replace("if (!host || host !== hostnameOf(cfg.backendUrl)) return -3;", "");
+  check('host check removed: the pin applies to any server', m1 !== src && load(m1, 'mut1.js').pinDecision('evil.example.com', chain.chain, cfg) === 0);
+  const m2 = src.replace("const leaf = normalizeFingerprint((chainFingerprints || [])[0]);\n    if (!leaf) return -3;\n    return pins.includes(leaf) ? 0 : -3;",
+                         "const chain = (chainFingerprints || []).map(normalizeFingerprint).filter(Boolean); return chain.some(f => pins.includes(f)) ? 0 : -3;");
+  // The 2 Oct install wrote the root into the pin list as well. Against such a file the old rule
+  // accepted a fake leaf with our public root appended; the leaf-only rule refuses it.
+  const cfgWithRoot = Object.assign({}, cfg, { backendPin: cfg.backendPin + ',' + R.normalizeFingerprint(chain.chain[1]) });
+  const attack = ['sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', chain.chain[1]];
+  check('leaf-only rule refuses the attack even when the root is in the pin list', R.pinDecision(chain.host, attack, cfgWithRoot) === -3);
+  check('"anywhere in the chain" rule restored: the attack succeeds', m2 !== src && load(m2, 'mut2.js').pinDecision(chain.host, attack, cfgWithRoot) === 0);
 }
 console.log('\n' + (fail ? 'FAIL' : 'PASS') + '  ' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

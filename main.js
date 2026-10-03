@@ -111,10 +111,14 @@ const DEFAULT_CONFIG = {
 // The pinned server root (2 Oct 2026): only consulted when Chromium's own verdict is a failure,
 // only for the configured server name, only for the exact root the setup file named. See
 // shell_rules.pinDecision. -3 hands every other case back to Chromium untouched.
-function installCertificatePin(part, cfg) {
+// 3 Oct 2026: the configuration is read LIVE on every check, as the egress guard does. It was the
+// one captured when the window first opened, so a setup file applied in Settings changed the
+// server but not the pin until the app was quit and reopened.
+function installCertificatePin(part) {
   try {
     part.setCertificateVerifyProc((request, callback) => {
       try {
+        const cfg = readConfig();
         if (!cfg || !cfg.backendPin || request.verificationResult === 'net::OK' || request.errorCode === 0) return callback(-3);
         const chain = []; let c = request.certificate;
         while (c && chain.length < 8) { chain.push(c.fingerprint); c = c.issuerCert; }
@@ -141,7 +145,13 @@ function writeConfig(c) {
 // activation.json: { license: <blob>, acceptances: {eula:{version,at}, license:{version,at}}, maxIssuedSeen, activatedAt }
 function loadActivation() { try { return JSON.parse(fs.readFileSync(activationPath(), 'utf8')) || {}; } catch (_) { return {}; } }
 function saveActivation(a) {
-  try { fs.mkdirSync(path.dirname(activationPath()), { recursive: true }); fs.writeFileSync(activationPath(), JSON.stringify(a, null, 2), 'utf8'); }
+  try {
+    fs.mkdirSync(path.dirname(activationPath()), { recursive: true });
+    fs.writeFileSync(activationPath(), JSON.stringify(a, null, 2), 'utf8');
+    // Owner-only (3 Oct 2026), like config.json and secrets.json. The license names the customer
+    // and the agreement record names when it was accepted; nobody else on the machine needs either.
+    try { fs.chmodSync(activationPath(), 0o600); } catch (_) {}
+  }
   catch (e) { console.error('[slab] activation write failed:', e); }
 }
 
@@ -184,6 +194,27 @@ const { allowedHosts, egressAllowed, configProblem, backendHostFor, hostOf } = R
 
 // ---- window state -------------------------------------------------------------------------
 let mainWindow = null, settingsWindow = null, gateWindow = null, currentProjectPath = null;
+let gateFile = '';
+
+// ---- who may call which IPC channel (3 Oct 2026) ----------------------------------------------
+// Each window's preload only exposes its own channels, and isolation keeps every page away from
+// ipcRenderer. The main process now refuses anyway: a channel is answered only for the window it
+// was built for, from that window's top frame, showing that window's own page
+// (shell_rules.ipcSenderOk). A refused call gets a plain refusal, never a partial answer.
+const APP_DIR = path.join(__dirname, 'app');
+const REFUSED = Object.freeze({ ok: false, error: 'refused: this window may not make that request' });
+function senderOf(e) { const f = e && e.senderFrame; return { webContents: e && e.sender, isMainFrame: !!f && !f.parent, url: f ? f.url : '' }; }
+function live(w) { return w && !w.isDestroyed() ? w : null; }
+function fromApp(e) { const w = live(mainWindow); return R.ipcSenderOk(senderOf(e), w ? { webContents: w.webContents, dir: APP_DIR } : null); }
+function fromSettings(e) { const w = live(settingsWindow); return R.ipcSenderOk(senderOf(e), w ? { webContents: w.webContents, file: path.join(__dirname, 'settings.html') } : null); }
+function fromGate(e) { const w = live(gateWindow); return R.ipcSenderOk(senderOf(e), w && gateFile ? { webContents: w.webContents, file: path.join(__dirname, gateFile) } : null); }
+// Navigation lock: a window shows only its own page (or, for the app window, its own bundle).
+// Anything else is refused; an https address opens in the user's browser instead.
+function lockNavigation(win, allowed) {
+  const guard = (e, url) => { if (allowed(url)) return; e.preventDefault(); if (/^https:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } };
+  win.webContents.on('will-navigate', guard);
+  win.webContents.on('will-redirect', guard);
+}
 let _pendingDeepLink = null;
 
 // ---- startup routing ----------------------------------------------------------------------
@@ -211,13 +242,15 @@ function createGateWindow(file, w, h) {
     webPreferences: { preload: path.join(__dirname, 'preload-gate.js'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   win.setMenuBarVisibility(false);
-  win.loadFile(path.join(__dirname, file));
+  const own = path.join(__dirname, file);
+  lockNavigation(win, (url) => R.fileUrlIs(url, own));
+  win.loadFile(own);
   win.once('ready-to-show', () => win.show());
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } return { action: 'deny' }; });
   return win;
 }
-function openOnboarding() { if (gateWindow) { gateWindow.focus(); return; } gateWindow = createGateWindow('onboarding.html', 920, 760); gateWindow.on('closed', () => { gateWindow = null; }); }
-function openLock() { if (gateWindow) { gateWindow.focus(); return; } gateWindow = createGateWindow('lock.html', 520, 460); gateWindow.on('closed', () => { gateWindow = null; }); }
+function openOnboarding() { if (gateWindow) { gateWindow.focus(); return; } gateFile = 'onboarding.html'; gateWindow = createGateWindow('onboarding.html', 920, 760); gateWindow.on('closed', () => { gateWindow = null; }); }
+function openLock() { if (gateWindow) { gateWindow.focus(); return; } gateFile = 'lock.html'; gateWindow = createGateWindow('lock.html', 520, 460); gateWindow.on('closed', () => { gateWindow = null; }); }
 
 // ---- main app window -----------------------------------------------------------------------
 function openMainApp() {
@@ -231,7 +264,7 @@ function openMainApp() {
   buildMenu();
   const part = session.fromPartition('persist:slab-app');
   installEgressGuard(part, cfg);
-  installCertificatePin(part, cfg);
+  installCertificatePin(part);
   mainWindow = new BrowserWindow({
     width: 1440, height: 900, minWidth: 1024, minHeight: 680,
     backgroundColor: '#0A1F44', title: 'Safety Lab Aero', icon: path.join(__dirname, 'build', 'icon.png'), show: false,
@@ -243,7 +276,7 @@ function openMainApp() {
       additionalArguments: ['--slab-config-path=' + configPath(), '--slab-activation-path=' + activationPath(), '--slab-version=' + app.getVersion()]
     }
   });
-  mainWindow.loadFile(path.join(__dirname, 'app', 'index.html'));
+  mainWindow.loadFile(path.join(APP_DIR, 'index.html'));
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
     reportHeapCeiling(mainWindow);
@@ -251,7 +284,9 @@ function openMainApp() {
     if (_pendingDeepLink) { const u = _pendingDeepLink; _pendingDeepLink = null; setTimeout(() => handleDeepLink(u), 1500); }
   });
   mainWindow.webContents.setWindowOpenHandler(({ url }) => { if (/^https:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } return { action: 'deny' }; });
-  mainWindow.webContents.on('will-navigate', (e, url) => { if (!url.startsWith('file://')) { e.preventDefault(); if (/^https:\/\//i.test(url)) { try { shell.openExternal(url); } catch (_) {} } } });
+  // 3 Oct 2026: only files from the app's own bundle. It was any file:// address, and a page shown
+  // in this window gets the keychain writer and the AI bridge.
+  lockNavigation(mainWindow, (url) => R.fileUrlInside(url, APP_DIR));
   mainWindow.webContents.on('will-attach-webview', (e) => { e.preventDefault(); });
   mainWindow.on('closed', () => { mainWindow = null; });
 }
@@ -346,23 +381,29 @@ function openSettings() {
     webPreferences: { preload: path.join(__dirname, 'preload-settings.js'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   settingsWindow.setMenuBarVisibility(false);
-  settingsWindow.loadFile(path.join(__dirname, 'settings.html'));
+  const own = path.join(__dirname, 'settings.html');
+  lockNavigation(settingsWindow, (url) => R.fileUrlIs(url, own));
+  settingsWindow.loadFile(own);
   settingsWindow.on('closed', () => { settingsWindow = null; });
 }
 // ---- secrets: OS keychain, write-only from the page (16 Sep 2026) -----------------------
 // The renderer may store a credential and ask whether one is stored. It can never read one
 // back -- there is deliberately no 'slab:getSecret'. Only the main process decrypts, and only
 // to put the credential on the outbound request in bridge_main.js.
-ipcMain.handle('slab:secretsAvailable', () => ({ ok: secrets.available() }));
-ipcMain.handle('slab:secretsStatus', () => { try { return { ok: true, secrets: secrets.status() }; } catch (e) { return { ok: false, error: String(e && e.message || e) }; } });
-ipcMain.handle('slab:saveSecret', (_e, payload) => {
+ipcMain.handle('slab:secretsAvailable', (e) => fromApp(e) ? { ok: secrets.available() } : REFUSED);
+ipcMain.handle('slab:secretsStatus', (e) => { if (!fromApp(e)) return REFUSED; try { return { ok: true, secrets: secrets.status() }; } catch (e) { return { ok: false, error: String(e && e.message || e) }; } });
+// 3 Oct 2026: four kinds only, each with its value shape and plain details (shell_rules.checkSecret).
+ipcMain.handle('slab:saveSecret', (e, payload) => {
+  if (!fromApp(e)) return REFUSED;
   try {
-    const kind = payload && payload.kind;
-    if (!kind) return { ok: false, error: 'a secret needs a kind' };
-    return { ok: true, secrets: secrets.save(kind, payload.value, payload.meta) };
-  } catch (e) { return { ok: false, error: String(e && e.message || e) }; }
+    const c = R.checkSecret(payload && payload.kind, payload && payload.value, payload && payload.meta);
+    if (!c.ok) return { ok: false, error: c.error };
+    return { ok: true, secrets: secrets.save(c.kind, c.value, c.meta) };
+  } catch (err) { return { ok: false, error: String(err && err.message || err) }; }
 });
-ipcMain.handle('slab:deleteSecret', (_e, kind) => {
+ipcMain.handle('slab:deleteSecret', (e, kind) => {
+  if (!fromApp(e)) return REFUSED;
+  if (!Object.prototype.hasOwnProperty.call(R.SECRET_KINDS, String(kind || ''))) return { ok: false, error: 'unknown secret kind' };
   try { return { ok: true, secrets: secrets.remove(kind) }; }
   catch (e) { return { ok: false, error: String(e && e.message || e) }; }
 });
@@ -370,6 +411,7 @@ ipcMain.handle('slab:deleteSecret', (_e, kind) => {
 // ---- the user's own AI key (2 Oct 2026): the page asks, the main process holds the key and
 // makes the streaming call. See ai_main.js. The chunks go back over one channel per request.
 ipcMain.handle('slab:aiMessages', async (e, req) => {
+  if (!fromApp(e)) return REFUSED;
   const id = String((req && req.id) || '');
   if (!id) return { ok: false, error: 'malformed request' };
   const wc = e.sender;
@@ -381,13 +423,15 @@ ipcMain.handle('slab:aiMessages', async (e, req) => {
 
 // ---- the ALM live bridge's outbound GET, run out here where the egress fence does not
 // apply and the credential never reaches the page. See bridge_main.js for why.
-ipcMain.handle('slab:bridgeGet', async (_e, targetUrl) => {
+ipcMain.handle('slab:bridgeGet', async (e, targetUrl) => {
+  if (!fromApp(e)) return REFUSED;
   try { return await bridgeMain.get(targetUrl); }
   catch (e) { return { ok: false, error: String(e && e.message || e) }; }
 });
 
-ipcMain.handle('slab:getConfig', () => { const c = readConfig(); return Object.assign({}, c, { hasPasscode: !!c.passcodeHash, passcodeHash: undefined }); });
-ipcMain.handle('slab:saveConfig', (_e, partial) => {
+ipcMain.handle('slab:getConfig', (e) => { if (!fromSettings(e)) return REFUSED; const c = readConfig(); return Object.assign({}, c, { hasPasscode: !!c.passcodeHash, passcodeHash: undefined }); });
+ipcMain.handle('slab:saveConfig', (e, partial) => {
+  if (!fromSettings(e)) return REFUSED;
   const cur = readConfig(); const next = Object.assign({}, cur);
   for (const k of ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl', 'backendPin']) if (partial && partial[k] != null) next[k] = String(partial[k]).trim();
   if (next.backendPin) { const pins = R.normalizePins(next.backendPin); if (!pins.length) return { ok: false, error: 'The server certificate fingerprint is malformed.' }; next.backendPin = pins.join(','); }
@@ -397,12 +441,14 @@ ipcMain.handle('slab:saveConfig', (_e, partial) => {
   writeConfig(next);
   return { ok: true };
 });
-ipcMain.handle('slab:licenseInfo', async () => {
+ipcMain.handle('slab:licenseInfo', async (e) => {
+  if (!fromSettings(e)) return REFUSED;
   const a = loadActivation(); if (!a.license) return { valid: false, plain: 'No license has been loaded on this computer yet.' };
   const r = await verifyLicense(a.license, readConfig());
   return Object.assign({ valid: r.valid, plain: r.plain }, licenseSummary(r) || {});
 });
-ipcMain.handle('slab:replaceLicense', async () => {
+ipcMain.handle('slab:replaceLicense', async (e) => {
+  if (!fromSettings(e)) return REFUSED;
   const win = settingsWindow || gateWindow || BrowserWindow.getFocusedWindow();
   const r = await dialog.showOpenDialog(win, { title: 'Choose your Safety Lab Aero license file', properties: ['openFile'], filters: [{ name: 'Safety Lab license', extensions: ['lic', 'txt'] }] });
   if (r.canceled || !r.filePaths[0]) return { ok: false };
@@ -417,21 +463,24 @@ async function installLicense(blob) {
   saveActivation(a);
   return { ok: true, info: licenseSummary(v) };
 }
-ipcMain.on('slab:applyAndReload', () => { if (settingsWindow) settingsWindow.close(); if (mainWindow) mainWindow.reload(); else routeStartup(); });
-ipcMain.handle('slab:version', () => ({ app: app.getVersion(), web: readBuildInfo() }));
+ipcMain.on('slab:applyAndReload', (e) => { if (!fromSettings(e)) return; if (settingsWindow) settingsWindow.close(); if (mainWindow) mainWindow.reload(); else routeStartup(); });
+ipcMain.handle('slab:version', (e) => fromSettings(e) ? ({ app: app.getVersion(), web: readBuildInfo() }) : REFUSED);
 function readBuildInfo() { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'app', 'BUILD_INFO.json'), 'utf8')); } catch (_) { return null; } }
 
 // ---- gate IPC ----------------------------------------------------------------------------------
-ipcMain.handle('gate:getBootstrap', async () => {
+ipcMain.handle('gate:getBootstrap', async (e) => {
+  if (!fromGate(e)) return REFUSED;
   const a = loadActivation();
   const lic = a.license ? await verifyLicense(a.license, readConfig()) : null;
   return { agreements: AGREEMENTS, existing: { hasPasscode: !!readConfig().passcodeHash, license: lic ? Object.assign({ valid: lic.valid, plain: lic.plain }, licenseSummary(lic) || {}) : null } };
 });
-ipcMain.handle('gate:checkLicense', async (_e, blob) => {
+ipcMain.handle('gate:checkLicense', async (e, blob) => {
+  if (!fromGate(e)) return REFUSED;
   const v = await verifyLicense(String(blob || '').trim(), readConfig());
   return v.valid ? { ok: true, info: licenseSummary(v) } : { ok: false, error: v.plain };
 });
-ipcMain.handle('gate:pickLicenseFile', async () => {
+ipcMain.handle('gate:pickLicenseFile', async (e) => {
+  if (!fromGate(e)) return REFUSED;
   const win = gateWindow || BrowserWindow.getFocusedWindow();
   const r = await dialog.showOpenDialog(win, { title: 'Choose your Safety Lab Aero license file', properties: ['openFile'], filters: [{ name: 'Safety Lab license', extensions: ['lic', 'txt'] }] });
   if (r.canceled || !r.filePaths[0]) return { ok: false };
@@ -455,16 +504,18 @@ async function applySetupFileText(text) {
   writeConfig(cfg);
   return { ok: true, config: { backend: cfg.backend, backendUrl: cfg.backendUrl, ai: cfg.ai, aiEndpoint: cfg.aiEndpoint }, license: parsed.license || '', info };
 }
-ipcMain.handle('gate:pickSetupFile', async () => {
+ipcMain.handle('gate:pickSetupFile', async (e) => {
+  if (!fromGate(e)) return REFUSED;
   const win = gateWindow || BrowserWindow.getFocusedWindow();
   const r = await dialog.showOpenDialog(win, { title: 'Choose the Safety Lab Aero setup file from your organization', properties: ['openFile'], filters: [{ name: 'Safety Lab setup file', extensions: ['safetylab-setup', 'json'] }] });
   if (r.canceled || !r.filePaths[0]) return { ok: false };
   let text; try { text = fs.readFileSync(r.filePaths[0], 'utf8'); } catch (e) { return { ok: false, error: String(e) }; }
   return applySetupFileText(text);
 });
-ipcMain.handle('gate:applySetupText', async (_e, text) => applySetupFileText(String(text || '')));
+ipcMain.handle('gate:applySetupText', async (e, text) => fromGate(e) ? applySetupFileText(String(text || '')) : REFUSED);
 // Same file from the settings window of an already set-up desktop: config saved, license installed.
-ipcMain.handle('slab:applySetupFile', async () => {
+ipcMain.handle('slab:applySetupFile', async (e) => {
+  if (!fromSettings(e)) return REFUSED;
   const win = settingsWindow || BrowserWindow.getFocusedWindow();
   const r = await dialog.showOpenDialog(win, { title: 'Choose the Safety Lab Aero setup file from your organization', properties: ['openFile'], filters: [{ name: 'Safety Lab setup file', extensions: ['safetylab-setup', 'json'] }] });
   if (r.canceled || !r.filePaths[0]) return { ok: false };
@@ -474,7 +525,8 @@ ipcMain.handle('slab:applySetupFile', async () => {
   if (applied.license) { const inst = await installLicense(applied.license); if (!inst.ok) return inst; }
   return { ok: true };
 });
-ipcMain.handle('gate:complete', async (_e, data) => {
+ipcMain.handle('gate:complete', async (e, data) => {
+  if (!fromGate(e)) return REFUSED;
   data = data || {};
   const inst = await installLicense(String(data.license || '').trim());
   if (!inst.ok) return { ok: false, error: inst.error || 'License invalid.' };
@@ -486,7 +538,8 @@ ipcMain.handle('gate:complete', async (_e, data) => {
   openMainApp();
   return { ok: true };
 });
-ipcMain.handle('gate:unlock', async (_e, data) => {
+ipcMain.handle('gate:unlock', async (e, data) => {
+  if (!fromGate(e)) return REFUSED;
   const cfg = readConfig();
   if (cfg.passcodeHash && !verifyPasscode((data && data.passcode) || '', cfg.passcodeHash)) return { ok: false, error: 'Incorrect passcode.' };
   const s = await activationStatus();
@@ -494,8 +547,8 @@ ipcMain.handle('gate:unlock', async (_e, data) => {
   openMainApp();
   return { ok: true };
 });
-ipcMain.on('gate:reactivate', () => { if (gateWindow) { const g = gateWindow; gateWindow = null; g.close(); } openOnboarding(); });
-ipcMain.on('gate:quit', () => { app.quit(); });
+ipcMain.on('gate:reactivate', (e) => { if (!fromGate(e)) return; if (gateWindow) { const g = gateWindow; gateWindow = null; g.close(); } openOnboarding(); });
+ipcMain.on('gate:quit', (e) => { if (!fromGate(e)) return; app.quit(); });
 
 // ---- menus ----------------------------------------------------------------------------------------
 function buildGateMenu() {

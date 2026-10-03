@@ -6,7 +6,7 @@
   "backendKey": "sb_publishable_E8MpuoTYXt1mTALL9-PRe2_fth9bR3B",
   "ai": "own",
   "aiEndpoint": "https://safetylab.test.local/v1/ai",
-  "backendPin": "abbe0d548979cb7e70bbe0e8841eee32120d713c21da60ec52830587d7db07d8,8944751d953730c487aa4c538df7d76ad69ea6dcf2d3251b2273869f89f6ac36",
+  "backendPin": "8944751d953730c487aa4c538df7d76ad69ea6dcf2d3251b2273869f89f6ac36",
   "license": "eyJ0ZXN0Ijoibm90LWEtcmVhbC1saWNlbnNlIn0.sig",
   "webAppUrl": ""
 }

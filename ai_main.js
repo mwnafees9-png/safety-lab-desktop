@@ -20,6 +20,7 @@
 // ============================================================================
 'use strict';
 const secrets = require('./secrets.js');
+const R = require('./shell_rules.js');
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const KIND = 'anthropic_key';
@@ -30,7 +31,10 @@ function requestProblem(cfg, body, meta) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return 'malformed request';
   if (!body.model || !Array.isArray(body.messages)) return 'malformed request';
   if (meta && meta.itar === true) return 'export-controlled project: nothing leaves this computer';
-  return '';
+  // 3 Oct 2026: a Claude model, at least one message, and no more than Anthropic's own 32 MB
+  // request ceiling (shell_rules.aiBodyProblem), so the page cannot hand the main process an
+  // unbounded payload or spend the key on anything but what the app asks for.
+  return R.aiBodyProblem(body);
 }
 
 function headersFor(key) {
