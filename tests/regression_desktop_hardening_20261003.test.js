@@ -138,6 +138,10 @@ console.log('\n[csp] the app window gets a content security policy');
   check('no eval allowed (the web enforces the same)', out.indexOf("'unsafe-eval'") < 0);
 }
 
+console.log('\n[onboarding] finishing setup with the license already on this computer');
+check('gate:complete falls back to the stored license when none is handed over, and still verifies it', /const blob = String\(data\.license \|\| ''\)\.trim\(\) \|\| String\(loadActivation\(\)\.license \|\| ''\)\.trim\(\);\s*const inst = await installLicense\(blob\);/.test(main));
+check('the page sends no license on that path (why the fallback is needed)', /license: state\.license \|\| undefined/.test(read('onboarding.html')) && /state\.licenseOk = true; state\.license = '';/.test(read('onboarding.html')));
+
 try { fs.rmSync(TMP, { recursive: true, force: true }); } catch (_) {}
 console.log('\n' + (fail ? 'FAIL' : 'PASS') + '  ' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

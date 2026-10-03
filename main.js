@@ -528,7 +528,13 @@ ipcMain.handle('slab:applySetupFile', async (e) => {
 ipcMain.handle('gate:complete', async (e, data) => {
   if (!fromGate(e)) return REFUSED;
   data = data || {};
-  const inst = await installLicense(String(data.license || '').trim());
+  // 3 Oct 2026: "A valid license is already on this computer, press Next" sends no license (the
+  // page only holds one it was given in this session), and this used to verify the empty string,
+  // so finishing setup failed with "no license" for anyone re-accepting a new agreement version.
+  // Broken since 0.16.0. With nothing new handed over, the license already stored is re-verified
+  // and kept; a license handed over still replaces it, verified first, exactly as before.
+  const blob = String(data.license || '').trim() || String(loadActivation().license || '').trim();
+  const inst = await installLicense(blob);
   if (!inst.ok) return { ok: false, error: inst.error || 'License invalid.' };
   if (!data.acceptEula) return { ok: false, error: 'You must accept the agreement to continue.' };
   const a = loadActivation();
