@@ -1,0 +1,11 @@
+{
+  "format": "safetylab-setup/1",
+  "note": "Safety Lab Aero setup file for 192.0.2.2. Open it in the desktop app (Choose setup file). It carries no secrets.",
+  "backend": "own",
+  "backendUrl": "https://192.0.2.2",
+  "backendKey": "sb_publishable_dwK5cHrunh6tD9uAB_vrLB_64_qho0S",
+  "ai": "own",
+  "aiEndpoint": "https://192.0.2.2/v1/ai",
+  "backendPin": "3be896dc64dd05234bb973e61b4bea6fd26f8b383e2e3801034da91c23b3e82e",
+  "webAppUrl": ""
+}

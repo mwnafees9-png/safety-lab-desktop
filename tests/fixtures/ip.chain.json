@@ -1,0 +1,5 @@
+{
+  "note": "Captured 5 Oct 2026 from a real install.sh run against the bare IP 192.0.2.2 (test stack). Electron fingerprint form, leaf first.",
+  "host": "192.0.2.2",
+  "chain": ["sha256/O+iW3GTdBSNLuXPmG0vqb9Jvizg+LjgBA02pHCOz6C4=", "sha256//l9/SBmr0V7iXN+h5Giqwg9IkD8MWd1QSJjOkn0Pdco="]
+}
