@@ -83,9 +83,26 @@ cache_control_for () {  # <basename>
   esac
 }
 
+# 5 Oct 2026: a publish that dropped half way (one ~100 MB zip failed five times over wifi) left the
+# bucket MIXED: new dmgs and arm64 zip, old x64 zip, old manifest. Re-running used to re-upload
+# every ~100 MB file and hit the same wall. A payload whose bytes are already in the bucket is now
+# skipped: R2 returns a single-part object's MD5 as its ETag, read with a HEAD on a cache-busting
+# URL so the edge cannot answer with an old copy. Only exact matches are skipped. Manifests and
+# signatures are never skipped (tiny, and they must always be the ones signed in this run).
+_local_md5 () { if command -v md5 >/dev/null 2>&1; then md5 -q "$1"; else md5sum "$1" | cut -c1-32; fi; }
+_live_etag () {  # <basename>
+  local enc; enc="$(node -e 'process.stdout.write(encodeURIComponent(process.argv[1]))' "$1")"
+  curl -sI --max-time 30 "https://updates.safetylabaero.com/$PREFIX/$enc?nocache=$(date +%s)$RANDOM" \
+    | tr -d '\r' | awk 'tolower($1)=="etag:"{gsub(/"/,"",$2); print $2}' | tail -1
+}
 put () {  # <local file> <content-type>
-  local f="$1" ct="$2" tries=0 max=5 cc
+  local f="$1" ct="$2" tries=0 max=8 cc
   if [ ! -f "$f" ]; then echo "  SKIP (missing): $(basename "$f")"; return 0; fi
+  case "$(basename "$f")" in
+    latest*.yml|latest*.yml.sig) ;;
+    *) if [ "$(_live_etag "$(basename "$f")")" = "$(_local_md5 "$f")" ]; then
+         echo "  = $(basename "$f")  already in the bucket, byte for byte (skipped)"; return 0; fi ;;
+  esac
   cc="$(cache_control_for "$(basename "$f")")"
   echo "  ↑ $(basename "$f")  ($(du -h "$f" | cut -f1))  [$cc]"
   # Large DMGs/zips (~100 MB) over wifi occasionally drop mid-PUT ("fetch failed").
@@ -93,8 +110,8 @@ put () {  # <local file> <content-type>
   until wrangler r2 object put "$BUCKET/$PREFIX/$(basename "$f")" --file="$f" --content-type="$ct" --cache-control="$cc" --remote; do
     tries=$((tries + 1))
     if [ "$tries" -ge "$max" ]; then echo "  ✗ giving up on $(basename "$f") after $max attempts" >&2; return 1; fi
-    echo "  … upload dropped — retry $tries/$max in $((tries * 5))s"
-    sleep $((tries * 5))
+    echo "  … upload dropped — retry $tries/$max in $((tries * 10))s"
+    sleep $((tries * 10))
   done
 }
 
