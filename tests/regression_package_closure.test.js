@@ -92,7 +92,7 @@ const asars = [];
 })(path.join(ROOT, 'dist'), 0);
 
 // The asar in dist/ is whatever was built LAST, so before a package it is stale by definition and
-// would block the very build that fixes it. release.sh and build-win-docker.sh re-run this suite
+// would block the very build that fixes it. release.sh (mac and --win) re-runs this suite
 // with SLAB_CHECK_ASAR=1 immediately AFTER electron-builder, which is the only moment the artifact
 // check means anything. The closure check above always runs.
 if (process.env.SLAB_CHECK_ASAR !== '1') {

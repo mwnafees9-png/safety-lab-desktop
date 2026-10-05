@@ -28,7 +28,7 @@ echo "Publishing Safety Lab Aero desktop v$VERSION  →  r2://$BUCKET/$PREFIX/"
 #     secrets.js and bridge_main.js missing from app.asar, because build.files is an allowlist and
 #     nobody added them; every installed copy died on launch and it was live for two weeks. The
 #     wall, the smoke gate and pull-web all read the SOURCE TREE, where the files are present.
-#     release.sh and build-win-docker.sh now run this after packaging, but this script is also run
+#     release.sh (mac and --win) now runs this after packaging, but this script is also run
 #     on its own, so it refuses here too. Nothing is uploaded unless the asar is complete.
 echo "── packaged artifact ────────────────────────────────"
 SLAB_CHECK_ASAR=1 node "$HERE/tests/regression_package_closure.test.js" \
@@ -46,7 +46,7 @@ for y in latest-mac.yml latest.yml latest-linux.yml; do
   MV="$(sed -n 's/^version:[[:space:]]*//p' "$DIST/$y" | head -1 | tr -d "'\"")"
   if [ "$MV" != "$VERSION" ]; then
     echo "  REFUSED: $y says version $MV but package.json says $VERSION" >&2
-    echo "    that manifest is from an old build. Build this platform first (build-win-docker.sh / release.sh)." >&2
+    echo "    that manifest is from an old build. Build this platform first (release.sh, or release.sh --win)." >&2
     STALE=1
   fi
   for u in $(sed -n 's/^[[:space:]]*-[[:space:]]*url:[[:space:]]*//p' "$DIST/$y" | tr -d "'\"" | tr ' ' '\001'); do
