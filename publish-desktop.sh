@@ -59,6 +59,14 @@ for y in latest-mac.yml latest.yml latest-linux.yml; do
 done
 [ "$STALE" = "0" ] || { echo "Nothing published. Fix the build, then run this again." >&2; exit 1; }
 
+# --- REFUSE a mixed release (5 Oct 2026). The check above compares version numbers in the
+#     manifests only. On 5 Oct a Mac-only rebuild at the live version passed it and re-signed the
+#     afternoon's Windows build as current beside a newer Mac build. This opens every packaged app
+#     and requires one version and one web build across them, a Windows build in the release, and
+#     a version number that is not already live with other contents. See tools/release/consistency.mjs.
+echo "── one release, every platform ──────────────────────"
+node "$HERE/tools/release/consistency.mjs" "$DIST" "$VERSION" || exit 1
+
 # --- CACHE LIFETIME (16 Sep 2026). Two kinds of object live in this bucket and they need
 #     opposite caching:
 #
