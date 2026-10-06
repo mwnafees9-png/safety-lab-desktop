@@ -146,8 +146,22 @@ for f in "$DIST"/SafetyLabAero-*.dmg "$DIST"/SafetyLabAero-win-x64.exe "$DIST/Sa
 done
 if [ -n "$NEED_TOKEN" ] && [ -z "${UPLOAD_TOKEN:-}" ]; then
   echo "  REFUSED: these files are over 50 MB and go up in pieces, which needs your upload token:$NEED_TOKEN" >&2
-  echo "    Run:  export UPLOAD_TOKEN='...'   (the one you saved), then run this again. Nothing was uploaded." >&2
+  echo "    Set it in this window (the one you saved), then run this again. Nothing was uploaded." >&2
   exit 1
+fi
+# ...and the token must be the real one: asked of the site before a byte is sent (an unknown upload id
+# is answered 500/400 for a good token and 401 for a bad one). A placeholder or an old token stops here.
+if [ -n "$NEED_TOKEN" ]; then
+  TOKCHK=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -X POST -H "x-upload-token: $UPLOAD_TOKEN" \
+    "${SLAB_UPLOAD_API:-https://safetylabaero.com/api/upload}?action=abort&key=desktop/token-check&uploadId=none" || echo net)
+  if [ "$TOKCHK" = "401" ]; then
+    echo "  REFUSED: the site does not accept this upload token (is it a placeholder or an old one?). Nothing was uploaded." >&2
+    echo "    Set the token you saved in this window, or make a new one (it replaces the old):" >&2
+    echo "      export UPLOAD_TOKEN=\$(openssl rand -hex 32)" >&2
+    echo "      printf %s \"\$UPLOAD_TOKEN\" | npx wrangler secret put UPLOAD_TOKEN -c ../safety-lab-deploy/wrangler.dist.jsonc" >&2
+    exit 1
+  fi
+  [ "$TOKCHK" = "net" ] && { echo "  REFUSED: could not reach safetylabaero.com to check the upload token. Check the connection and run again." >&2; exit 1; }
 fi
 
 # --- Website download targets (stable, version-agnostic names) + blockmaps ---

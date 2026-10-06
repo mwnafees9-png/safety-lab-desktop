@@ -32,13 +32,20 @@ const R = path.join(__dirname, '..');
   const r = await new Promise(ok => { const p = cp.spawn('bash', [path.join(R, 'upload-via-worker.sh'), file], { env: Object.assign({}, process.env, { UPLOAD_TOKEN: 'tok', CACHE_CONTROL: 'public, max-age=31536000, immutable', RETRY_SLEEP: '0', SLAB_UPLOAD_API: 'http://127.0.0.1:' + port + '/api/upload', SLAB_UPLOAD_PUBLIC: 'http://127.0.0.1:' + port }) });
     let out = ''; p.stdout.on('data', d => out += d); p.stderr.on('data', d => out += d); p.on('close', code => ok({ code, out })); });
   srv.close();
+  const srv2 = http.createServer((req, res) => { res.writeHead(req.headers['x-upload-token'] === 'tok' ? 200 : 401, { 'content-type': 'application/json' }); res.end('{"error":"unauthorized"}'); });
+  await new Promise(ok => srv2.listen(0, '127.0.0.1', ok)); const port2 = srv2.address().port;
   check('the upload finishes', r.code === 0, r.out.slice(-400));
   check('a dropped piece is sent again, not fatal', seen.drops === 1 && /part 2 dropped/.test(r.out));
   check('the file arrives byte for byte (a name with spaces included)', !!store['desktop/Safety Lab Aero-9.9.9-mac.zip'] && store['desktop/Safety Lab Aero-9.9.9-mac.zip'].equals(data));
   check('the cache lifetime reaches the server', seen.cc === 'public, max-age=31536000, immutable', String(seen.cc));
+  { const r2 = await new Promise(ok => { const p = cp.spawn('bash', [path.join(R, 'upload-via-worker.sh'), file], { env: Object.assign({}, process.env, { UPLOAD_TOKEN: 'YOUR-SAVED-TOKEN', RETRY_SLEEP: '0', SLAB_UPLOAD_API: 'http://127.0.0.1:' + port2 + '/api/upload', SLAB_UPLOAD_PUBLIC: 'http://127.0.0.1:' + port2 }) });
+      let out = ''; p.stdout.on('data', d => out += d); p.stderr.on('data', d => out += d); p.on('close', code => ok({ code, out })); });
+    check('a wrong token is reported in plain words, not a silent failure', r2.code !== 0 && /refused the upload token/.test(r2.out), r2.out.slice(-300)); }
+  srv2.close();
   fs.rmSync(dir, { recursive: true, force: true });
 
   console.log('[2] publish-desktop.sh');
+  check('the token is checked with the site before anything is uploaded', (() => { const p = fs.readFileSync(path.join(R, 'publish-desktop.sh'), 'utf8'); const i = p.indexOf('the site does not accept this upload token'); return i > 0 && i < p.indexOf('\nput "'); })());
   const pub = fs.readFileSync(path.join(R, 'publish-desktop.sh'), 'utf8');
   const put = pub.slice(pub.indexOf('put () {'), pub.indexOf('\n}\n', pub.indexOf('put () {')));
   check('files over 50 MB go through upload-via-worker.sh with their cache lifetime', /BIG_BYTES=\$\(\(50 \* 1024 \* 1024\)\)/.test(pub) && /-gt "\$\{BIG_BYTES:-52428800\}"/.test(put) && /CACHE_CONTROL="\$cc" bash "\$HERE\/upload-via-worker\.sh" "\$f"/.test(put));

@@ -43,8 +43,14 @@ trap 'rm -rf "$TMP"' EXIT
 split -b "$PART_BYTES" "$FILE" "$TMP/part_"
 
 # --- create the multipart upload -------------------------------------------
-CREATE=$(curl -sf --retry 5 --retry-all-errors --max-time 30 -X POST -H "x-upload-token: $UPLOAD_TOKEN" \
-  "$API?action=create&key=$ENC_KEY&ct=$CT$CC_Q")
+CREATE=$(curl -s --retry 5 --max-time 30 -X POST -H "x-upload-token: $UPLOAD_TOKEN" -w '\n%{http_code}' \
+  "$API?action=create&key=$ENC_KEY&ct=$CT$CC_Q") || CREATE=$'\nnet'
+CODE="${CREATE##*$'\n'}"; CREATE="${CREATE%$'\n'*}"
+case "$CODE" in
+  200) ;;
+  401) echo "ERROR: the site refused the upload token (a placeholder, or not the current one)." >&2; exit 1 ;;
+  *)   echo "ERROR: could not start the upload (answer: $CODE ${CREATE:0:120})." >&2; exit 1 ;;
+esac
 UPLOAD_ID=$(python3 -c "import json,sys;print(json.loads(sys.argv[1])['uploadId'])" "$CREATE")
 echo "  uploadId: ${UPLOAD_ID:0:18}…"
 
