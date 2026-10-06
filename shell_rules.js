@@ -354,5 +354,16 @@ function ipcSenderOk(sender, expected) {
   } catch (_) { return false; }
 }
 
-module.exports = { HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT, normalizeFingerprint, normalizePins, pinDecision, hostnameOf,
+// The license held on the customer's own server (6 Oct 2026). On start, an app set up for its own
+// server fetches that server's license; this decides whether it replaces the one stored on this
+// computer. The server's license is taken only when it verifies for THIS server, and only when it
+// differs from what is stored. A valid stored license is never swapped for an invalid one; a valid
+// server license replaces a stored one (renewal, trial to paid), since the server is the authority.
+function takeServerLicense(stored, fromServer, storedBlob, serverBlob) {
+  if (!fromServer || !fromServer.valid || !serverBlob) return false;
+  if (String(serverBlob).trim() === String(storedBlob || '').trim()) return false;
+  return true;
+}
+
+module.exports = { takeServerLicense, HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT, normalizeFingerprint, normalizePins, pinDecision, hostnameOf,
   SECRET_KINDS, SECRET_META_KEYS, publicHostProblem, checkSecret, AI_MAX_BODY_BYTES, aiBodyProblem, fileUrlInside, fileUrlIs, ipcSenderOk };

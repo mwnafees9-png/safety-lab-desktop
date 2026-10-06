@@ -225,8 +225,40 @@ async function activationStatus() {
   if (lic.valid && okEula) return { state: cfg.passcodeHash ? 'lock' : 'app', a, lic, cfg };
   return { state: 'onboard', a, lic, cfg };
 }
+// 6 Oct 2026: the license lives on the customer's own server. An app set up for its own server asks
+// that server for it on every start (through the app's own network session, so the same certificate
+// pin and egress rules apply), and stores it when it verifies and is new: a renewal or a trial turning
+// into a paid license reaches every computer without anyone loading a file. Never blocks a start for
+// long: no answer within a few seconds and the stored license is used as before.
+async function refreshLicenseFromServer() {
+  const cfg = readConfig();
+  if (cfg.backend !== 'own' || cfg.ai !== 'own' || !cfg.aiEndpoint || configProblem(cfg)) return;
+  let blob = '';
+  try {
+    const part = session.fromPartition('persist:slab-app');
+    installEgressGuard(part, cfg);
+    installCertificatePin(part);
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 4000);
+    try {
+      const r = await part.fetch(String(cfg.aiEndpoint).replace(/\/+$/, '') + '/license', { signal: ctl.signal, cache: 'no-store' });
+      if (!r.ok) return;
+      blob = String(((await r.json()) || {}).license || '').trim();
+    } finally { clearTimeout(t); }
+  } catch (_) { return; }
+  if (!blob) return;
+  const a = loadActivation();
+  const fromServer = await verifyLicense(blob, cfg);
+  const stored = a.license ? await verifyLicense(a.license, cfg) : null;
+  if (!R.takeServerLicense(stored, fromServer, a.license, blob)) return;
+  a.license = blob;
+  a.maxIssuedSeen = Math.max(Number(a.maxIssuedSeen || 0) || 0, fromServer.maxSeenNext || 0);
+  a.activatedAt = a.activatedAt || new Date().toISOString();
+  saveActivation(a);
+  console.log('[slab] license taken from the server: ' + (fromServer.customer || '') + ', ' + (fromServer.id || ''));
+}
 async function routeStartup() {
   if (mainWindow) { mainWindow.focus(); return; }
+  await refreshLicenseFromServer();
   const s = await activationStatus();
   if (s.state === 'app') openMainApp();
   else if (s.state === 'lock') openLock();
