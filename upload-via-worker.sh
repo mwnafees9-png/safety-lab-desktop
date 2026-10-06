@@ -11,7 +11,8 @@
 # The remote key is desktop/<basename of the file>. Content-type inferred.
 set -euo pipefail
 
-API="https://safetylabaero.com/api/upload"
+API="${SLAB_UPLOAD_API:-https://safetylabaero.com/api/upload}"          # override for the test wall only
+PUBLIC_BASE="${SLAB_UPLOAD_PUBLIC:-https://updates.safetylabaero.com}"
 PART_BYTES=$((5 * 1024 * 1024))
 MAX_TRIES=25
 
@@ -29,6 +30,10 @@ esac
 KEY="desktop/$NAME"
 ENC_KEY="$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1], safe='/'))" "$KEY")"
 SIZE=$(stat -f%z "$FILE" 2>/dev/null || stat -c%s "$FILE")
+# 6 Oct 2026: publish-desktop.sh says how long the edge may cache the file (one minute for names
+# reused every release, forever for version-named ones). Without it the zone default (4 hours) applies.
+CC_Q=""
+if [ -n "${CACHE_CONTROL:-}" ]; then CC_Q="&cc=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1], safe=''))" "$CACHE_CONTROL")"; fi
 
 echo "Uploading $NAME ($((SIZE / 1048576)) MB) → r2:$KEY in $((PART_BYTES / 1048576))MB parts"
 
@@ -38,8 +43,8 @@ trap 'rm -rf "$TMP"' EXIT
 split -b "$PART_BYTES" "$FILE" "$TMP/part_"
 
 # --- create the multipart upload -------------------------------------------
-CREATE=$(curl -sf --max-time 30 -X POST -H "x-upload-token: $UPLOAD_TOKEN" \
-  "$API?action=create&key=$ENC_KEY&ct=$CT")
+CREATE=$(curl -sf --retry 5 --retry-all-errors --max-time 30 -X POST -H "x-upload-token: $UPLOAD_TOKEN" \
+  "$API?action=create&key=$ENC_KEY&ct=$CT$CC_Q")
 UPLOAD_ID=$(python3 -c "import json,sys;print(json.loads(sys.argv[1])['uploadId'])" "$CREATE")
 echo "  uploadId: ${UPLOAD_ID:0:18}…"
 
@@ -64,8 +69,8 @@ for P in "$TMP"/part_*; do
         "$API?action=abort&key=$ENC_KEY&uploadId=$UPLOAD_ID" > /dev/null || true
       exit 1
     fi
-    echo "  … part $N dropped ($REASON) — retry $tries/$MAX_TRIES in 3s"
-    sleep 3
+    echo "  … part $N dropped ($REASON) — retry $tries/$MAX_TRIES in ${RETRY_SLEEP:-3}s"
+    sleep "${RETRY_SLEEP:-3}"
   done
   ETAG=$(python3 -c "import json,sys;print(json.loads(sys.argv[1])['etag'])" "$RESP")
   echo "  ✓ part $N/$(ls "$TMP"/part_* | wc -l | tr -d ' ')  etag ${ETAG:0:12}…"
@@ -75,13 +80,13 @@ done
 PARTS_JSON="$PARTS_JSON]"
 
 # --- complete ----------------------------------------------------------------
-DONE=$(curl -sf --max-time 60 -X POST -H "x-upload-token: $UPLOAD_TOKEN" \
+DONE=$(curl -sf --retry 5 --retry-all-errors --max-time 120 -X POST -H "x-upload-token: $UPLOAD_TOKEN" \
   -H "content-type: application/json" --data "$PARTS_JSON" \
   "$API?action=complete&key=$ENC_KEY&uploadId=$UPLOAD_ID")
 echo "  assembled: $DONE"
 
 # --- verify ------------------------------------------------------------------
-GOT=$(curl -sI --max-time 20 "https://updates.safetylabaero.com/$ENC_KEY?cb=$(date +%s)" | tr -d '\r' | awk 'tolower($1)=="content-length:"{print $2}')
+GOT=$(curl -sI --max-time 20 "$PUBLIC_BASE/$ENC_KEY?cb=$(date +%s)" | tr -d '\r' | awk 'tolower($1)=="content-length:"{print $2}')
 if [ "$GOT" = "$SIZE" ]; then
   echo "✓ verified: remote size matches ($SIZE bytes). $NAME is live."
 else

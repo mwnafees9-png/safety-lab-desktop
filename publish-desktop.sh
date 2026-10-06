@@ -103,9 +103,24 @@ _live_etag () {  # <basename>
   curl -sI --max-time 30 "https://updates.safetylabaero.com/$PREFIX/$enc?nocache=$(date +%s)$RANDOM" \
     | tr -d '\r' | awk 'tolower($1)=="etag:"{gsub(/"/,"",$2); print $2}' | tail -1
 }
+# 6 Oct 2026: a file over 50 MB goes up in 5 MB pieces through the site's /api/upload route
+# (upload-via-worker.sh: 25 retries per piece), not as one wrangler PUT. One-piece uploads of the
+# ~85 MB Windows installer and ~100 MB Mac zips died eight times in a row on a home connection and
+# stopped the release half way. Needs UPLOAD_TOKEN, checked before anything is uploaded (below).
+BIG_BYTES=$((50 * 1024 * 1024))
 put () {  # <local file> <content-type>
   local f="$1" ct="$2" tries=0 max=8 cc
   if [ ! -f "$f" ]; then echo "  SKIP (missing): $(basename "$f")"; return 0; fi
+  if [ "$(wc -c < "$f" | tr -d ' ')" -gt "${BIG_BYTES:-52428800}" ]; then
+    case "$(basename "$f")" in latest*.yml|latest*.yml.sig) ;; *)
+      if [ "$(_live_etag "$(basename "$f")")" = "$(_local_md5 "$f")" ]; then
+        echo "  = $(basename "$f")  already in the bucket, byte for byte (skipped)"; return 0; fi ;;
+    esac
+    cc="$(cache_control_for "$(basename "$f")")"
+    echo "  ↑ $(basename "$f")  ($(du -h "$f" | cut -f1)) in pieces  [$cc]"
+    CACHE_CONTROL="$cc" bash "$HERE/upload-via-worker.sh" "$f" || { echo "  ✗ $(basename "$f") did not upload" >&2; return 1; }
+    return 0
+  fi
   case "$(basename "$f")" in
     latest*.yml|latest*.yml.sig) ;;
     *) if [ "$(_live_etag "$(basename "$f")")" = "$(_local_md5 "$f")" ]; then
@@ -122,6 +137,18 @@ put () {  # <local file> <content-type>
     sleep $((tries * 10))
   done
 }
+
+# --- Before uploading anything: big files need the upload token. Stopping here leaves the bucket
+#     exactly as it was, rather than half a release (6 Oct 2026).
+NEED_TOKEN=""
+for f in "$DIST"/SafetyLabAero-*.dmg "$DIST"/SafetyLabAero-win-x64.exe "$DIST/Safety Lab Aero-$VERSION-"*.zip; do
+  [ -f "$f" ] && [ "$(wc -c < "$f" | tr -d ' ')" -gt "$BIG_BYTES" ] && NEED_TOKEN="$NEED_TOKEN $(basename "$f" | tr ' ' '_')"
+done
+if [ -n "$NEED_TOKEN" ] && [ -z "${UPLOAD_TOKEN:-}" ]; then
+  echo "  REFUSED: these files are over 50 MB and go up in pieces, which needs your upload token:$NEED_TOKEN" >&2
+  echo "    Run:  export UPLOAD_TOKEN='...'   (the one you saved), then run this again. Nothing was uploaded." >&2
+  exit 1
+fi
 
 # --- Website download targets (stable, version-agnostic names) + blockmaps ---
 put "$DIST/SafetyLabAero-mac-arm64.dmg"          "application/x-apple-diskimage"
