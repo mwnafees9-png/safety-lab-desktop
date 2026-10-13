@@ -453,7 +453,7 @@
   "id": "conv-02",
   "source": "conversion-method",
   "topic": "Functional block diagram to gate logic",
-  "text": "In a functional block diagram, trace the flow that realises the function. A series chain of required blocks (each one needed) becomes an OR gate under loss-of-function, because losing any single block loses the function. A set of redundant or parallel blocks (any one sufficient) becomes an AND gate, because the function is lost only if all of them fail. A k-of-n voting arrangement becomes a combination requiring n minus k plus one failures."
+  "text": "In a functional block diagram, trace the flow that realizes the function. A series chain of required blocks (each one needed) becomes an OR gate under loss-of-function, because losing any single block loses the function. A set of redundant or parallel blocks (any one sufficient) becomes an AND gate, because the function is lost only if all of them fail. A k-of-n voting arrangement becomes a combination requiring n minus k plus one failures."
  },
  {
   "id": "conv-03",
@@ -483,7 +483,7 @@
   "id": "conv-07",
   "source": "conversion-method",
   "topic": "Model monitors, detection, and sequence honestly",
-  "text": "Where the architecture includes monitors, comparators, or reconfiguration, represent detection and sequence faithfully: a latent (undetected) failure differs from an annunciated one, and a protection that must act before a hazard is modelled with a priority-AND or an inhibit gate carrying the enabling condition. Do not credit a monitor, a coverage fraction, or a reconfiguration the architecture does not actually document."
+  "text": "Where the architecture includes monitors, comparators, or reconfiguration, represent detection and sequence faithfully: a latent (undetected) failure differs from an annunciated one, and a protection that must act before a hazard is modeled with a priority-AND or an inhibit gate carrying the enabling condition. Do not credit a monitor, a coverage fraction, or a reconfiguration the architecture does not actually document."
  },
  {
   "id": "conv-08",
@@ -525,7 +525,7 @@
   "id": "phase-02",
   "source": "lifecycle-method",
   "topic": "Allocation early, verification late",
-  "text": "When only the architecture and a failure-condition budget exist, build top-down allocation trees that apportion objectives and assurance across contributors, bottoming out at the level the architecture resolves. When the implementation exists, build bottom-up verification trees that reach basic events and parts and demonstrate the as-built design meets the allocated objectives. The same failure condition is modelled at coarser resolution early and finer resolution later; both are correct for their phase."
+  "text": "When only the architecture and a failure-condition budget exist, build top-down allocation trees that apportion objectives and assurance across contributors, bottoming out at the level the architecture resolves. When the implementation exists, build bottom-up verification trees that reach basic events and parts and demonstrate the as-built design meets the allocated objectives. The same failure condition is modeled at coarser resolution early and finer resolution later; both are correct for their phase."
  },
  {
   "id": "phase-03",
@@ -573,7 +573,7 @@
   "id": "ccfparam-01",
   "source": "NASA-SP-2011-3421",
   "topic": "Common-cause parametric models: beta-factor and Multiple Greek Letter",
-  "text": "Common-cause failures (CCF) defeat nominally independent redundancy through a shared root cause, and parametric models apportion a component's total failure probability q between independent and common-cause modes. The beta-factor model splits q into an independent part q(1-beta) and a group part q*beta that fails all redundant members together; beta is the fraction of a component's failures that are common-cause. The Multiple Greek Letter (MGL) model generalizes this for groups larger than two with conditional fractions beta, gamma, delta: gamma is the conditional fraction of common-cause failures that involve three or more members, delta four or more. Safety Lab Aero's solver implements MGL exactly, splitting a CCF group's contribution into tiers: a pair term q*beta*(1-gamma), a triple term q*beta*gamma*(1-delta), and a quadruple term q*beta*gamma*delta; setting gamma=delta=0 reduces MGL to the beta-factor model. These CCF terms enter the fault tree as explicit common-cause events so an apparent AND of redundant items does not read as independent when it is not."
+  "text": "Common-cause failures (CCF) defeat nominally independent redundancy through a shared root cause, and parametric models apportion a component's total failure probability q between independent and common-cause modes. The beta-factor model splits q into an independent part q(1-beta) and a group part q*beta that fails all redundant members together; beta is the fraction of a component's failures that are common-cause. The Multiple Greek Letter (MGL) model generalizes this for groups larger than two with conditional fractions beta, gamma, delta: gamma is the conditional fraction of common-cause failures that involve three or more members, delta four or more. Safety Lab Aero's solver implements MGL per NUREG/CR-5485: every specific common-cause event that fails a specific set of k members of a group of m is its own basic event with probability Q_k = rho_1*...*rho_k*(1-rho_(k+1))*Q_t/C(m-1,k-1), where rho_1=1, rho_2=beta, rho_3=gamma, rho_4=delta and rho_(m+1)=0, and each member keeps an independent part Q_1 = (1-beta)*Q_t. Beta alone is the beta-factor model, which is MGL with gamma=delta=1 (every common-cause failure fails the whole group); a gamma or delta that is not entered is 1. For a group of three, a specific pair fails together with probability q*beta*(1-gamma)/2 and all three with q*beta*gamma, so a 2-out-of-3 voting arrangement is only modeled correctly once gamma is entered. These CCF events appear by name in the fault tree's cut sets so an apparent AND of redundant items does not read as independent when it is not."
  },
  {
   "id": "uncert-01",

@@ -859,17 +859,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
             </div>
 
             <h4 style="color: var(--header-color); border-bottom: 1px solid var(--border-primary); padding-bottom: 5px;">Qualitative Severity Classifications</h4>
-            <table class="reference-table" style="margin-bottom: 8px;">
-                <thead><tr><th style="width: 13%;">Classification</th><th style="width: 22%;">Effect on Aircraft</th><th style="width: 22%;">Effect on Occupants or Other Persons Excluding Flightcrew</th><th style="width: 29%;">Effect on Flightcrew</th><th style="width: 14%;">Allowable Qualitative Probability</th></tr></thead>
-                <tbody>
-                    <tr><td class="cell-Catastrophic"><span class="sev-pill sev-cat">Catastrophic</span></td><td>Normally with hull loss.<div style="font-size:11.5px; margin-top:4px;">A failure condition that would prevent continued safe flight and landing is Catastrophic (AC 25.1309-1B §3.1.5 Note 1; AC 23.1309-1E: incapacitation or fatal injury to a flight crewmember, normally with loss of the airplane).</div></td><td>Multiple fatalities.</td><td>Fatalities or incapacitation.</td><td>Extremely improbable</td></tr>
-                    <tr><td class="cell-Hazardous"><span class="sev-pill sev-haz">Hazardous</span></td><td>Large reduction in functional capabilities or safety margins.</td><td>Serious or fatal injury to a small number of persons other than the flightcrew.</td><td>Physical distress or excessive workload such that the flightcrew cannot be relied upon to perform their tasks accurately or completely.</td><td>Extremely remote</td></tr>
-                    <tr><td class="cell-Major"><span class="sev-pill sev-maj">Major</span></td><td>Significant reduction in safety margins or functional capabilities.</td><td>Physical distress, possibly including injuries.</td><td>A physical discomfort or significant increase in workload or in conditions impairing the efficiency of the flightcrew.</td><td>Remote</td></tr>
-                    <tr><td class="cell-Minor"><span class="sev-pill sev-min">Minor</span></td><td>Slight reduction in functional capabilities or safety margins.</td><td>Physical discomfort.</td><td>Slight increase in workload.<div style="font-size:11.5px; margin-top:4px;">Includes routine flight plan changes and emergency procedures well within crew capability.</div></td><td>Probable</td></tr>
-                    <tr><td class="cell-Negligible"><span class="sev-pill sev-neg">No Safety Effect</span></td><td>No effect on operational capabilities or safety.</td><td>Inconvenience.</td><td>No effect on flightcrew workload.</td><td>No probability requirement</td></tr>
-                </tbody>
-            </table>
-                <p style="font-size:12px; margin:0 0 30px;">Effect wording per FAA AC 25.1309-1B Table 4-1; AC 23.1309-1E paragraph 8 defines the same five classes in the same terms. The qualitative probability terms are common to the FAA and EASA bases; the numeric probability targets and DAL assignment vary by certification basis and are set in the Certification basis block above. The AI assistant classifies against the verbatim AC 25.1309-1B / AC 23.1309-1E definitions for the project's basis on every severity-assigning pass.</p>
+            
+            <div id="sev-def-table"></div>
+                <p style="font-size:12px; margin:0 0 30px;">The numeric probability targets and DAL assignment are set by the certification basis block above. The AI assistant classifies against the definitions for the project's basis on every severity-assigning pass.</p>
 
             <h4 style="color: var(--header-color); border-bottom: 1px solid var(--border-primary); padding-bottom: 5px;">Applicable Quantitative Targets</h4>
             <p class="cfg-hint" title="Targets reflect the selection above. Probabilities are upper bounds (failures per flight hour); the design must demonstrate < target. DAL per SAE ARP4754A.">Upper bounds per flight hour · design must show &lt; target · DAL per ARP4754A.</p>
@@ -1490,7 +1482,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     <button id="btn-submit-cma" onclick="submitCMA()" style="background: #6d28d9;">Log CMA Entry</button>
                     <button id="btn-cancel-cma" onclick="cancelEdit('cma')" style="display:none; background:#94a3b8;">Cancel Edit</button>
                     
-                    <button type="button" class="cma-auto-detect-btn" onclick="autoDetectCommonModes()" title="Scan every fault tree for CCF groups (β/γ/δ) and shared/repeated events, and add them as suggested common-mode rows to review.">✨ Auto-detect from fault trees</button>
+                    
+                    <button type="button" class="cma-auto-detect-btn" onclick="autoDetectCommonModes()" title="Common causes in the fault trees (CCF groups, shared events, shared resources) are detected live as the trees change and each one must be decided. This runs the same check now.">✨ Check common causes now</button>
                 </div>
             </div>
             <div style="overflow-x: auto;">
@@ -1499,6 +1492,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                     <tbody id="cma-body"></tbody>
                 </table>
             </div>
+            
+            <div id="cma-decision-log"></div>
         </div>
 
         
@@ -1746,11 +1741,11 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                 <div class="controls" style="border-left-color: var(--color-warning, #ff9500); margin-top: 14px;">
                     <h5 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 600;">Export-Controlled Program (ITAR / EAR)</h5>
                     <p style="margin: 0 0 10px 0; font-size: 12px; color: var(--color-text-secondary);">
-                        Flag this project if its content is subject to ITAR or EAR controls. When enabled, cloud AI calls for this project are <strong>blocked at the server</strong> — controlled content is never forwarded to public Anthropic / Voyage endpoints, and BYO key mode is disabled. To use AI on a controlled program today, configure a self-hosted / air-gapped model endpoint below. A US-sovereign cloud routing option (Azure Government) is planned.
+                        Flag this project if its content is subject to ITAR or EAR controls. On Safety Lab's trial cloud a flagged project <strong>stays on this machine</strong>: no cloud save, no live sync, and cloud AI is off (a self-hosted / air-gapped model endpoint below still works). On your own server it works fully and stays there: AI goes only to your own AI endpoint, flagged as controlled so it reaches your government model or is refused, and your own Anthropic key is never used for it.
                     </p>
                     <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; text-transform: none; letter-spacing: 0; cursor: pointer;">
                         <input type="checkbox" id="ai-itar-toggle" onchange="toggleAiITAR()" style="width: 18px; height: 18px;">
-                        <span>This project is ITAR / EAR-controlled — block cloud AI routing (self-hosted only)</span>
+                        <span>This project is ITAR / EAR-controlled</span>
                     </label>
                     <div id="ai-itar-status" style="margin-top: 8px; font-size: 11.5px; color: var(--color-text-tertiary);"></div>
                 </div>
@@ -1835,7 +1830,6 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                                 <label>Backend</label>
                                 <select id="ai-provider-mode">
                                     <option value="cloud">Cloud — Claude via Safety Lab Aero proxy</option>
-                                    <option value="itar-cloud">ITAR cloud — proxy → Azure Gov</option>
                                     <option value="local">Self-hosted (local / air-gap)</option>
                                 </select>
                             </div>
@@ -2409,25 +2403,29 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                             <div style="flex: 1;" id="config-voting-container"><label>Voting 'k'</label><input type="number" id="config-voting-k" step="1" min="1" oninput="updateNodeData()" style="margin-bottom:0;"></div>
                         </div>
                         <div style="display: flex; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border-primary); padding-top: 15px; flex-wrap: wrap;" id="config-ccf-container">
+                            
                             <div style="flex: 1 1 140px;"><label>CCF Group ID</label><input type="text" id="config-ccf-group" oninput="updateNodeData()" placeholder="e.g., VALVE-GRP-1"></div>
-                            <div style="flex: 1 1 100px;"><label title="Fraction of failures that are common-cause (affecting ≥2 group members).">β (2-of-n)</label><input type="number" id="config-beta" step="0.01" min="0" max="1" value="0" oninput="updateNodeData()"></div>
-                            <div style="flex: 1 1 100px;"><label title="MGL: fraction of CCF events that affect ≥3 group members. Leave 0 for pure β-factor model.">γ (3-of-n)</label><input type="number" id="config-gamma" step="0.01" min="0" max="1" value="0" oninput="updateNodeData()"></div>
-                            <div style="flex: 1 1 100px;"><label title="MGL: fraction of ≥3-component CCF events that affect ≥4 group members. Leave 0 unless modeling quadruple-redundant subsystems.">δ (4-of-n)</label><input type="number" id="config-delta" step="0.01" min="0" max="1" value="0" oninput="updateNodeData()"></div>
-                            <div style="flex: 1 1 100%;"><p class="cfg-hint" title="β-only is the classic decomposition. Setting γ > 0 enables the Multiple Greek Letter model so cutset expansion produces 2-of-n, 3-of-n (and 4-of-n with δ) CCF rows.">β only = classic split · γ&gt;0 = MGL (3-of-n) · δ = 4-of-n. Hover for detail.</p></div>
+                            <div style="flex: 1 1 100px;"><label title="Beta: the share of each member's failures that are common cause (a shared cause fails 2 or more members).">β (beta)</label><input type="number" id="config-beta" step="0.01" min="0" max="1" value="0" oninput="updateNodeData()"></div>
+                            <div style="flex: 1 1 180px;"><label title="Beta factor: every common cause failure fails the whole group. Multiple Greek Letter (NUREG/CR-5485): gamma and delta say how many members a common cause failure reaches.">Model</label><select id="config-ccf-model" onchange="updateNodeData()"><option value="beta">Beta factor (β only)</option><option value="mgl">MGL (β, γ, δ)</option></select></div>
+                            <div style="flex: 1 1 100px;"><label title="MGL gamma: of the common cause failures, the share that reach 3 or more members. Blank = 1.">γ (gamma)</label><input type="number" id="config-gamma" step="0.01" min="0" max="1" placeholder="1 (beta factor)" oninput="updateNodeData()"></div>
+                            <div style="flex: 1 1 100px;"><label title="MGL delta: of the common cause failures reaching 3 or more, the share that reach 4 or more. Blank = 1.">δ (delta)</label><input type="number" id="config-delta" step="0.01" min="0" max="1" placeholder="1 (beta factor)" oninput="updateNodeData()"></div>
+                            <div style="flex: 1 1 220px;"><label>NUREG generic starting value for β</label><select id="config-ccf-preset" onchange="ccfApplyBetaPreset(this.value)"><option value="">Choose…</option><option value="0">β = 0.01: best case, separation and diversity</option><option value="1">β = 0.1: ordinary defenses</option><option value="2">β = 0.25: poorly defended</option></select></div>
+                            <div style="flex: 1 1 220px;"><label>Parameter source</label><input type="text" id="config-ccf-source" oninput="updateNodeData()" placeholder="e.g. NUREG/CR-5485 generic β, or your CCF data reference"></div>
+                            <div style="flex: 1 1 100%;"><p class="cfg-hint" title="NUREG/CR-5485: each specific common cause event (for example A and B failing together) is its own basic event with probability Q_k = ρ1·…·ρk·(1−ρk+1)·Q_t / C(m−1, k−1).">The parameters belong to the group: a change here applies to every member on every page. Beta only = beta factor: every common cause failure fails the whole group (γ = δ = 1). MGL: γ = share of common cause failures reaching 3 or more members, δ = share of those reaching 4 or more; a blank letter is 1.</p><div id="config-ccf-warn" style="display:none;"></div></div>
                         </div>
 
                         <div style="display: none; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border-primary); padding-top: 15px; flex-wrap: wrap;" id="config-spare-container">
-                            <div style="flex: 1 1 150px;"><label title="Dormancy factor α. A spare waiting its turn fails at λ·α. 0 = cold (no exposure while dormant), 1 = hot (standing by is as damaging as carrying the load), in between = warm. Only the DFT Monte-Carlo reads this — the static P(top) still uses the conservative AND bound.">Spare dormancy α (0 = cold, 1 = hot)</label><input type="number" id="config-spare-warmk" step="0.05" min="0" max="1" value="0" oninput="updateNodeData()" style="margin-bottom:0;"></div>
+                            <div style="flex: 1 1 150px;"><label title="Dormancy factor α. A spare waiting its turn fails at λ·α. 0 = cold (no exposure while dormant), 1 = hot (standing by is as damaging as carrying the load), in between = warm. The static P(top) uses it too: exactly when the spare gate's inputs are basic events with a constant failure rate used nowhere else in the tree, otherwise as the conservative upper bound primary AND (switch fails OR spare). The DFT Monte-Carlo gives the time-ordered value either way.">Spare dormancy α (0 = cold, 1 = hot)</label><input type="number" id="config-spare-warmk" step="0.05" min="0" max="1" value="0" oninput="updateNodeData()" style="margin-bottom:0;"></div>
                             <div style="flex: 1 1 150px;"><label title="Probability that a takeover succeeds when it is demanded. 1 = perfect switch. Below 1, a failed changeover fails the gate at the instant of the demand — the classic single point of failure a redundancy argument hides.">Switch success probability</label><input type="number" id="config-spare-switchp" step="0.01" min="0" max="1" value="1" oninput="updateNodeData()" style="margin-bottom:0;"></div>
-                            <div style="flex: 1 1 100%;"><p class="cfg-hint" title="Defaults are the historical cold-spare, perfect-switch model, so leaving them alone does not move any existing number.">α = 0 and p = 1 is the classic cold spare with a perfect switch — the defaults, and unchanged from before. Run the DFT Monte-Carlo to see the effect of either.</p></div>
+                            <div style="flex: 1 1 100%;"><p class="cfg-hint" title="Defaults are the cold-spare, perfect-switch model. The canvas line under the gate says whether the static number solved this gate exactly or holds an upper bound.">α = 0 and p = 1 is the classic cold spare with a perfect switch, the defaults. Both settings count in the static P(top); run the DFT Monte-Carlo to cross-check.</p></div>
                         </div>
 
                         <div class="cfg-stack" style="display: none; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border-primary); padding-top: 15px;" id="config-dal-container">
                             <div style="flex: 1;">
-                                <label title="Independence between AND/INHIBIT members is the precondition for any DAL reduction (ARP4761A Table P2 step f) and for treating P(top) as an independent product. It must be substantiated by Common Mode Analysis.">Member Independence (AND/INHIBIT)</label>
+                                <label title="Independence between the members of an AND, INHIBIT or k-of-n VOTING gate is the precondition for any DAL reduction (ARP4761A Table P2 step f) and for treating P(top) as an independent product. The reduction is only taken once Common Mode Analysis has substantiated it.">Member Independence (AND/INHIBIT/VOTING)</label>
                                 <select id="config-dal-independence" onchange="updateNodeData()">
-                                    <option value="claimed">Claimed — provisional, pending CMA</option>
-                                    <option value="substantiated">Substantiated — CMA-demonstrated</option>
+                                    <option value="claimed">Claimed, pending CMA (no reduction yet)</option>
+                                    <option value="substantiated">Substantiated by CMA (reduction taken)</option>
                                     <option value="none">None — no claim (no reduction)</option>
                                     <option value="compromised">Compromised — common mode found</option>
                                 </select>
@@ -2435,8 +2433,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                             <div style="flex: 1;">
                                 <label>DALgebra Option (when independent)</label>
                                 <select id="config-dal-option" onchange="updateNodeData()">
-                                    <option value="opt2">Option 2 — two members at parent − 1, others at the floor</option>
-                                    <option value="opt1">Option 1 — one carrier at parent, others at the floor</option>
+                                    <option value="opt2">Option 2: two members one level below the failure condition DAL, others two below</option>
+                                    <option value="opt1">Option 1: one carrier keeps the failure condition DAL, others two below</option>
                                 </select>
                             </div>
                             <div style="flex: 1;" id="config-dal-carrier-container">
@@ -2444,7 +2442,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
                                 <select id="config-dal-carrier" onchange="updateNodeData()"></select>
                             </div>
                             <div style="flex: 1 1 100%;">
-                                <p class="cfg-hint" title="ARP4754B §5.2.3 / ARP4761A Table P2: a reduction below the top DAL requires functional independence between members, substantiated by Common Mode Analysis. Without it, members hold the top DAL. A compromised claim reverts the reduction and flags the probability product (a common-cause term is then required).">DAL reduction needs independent members (CMA). Compromised = reverted. Non-carriers drop 2 levels (Opt 1) or the pair drops 1 (Opt 2), relative to the top DAL · floor E. Hover for detail.</p>
+                                <p class="cfg-hint" title="ARP4754B 5.2 / ARP4761A App P (Table P2 and P.5): a reduction below the failure condition DAL requires independence between the members, substantiated by Common Mode Analysis. Until then members keep the incoming DAL and the canvas badge shows what they would drop to. The whole tree stays in the failure condition&#39;s row: in every group of members that together cause it, one keeps its DAL or two sit one level below, and nobody goes more than two levels below, however many AND gates are nested. A gate that already sits one level below keeps one member at that level. A compromised claim reverts the reduction and flags the probability product (a common-cause term is then required).">No reduction until CMA substantiates independence. The failure condition DAL sets the row: one member keeps it (Opt 1) or two sit one level below (Opt 2), nobody more than two levels below, however deep. Hover for detail.</p>
                             </div>
                         </div>
 
@@ -3873,7 +3871,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     
     
-    <script src="slab_config.js?v=1.3" defer></script>
+    <script src="slab_config.js?v=1.5" defer></script>
     
     <script src="license_token.js?v=1.0" defer></script>
     
@@ -3908,8 +3906,8 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="fuzz_bot.js?v=1.0" defer></script>
     
-    <script src="presence.js?v=2.1" defer></script>
-    <script src="edit_locks.js?v=1.2" defer></script>
+    <script src="presence.js?v=2.3" defer></script>
+    <script src="edit_locks.js?v=1.4" defer></script>
     
     <script src="rev_diff.js?v=1.0" defer></script>
     
@@ -3919,12 +3917,15 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="mc_crosscheck.js?v=1.0" defer></script>
     
-    <script src="unc_bands.js?v=1.0" defer></script>
+    <script src="unc_bands.js?v=1.1" defer></script>
     <script src="paginate.js?v=1.3" defer></script>
-    <script src="fta_engine.js?v=1.7" defer></script>
+    <script src="fta_engine.js?v=1.10" defer></script>
+    
+    <script src="top_basis.js?v=1.0" defer></script>
     
     <script src="safety_targets.js?v=1.8" defer></script>
-    <script src="severity_rubrics.js?v=1.3" defer></script>
+    <script src="severity_rubrics.js?v=1.4" defer></script>
+    <script src="severity_tables.js?v=1.1" defer></script>
     <script src="f3061_dal.js?v=1.0" defer></script>
     <script src="reliability_data.js?v=1.1" defer></script>
     <script src="catalogue_data.js?v=1.11" defer></script>
@@ -3932,9 +3933,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="config_data.js?v=1.1" defer></script>
     <script src="ai_memory.js?v=1.0" defer></script>
     <script src="importers.js?v=1.9" defer></script>
-    <script src="core_modules.js?v=1.10" defer></script>
+    <script src="core_modules.js?v=1.11" defer></script>
     
-    <script src="fta_quant_modules.js?v=66.23" defer></script>
+    <script src="fta_quant_modules.js?v=66.26" defer></script>
     
     <script src="event_reuse.js?v=1.2" defer></script>
     
@@ -3944,29 +3945,29 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="node_identity.js?v=1.0" defer></script>
     <script src="node_identity_ui.js?v=1.5" defer></script>
-    <script src="fta_view_modules.js?v=66.42" defer></script>
+    <script src="fta_view_modules.js?v=66.45" defer></script>
     
     <script src="gt_thread.js?v=0.91" defer></script>
-    <script src="data_ops_modules.js?v=66.47" defer></script>
+    <script src="data_ops_modules.js?v=66.51" defer></script>
     
-    <script src="support_modules.js?v=66.39" defer></script>
+    <script src="support_modules.js?v=66.43" defer></script>
     
-    <script src="helpers_modules.js?v=3.16" defer></script>
+    <script src="helpers_modules.js?v=3.23" defer></script>
     <script src="cloud_writer.js?v=1.1" defer></script>
-    <script src="severity_axes.js?v=1.35" defer></script>
+    <script src="severity_axes.js?v=1.36" defer></script>
     
     <script src="fha_derive.js?v=1.2" defer></script>
     
-    <script src="bindings_modules.js?v=1.50" defer></script>
+    <script src="bindings_modules.js?v=1.55" defer></script>
     
-    <script src="misc_fn_modules.js?v=66.74" defer></script>
+    <script src="misc_fn_modules.js?v=66.77" defer></script>
     <script src="safety_lab.js?v=65.62" defer></script>
     
     <script src="sl_env.js?v=1.1" defer></script>
     
     <script src="project_stores.js?v=1.0" defer></script>
     <script src="crdt_gc.js?v=1.1" defer></script>
-    <script src="crdt_sync.js?v=2.2" defer></script>
+    <script src="crdt_sync.js?v=2.6" defer></script>
     <script src="save_watch.js?v=1.2" defer></script>
     <script src="data_change.js?v=1.0" defer></script>
     <script src="render_pass.js?v=1.0" defer></script>
@@ -3979,7 +3980,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="ub_stimuli.js?v=1.0" defer></script>
     <script src="qual_arg.js?v=1.0" defer></script>
     
-    <script src="critical_gates.js?v=1.0" defer></script>
+    <script src="critical_gates.js?v=1.1" defer></script>
     
     <script src="req_basis.js?v=1.1" defer></script>
     
@@ -3994,12 +3995,12 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="design_baseline.js?v=1.0" defer></script>
     
     <script src="req_taxonomy.js?v=1.1" defer></script>
-    <script src="assurance_modules.js?v=1.35" defer></script>
+    <script src="assurance_modules.js?v=1.36" defer></script>
     <script src="engine_modules.js?v=1.3" defer></script>
     
     <script src="ai_badges.js?v=1.4" defer></script>
     <script src="autonomy_metrics.js?v=0.3" defer></script>
-    <script src="reports.js?v=66.15" defer></script>
+    <script src="reports.js?v=66.16" defer></script>
     
     <script src="ram_modules.js?v=1.9" defer></script>
     
@@ -4029,7 +4030,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="problem_reports.js?v=1.2" defer></script>
     
-    <script src="mmel_module.js?v=1.3" defer></script>
+    <script src="mmel_module.js?v=1.4" defer></script>
     <script src="mel_fha_crosscheck.js?v=1.0" defer></script>
     
     <script src="mod_impact.js?v=1.10" defer></script>
@@ -4038,7 +4039,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="cea_graph.js?v=1.2" defer></script>
     
-    <script src="sse_export.js?v=1.2" defer></script>
+    <script src="sse_export.js?v=1.3" defer></script>
     
     <script src="items_workspace.js?v=1.0" defer></script>
     
@@ -4053,7 +4054,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ram_cockpit.js?v=1.1" defer></script>
     
-    <script src="budget_ledger.js?v=1.45" defer></script>
+    <script src="budget_ledger.js?v=1.46" defer></script>
     
     <script src="importance_heat.js?v=2.3" defer></script>
     
@@ -4069,20 +4070,20 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="ffs_module.js?v=1.32" defer></script>
     
-    <script src="asa_triage.js?v=1.12" defer></script>
+    <script src="asa_triage.js?v=1.13" defer></script>
     <script src="idp_seed_trees.js?v=1.2" defer></script>
     
     <script src="gt_integrity.js?v=1.8" defer></script>
     
     <script src="q_completeness.js?v=1.1" defer></script>
     
-    <script src="notify_agents.js?v=1.9" defer></script>
+    <script src="notify_agents.js?v=2.1" defer></script>
     
     <script src="delete_guard.js?v=1.2" defer></script>
     
     <script src="session_resume.js?v=1.4" defer></script>
     
-    <script src="cloud_sync.js?v=2.2" defer></script>
+    <script src="cloud_sync.js?v=2.3" defer></script>
     
     <script src="reqif_import.js?v=1.4" defer></script>
     
@@ -4093,13 +4094,13 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="xmi_import.js?v=0.9" defer></script>
     
     <script src="roundtrip_proof.js?v=1.1" defer></script>
-    <script src="ccf_similarity.js?v=1.3" defer></script>
+    <script src="ccf_similarity.js?v=1.4" defer></script>
     
     <script src="alias_registry.js?v=1.1" defer></script>
     <script src="rename_guard.js?v=1.6" defer></script>
     
     <script src="renumber_migration.js?v=1.1" defer></script>
-    <script src="invariants.js?v=1.5" defer></script>
+    <script src="invariants.js?v=1.6" defer></script>
     
     <script src="rbd_xcheck.js?v=0.2" defer></script>
     
@@ -4110,20 +4111,20 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="ram_hub.js?v=1.2" defer></script>
     <script src="engine_selftest.js?v=1.1" defer></script>
     <script src="ram_trace.js?v=1.12" defer></script>
-    <script src="model_checks.js?v=1.04" defer></script>
-    <script src="tree_warm.js?v=1.0" defer></script>
+    <script src="model_checks.js?v=1.05" defer></script>
+    <script src="tree_warm.js?v=1.3" defer></script>
     <script src="fault_sim.js?v=1.22" defer></script>
     <script src="tab_guard.js?v=1.0" defer></script>
     <script src="journal.js?v=1.1" defer></script>
-    <script src="change_journal_sync.js?v=1.1" defer></script>
-    <script src="pssa_ssa_pages.js?v=1.0" defer></script>
+    <script src="change_journal_sync.js?v=1.2" defer></script>
+    <script src="pssa_ssa_pages.js?v=1.1" defer></script>
     <script src="nav_sfha_tree.js?v=1.3" defer></script>
     <script src="assumption_moat.js?v=1.4" defer></script>
     <script src="hf_ergo.js?v=0.2" defer></script>
     <script src="hf_assumptions.js?v=0.9" defer></script>
     <script src="hf_register_panel.js?v=1.9" defer></script>
     <script src="hf_analyses.js?v=1.18" defer></script>
-    <script src="field_defs.js?v=1.5" defer></script>
+    <script src="field_defs.js?v=1.6" defer></script>
     <script src="lane_ai_bar.js?v=1.3" defer></script>
     <script src="hf_evidence.js?v=0.2" defer></script>
     
@@ -4134,7 +4135,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="fcim_combined.js?v=1.5" defer></script>
     <script src="a11_sequencing.js?v=1.4" defer></script>
-    <script src="corpus_retrieve.js?v=1.3" defer></script>
+    <script src="corpus_retrieve.js?v=1.4" defer></script>
     
     <script src="stpa_core.js?v=1.2" defer></script>
     
@@ -4169,13 +4170,15 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="mbsa_schema.js?v=1.1" defer></script>
     <script src="zonal_model.js?v=1.1" defer></script>
     <script src="physical_independence.js?v=1.1" defer></script>
-    <script src="independence_claims.js?v=1.0" defer></script>
+    <script src="independence_claims.js?v=1.1" defer></script>
     <script src="physical_crosscheck.js?v=1.1" defer></script>
     <script src="zonal_ui.js?v=1.13" defer></script>
     <script src="equipment_hazards.js?v=1.1" defer></script>
     <script src="beta_scoring.js?v=1.0" defer></script>
     <script src="zsa_walkthrough.js?v=1.4" defer></script>
     <script src="cma_walkthrough.js?v=1.31" defer></script>
+    
+    <script src="cma_live.js?v=1.0" defer></script>
     <script src="pra_library.js?v=1.3" defer></script>
     <script src="pra_canvas.js?v=1.22" defer></script>
     <script src="msg3_zonal.js?v=1.21" defer></script>
@@ -4225,7 +4228,7 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script src="fta_tree_picker.js?v=1.2" defer></script>
     
     <script src="nav_return.js?v=1.0" defer></script>
-    <script src="fta_freq.js?v=1.32" defer></script>
+    <script src="fta_freq.js?v=1.34" defer></script>
     <script src="markov_ctmc.js?v=1.3" defer></script>
     <script src="mil217f_stress.js?v=1.1" defer></script>
     
@@ -4240,9 +4243,9 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     
     <script src="spec_index.js?v=1.3" defer></script>
     <script src="eval_core.js?v=1.9" defer></script>
-    <script src="ai_skills.js?v=2.15" defer></script>
+    <script src="ai_skills.js?v=2.16" defer></script>
     
-    <script src="ai_loader.js?v=8.64" defer></script>
+    <script src="ai_loader.js?v=8.70" defer></script>
     <script src="config_management.js?v=1.12" defer></script>
     
     <script src="numbering_ui.js?v=1.0.2" defer></script>
@@ -4253,15 +4256,18 @@ if(document.readyState!=='loading') initNavActivePath(); else document.addEventL
     <script>window.SL_MS_SSO_ENABLED = true;</script>
     
     <script src="mfa.js?v=1.4" defer></script>
-    <script src="auth_gate.js?v=62.75" defer></script>
+    <script src="account_password.js?v=1.0" defer></script>
+    
+    <script src="slab_seats.js?v=1.0" defer></script>
+    <script src="auth_gate.js?v=62.76" defer></script>
     
     <script src="ms_sso.js?v=1.1" defer></script>
     
     
     <script src="eula_modal.js?v=1.3.0" defer></script>
     
-    <script src="labs_thread_config.js?v=1.1" defer></script>
-    <script src="thread_client.js?v=1.1" defer></script>
+    <script src="labs_thread_config.js?v=1.2" defer></script>
+    <script src="thread_client.js?v=1.2" defer></script>
     <script src="thread_bridge.js?v=1.2" defer></script>
     
     <script src="ynwa.js?v=1.3" defer></script>
