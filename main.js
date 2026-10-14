@@ -45,7 +45,8 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
-const R = require('./shell_rules.js');   // the pure rules (egress, config sanity, overrides, verifier loader, deep links)
+const R = require('./shell_rules.js');
+const CG = require('./close_guard.js'); // asks the page before the window closes or reloads (14 Oct 2026)   // the pure rules (egress, config sanity, overrides, verifier loader, deep links)
 
 const WEBSITE = 'https://safetylabaero.com';
 const HOSTED_WEB_APP = 'https://safetylabaero.com/app';
@@ -202,6 +203,7 @@ let gateFile = '';
 // was built for, from that window's top frame, showing that window's own page
 // (shell_rules.ipcSenderOk). A refused call gets a plain refusal, never a partial answer.
 const APP_DIR = path.join(__dirname, 'app');
+let _mainGuard = null, _quitting = false; // close guard state (14 Oct 2026)
 const REFUSED = Object.freeze({ ok: false, error: 'refused: this window may not make that request' });
 function senderOf(e) { const f = e && e.senderFrame; return { webContents: e && e.sender, isMainFrame: !!f && !f.parent, url: f ? f.url : '' }; }
 function live(w) { return w && !w.isDestroyed() ? w : null; }
@@ -320,7 +322,14 @@ function openMainApp() {
   // in this window gets the keychain writer and the AI bridge.
   lockNavigation(mainWindow, (url) => R.fileUrlInside(url, APP_DIR));
   mainWindow.webContents.on('will-attach-webview', (e) => { e.preventDefault(); });
-  mainWindow.on('closed', () => { mainWindow = null; });
+  // 14 Oct 2026: ask the page (autosave, waiting changes) before closing or reloading; a hung page gets a native question.
+  _mainGuard = CG.install(mainWindow, {
+    askNative: () => dialog.showMessageBox(mainWindow, { type: 'warning', buttons: ['Stay', 'Close anyway'], defaultId: 0, cancelId: 0,
+      message: 'Safety Lab Aero is not responding', detail: 'Changes that have not finished saving may be lost if you close now.' }).then((r) => r.response === 1),
+    onApprovedClose: () => { if (_quitting) app.quit(); },
+    onStay: () => { _quitting = false; }
+  });
+  mainWindow.on('closed', () => { mainWindow = null; _mainGuard = null; });
 }
 
 // Network-layer egress guard for the app partition. Refuses (and logs) any request whose host
@@ -495,7 +504,7 @@ async function installLicense(blob) {
   saveActivation(a);
   return { ok: true, info: licenseSummary(v) };
 }
-ipcMain.on('slab:applyAndReload', (e) => { if (!fromSettings(e)) return; if (settingsWindow) settingsWindow.close(); if (mainWindow) mainWindow.reload(); else routeStartup(); });
+ipcMain.on('slab:applyAndReload', (e) => { if (!fromSettings(e)) return; if (settingsWindow) settingsWindow.close(); if (mainWindow && _mainGuard) _mainGuard.reload(); else routeStartup(); });
 ipcMain.handle('slab:version', (e) => fromSettings(e) ? ({ app: app.getVersion(), web: readBuildInfo() }) : REFUSED);
 function readBuildInfo() { try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'app', 'BUILD_INFO.json'), 'utf8')); } catch (_) { return null; } }
 
@@ -748,5 +757,6 @@ else {
     if (UPDATE_POLICY.auto) setTimeout(() => { try { initAutoUpdater(false); } catch (_) {} }, 4000);
     app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) routeStartup(); });
   });
+  app.on('before-quit', () => { _quitting = true; });
   app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 }
