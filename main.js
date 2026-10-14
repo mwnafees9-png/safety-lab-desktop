@@ -47,6 +47,7 @@ const os = require('os');
 const crypto = require('crypto');
 const R = require('./shell_rules.js');
 const CG = require('./close_guard.js'); // asks the page before the window closes or reloads (14 Oct 2026)   // the pure rules (egress, config sanity, overrides, verifier loader, deep links)
+const HID = require('./hid_guard.js'); // SpaceMouse over WebHID, 3Dconnexion devices only (14 Oct 2026)
 
 const WEBSITE = 'https://safetylabaero.com';
 const HOSTED_WEB_APP = 'https://safetylabaero.com/app';
@@ -299,6 +300,7 @@ function openMainApp() {
   const part = session.fromPartition('persist:slab-app');
   installEgressGuard(part, cfg);
   installCertificatePin(part);
+  if (!part.__slabHid) { HID.install(part); part.__slabHid = true; } // SpaceMouse over WebHID, 3Dconnexion devices only
   mainWindow = new BrowserWindow({
     width: 1440, height: 900, minWidth: 1024, minHeight: 680,
     backgroundColor: '#0A1F44', title: 'Safety Lab Aero', icon: path.join(__dirname, 'build', 'icon.png'), show: false,
