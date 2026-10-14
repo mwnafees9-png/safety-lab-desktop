@@ -71,7 +71,7 @@ check('secrets.js is packaged', covered('secrets.js'));
 check('bridge_main.js is packaged', covered('bridge_main.js'));
 
 // --- and verify the real artifact when one has been built -------------------------------------
-function asarFiles(asarPath) {
+function asarHeader(asarPath) {
   const fd = fs.openSync(asarPath, 'r');
   const head = Buffer.alloc(16);
   fs.readSync(fd, head, 0, 16, 0);
@@ -79,8 +79,21 @@ function asarFiles(asarPath) {
   const buf = Buffer.alloc(jsonLen);
   fs.readSync(fd, buf, 0, jsonLen, 16);
   fs.closeSync(fd);
-  return JSON.parse(buf.toString('utf8')).files || {};
+  return { files: JSON.parse(buf.toString('utf8')).files || {}, dataStart: 8 + head.readUInt32LE(4) };
 }
+function asarFiles(asarPath) { return asarHeader(asarPath).files; }
+// The version the asar was built as (its own package.json), so a build left over from an older
+// release is named for what it is instead of being reported as a missing file (14 Oct 2026).
+function asarVersion(asarPath) {
+  const h = asarHeader(asarPath), e = h.files['package.json'];
+  if (!e || e.offset == null) return null;
+  const fd = fs.openSync(asarPath, 'r'), buf = Buffer.alloc(e.size);
+  fs.readSync(fd, buf, 0, e.size, h.dataStart + Number(e.offset));
+  fs.closeSync(fd);
+  try { return JSON.parse(buf.toString('utf8')).version || null; } catch (_) { return null; }
+}
+// release.sh checks only the platform it just packaged: SLAB_ASAR_ONLY=mac or win.
+function asarPlatform(p) { return /win-unpacked/.test(p) ? 'win' : 'mac'; }
 const asars = [];
 (function find(dir, depth) {
   if (depth > 6 || !fs.existsSync(dir)) return;
@@ -100,7 +113,15 @@ if (process.env.SLAB_CHECK_ASAR !== '1') {
 } else if (!asars.length) {
   check('an app.asar exists to check', false, 'SLAB_CHECK_ASAR=1 but nothing was packaged under dist/');
 } else {
+  const only = process.env.SLAB_ASAR_ONLY || '';
   for (const a of asars) {
+    if (only && asarPlatform(a) !== only) { console.log('  (not checked here: ' + path.relative(ROOT, a) + ' belongs to the other platform build)'); continue; }
+    let built = null; try { built = asarVersion(a); } catch (_) {}
+    if (built && built !== pkg.version) {
+      check('packaged asar is this version: ' + path.relative(ROOT, a), false,
+            'it is ' + built + ' from an earlier build, this release is ' + pkg.version + '. Build that platform again (' + (asarPlatform(a) === 'win' ? './release.sh --win' : './release.sh') + ').');
+      continue;
+    }
     let entries = {};
     try { entries = asarFiles(a); } catch (e) { check('asar readable: ' + a, false, e.message); continue; }
     const gone = closure.filter(f => !(f in entries));
