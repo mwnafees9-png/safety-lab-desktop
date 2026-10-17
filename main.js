@@ -381,6 +381,7 @@ function handleDeepLink(raw) {
 function setProjectTitle() { if (mainWindow) mainWindow.setTitle('Safety Lab Aero' + (currentProjectPath ? ' — ' + path.basename(currentProjectPath) : '')); }
 async function doSave(saveAs) {
   if (!mainWindow) return;
+  if (!(await confirmPendingFirst('export', 'save the project file'))) return;
   let target = currentProjectPath;
   if (saveAs || !target) {
     const r = await dialog.showSaveDialog(mainWindow, { title: 'Save Safety Lab project', defaultPath: target || 'Untitled.sl', filters: [{ name: 'Safety Lab Project', extensions: ['sl', 'slab'] }, { name: 'JSON', extensions: ['json'] }] });
@@ -394,8 +395,19 @@ async function doSave(saveAs) {
   try { fs.writeFileSync(target, json, 'utf8'); currentProjectPath = target; setProjectTitle(); }
   catch (e) { dialog.showErrorBox('Save failed', String(e)); }
 }
+// 16 Oct 2026 (web change_ack 2.0): changes are collected while the person works and confirmed once at a
+// decision point. A native File > Save or File > Open is such a point: the page asks first (one dialog listing
+// what waits) and the action stops if the person chooses Keep working. An older page without SLChangeAck goes on.
+async function confirmPendingFirst(reason, action) {
+  if (!mainWindow) return true;
+  try {
+    const r = await mainWindow.webContents.executeJavaScript('(window.SLChangeAck && typeof window.SLChangeAck.ask === "function") ? Promise.resolve(window.SLChangeAck.ask(' + JSON.stringify({ reason, action }) + ')) : "none"', true);
+    return r !== 'keep';
+  } catch (_) { return true; }
+}
 async function doOpen() {
   if (!mainWindow) return;
+  if (!(await confirmPendingFirst('project', 'open another project'))) return;
   const r = await dialog.showOpenDialog(mainWindow, { title: 'Open Safety Lab project', properties: ['openFile'], filters: [{ name: 'Safety Lab Project', extensions: ['sl', 'slab', 'json'] }, { name: 'All Files', extensions: ['*'] }] });
   if (r.canceled || !r.filePaths || !r.filePaths[0]) return;
   const p = r.filePaths[0];
