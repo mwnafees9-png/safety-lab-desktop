@@ -1,6 +1,6 @@
 {
-  "webCommit": "07afec14c2842859e8956ad818193422a4b705ea",
-  "pulledAt": "2026-10-17T11:43:19.619Z",
+  "webCommit": "bf7c4b307ff7cd8a245a3c61de7679439ed547e3",
+  "pulledAt": "2026-10-17T17:24:21.079Z",
   "fileCount": 333,
   "manifest": {
     "404.html": "8cecc9de7f3e738f0ea1ec35ee204bd1",
@@ -79,7 +79,7 @@
     "demo_projects.js": "2645fc4653f1646407aea43c7012b2d2",
     "demo_showcase.js": "06ec486a5a74b8efc1137d833110bf38",
     "demo_showcase_halcyon.js": "aef1523cc63f95f53d66eb21a4d34c80",
-    "demo_showcase_hl1.js": "546882e3d18fb6b9933579a76d6e027b",
+    "demo_showcase_hl1.js": "447746562cee998f624a2297eea3a722",
     "demo_showcase_kestrel25.js": "2fa0884cb52d1c2e7525864428e3ad4b",
     "demo_showcase_sora.js": "dd73f0af3f1997add59491464d809487",
     "demo_showcase_vayu.js": "68f63610b3437461e061228180ca07f5",
