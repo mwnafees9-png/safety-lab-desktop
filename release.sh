@@ -26,9 +26,16 @@ bash "$HERE/pull-web.sh"
 
 echo "── desktop wall (verifies the shell AND the pulled bundle) ──"
 FAILS=0
+# 19 Oct 2026, the same two guards as the web wall (ship.sh): Node 24/26 can hang forever at exit after a suite has
+# passed (nodejs/node#64274, fix not released yet). Every suite runs with the two background compilers that trigger
+# it turned off, and has a time limit; one stopped at the limit runs once more and only that run counts.
+SUITE_LIMIT=${SUITE_LIMIT:-300}
+run_suite() { perl -e 'alarm shift; exec @ARGV' "$SUITE_LIMIT" node --no-maglev --no-concurrent-sparkplug "$1"; }
 for t in tests/*.test.js; do
   [ -e "$t" ] || continue
-  if ! node "$t"; then FAILS=$((FAILS + 1)); fi
+  RC=0; run_suite "$t" || RC=$?
+  if [ $RC -eq 142 ]; then echo "  (stopped at the ${SUITE_LIMIT}s limit: running $t once more)"; RC=0; run_suite "$t" || RC=$?; fi
+  if [ $RC -ne 0 ]; then FAILS=$((FAILS + 1)); [ $RC -eq 142 ] && echo "  $t stopped at the ${SUITE_LIMIT}s limit twice"; fi
 done
 [ "$FAILS" = "0" ] || { echo "NOT RELEASING — $FAILS desktop suite(s) failed."; exit 1; }
 echo "DESKTOP WALL GREEN"
