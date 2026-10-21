@@ -56,7 +56,9 @@ check('a baseHost on the AI key is refused (it only belongs to the connector)', 
   const M = mutant("if (!Object.prototype.hasOwnProperty.call(SECRET_KINDS, k)) return { ok: false, error: 'unknown secret kind' };", '');
   check('MUTATION: without the kind list an unknown kind gets through (what the guard prevents)', M.checkSecret('evil', 'x', {}).ok === true || M.checkSecret('evil', 'x', {}).error !== 'unknown secret kind');
 }
-check('main.js: saveSecret stores only what checkSecret returns', /const c = R\.checkSecret\(payload && payload\.kind, payload && payload\.value, payload && payload\.meta\);[\s\S]{0,120}secrets\.save\(c\.kind, c\.value, c\.meta\)/.test(main));
+// 21 Oct 2026: checkSecret gained a fourth argument (the administrator's internal connector hosts,
+// regression_internal_connector_host_20261021). What this pins is unchanged: only checkSecret's output is stored.
+check('main.js: saveSecret stores only what checkSecret returns', /const c = R\.checkSecret\(payload && payload\.kind, payload && payload\.value, payload && payload\.meta(, \{ internalHosts: _internalConnectorHosts\(\) \})?\);[\s\S]{0,120}secrets\.save\(c\.kind, c\.value, c\.meta\)/.test(main));
 check('main.js: deleteSecret refuses an unknown kind', /slab:deleteSecret[\s\S]{0,200}R\.SECRET_KINDS/.test(main));
 
 console.log('\n[ai] the own-key request is bounded');

@@ -108,6 +108,7 @@ const DEFAULT_CONFIG = {
   aiEndpoint: '',            // own: https://<their AI proxy>/v1/ai
   webAppUrl: '',             // own: where "Open on the web" goes (blank = hidden); safetylab: our site
   backendPin: '',            // own: SHA-256 (hex) of the server's own root certificate, from the setup file; '' = none
+  bridgeInternalHosts: '',   // own: the administrator's internal ALM hosts for the connector, from the setup file only (21 Oct 2026)
   passcodeHash: null         // optional screen lock (scrypt salt:hash)
 };
 // The pinned server root (2 Oct 2026): only consulted when Chromium's own verdict is a failure,
@@ -442,6 +443,9 @@ function openSettings() {
   settingsWindow.on('closed', () => { settingsWindow = null; });
 }
 // ---- secrets: OS keychain, write-only from the page (16 Sep 2026) -----------------------
+// 21 Oct 2026: the administrator's internal connector hosts apply only to the customer's own
+// server (backend 'own'), are read live like every other setting, and come only from the setup file.
+function _internalConnectorHosts() { try { const c = readConfig(); return c.backend === 'own' ? String(c.bridgeInternalHosts || '') : ''; } catch (_) { return ''; } }
 // The renderer may store a credential and ask whether one is stored. It can never read one
 // back -- there is deliberately no 'slab:getSecret'. Only the main process decrypts, and only
 // to put the credential on the outbound request in bridge_main.js.
@@ -451,7 +455,7 @@ ipcMain.handle('slab:secretsStatus', (e) => { if (!fromApp(e)) return REFUSED; t
 ipcMain.handle('slab:saveSecret', (e, payload) => {
   if (!fromApp(e)) return REFUSED;
   try {
-    const c = R.checkSecret(payload && payload.kind, payload && payload.value, payload && payload.meta);
+    const c = R.checkSecret(payload && payload.kind, payload && payload.value, payload && payload.meta, { internalHosts: _internalConnectorHosts() });
     if (!c.ok) return { ok: false, error: c.error };
     return { ok: true, secrets: secrets.save(c.kind, c.value, c.meta) };
   } catch (err) { return { ok: false, error: String(err && err.message || err) }; }
@@ -480,7 +484,7 @@ ipcMain.handle('slab:aiMessages', async (e, req) => {
 // apply and the credential never reaches the page. See bridge_main.js for why.
 ipcMain.handle('slab:bridgeGet', async (e, targetUrl) => {
   if (!fromApp(e)) return REFUSED;
-  try { return await bridgeMain.get(targetUrl); }
+  try { return await bridgeMain.get(targetUrl, { internalHosts: _internalConnectorHosts() }); }
   catch (e) { return { ok: false, error: String(e && e.message || e) }; }
 });
 
@@ -489,6 +493,9 @@ ipcMain.handle('slab:saveConfig', (e, partial) => {
   if (!fromSettings(e)) return REFUSED;
   const cur = readConfig(); const next = Object.assign({}, cur);
   for (const k of ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl', 'backendPin']) if (partial && partial[k] != null) next[k] = String(partial[k]).trim();
+  // The administrator's internal connector hosts belong to the server whose setup file brought
+  // them. Pointing the app at another server (or off it) by hand drops them (21 Oct 2026).
+  if (next.backend !== cur.backend || next.backendUrl !== cur.backendUrl) next.bridgeInternalHosts = '';
   if (next.backendPin) { const pins = R.normalizePins(next.backendPin); if (!pins.length) return { ok: false, error: 'The server certificate fingerprint is malformed.' }; next.backendPin = pins.join(','); }
   if (partial && partial.passcode !== undefined) next.passcodeHash = partial.passcode ? hashPasscode(partial.passcode) : null;
   const problem = configProblem(next);

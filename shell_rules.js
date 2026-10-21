@@ -214,7 +214,37 @@ function pinDecision(hostname, chainFingerprints, cfg) {
 // secret, if it points at a Safety Lab address on a customer install, or if its shape is wrong.
 // The caller still runs the license through the ONE verifier against this config before saving.
 const SETUP_FORMAT = 'safetylab-setup/1';
-const SETUP_FIELDS = ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl', 'backendPin'];
+const SETUP_FIELDS = ['backend', 'backendUrl', 'backendKey', 'ai', 'aiEndpoint', 'webAppUrl', 'backendPin', 'bridgeInternalHosts'];
+
+// 21 Oct 2026 (Waqas: allow a customer's own internal Jama, server installs only). The connector
+// refuses private addresses (bare IPs, .local, .internal, non-443 ports) so a page can never point a
+// stored credential at a private network. A customer whose Jama runs INSIDE their own network needs
+// exactly that, and only their administrator may grant it: the list comes from the setup file their
+// own server made (BRIDGE_INTERNAL_HOSTS in its ai-proxy.env), applies only with backend 'own', and
+// the page has no way to set it. Entries are exact: "jama.corp.local" or "10.20.30.40:8443".
+function parseInternalHosts(str) {
+  const raw = String(str == null ? '' : str).split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+  const out = [];
+  for (const e of raw) {
+    const m = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*)(:(\d{1,5}))?$/.exec(e);
+    if (!m) return { ok: false, error: 'An internal connector host in the setup file is malformed (' + e + ').' };
+    if (m[6] && (Number(m[6]) < 1 || Number(m[6]) > 65535)) return { ok: false, error: 'An internal connector host in the setup file has an impossible port (' + e + ').' };
+    if (out.indexOf(e) < 0) out.push(e);
+  }
+  if (out.length > 16) return { ok: false, error: 'The setup file lists too many internal connector hosts (16 at most).' };
+  return { ok: true, list: out };
+}
+// Is host (and port, when known) on the administrator's list? port '' or '443' matches a host-only
+// entry; any other port must be listed as host:port. port === null means "any port listed for it".
+function internalHostListed(host, port, listStr) {
+  const p = parseInternalHosts(listStr); if (!p.ok || !p.list.length) return false;
+  const h = String(host || '').toLowerCase().replace(/^\[|\]$/g, '');
+  if (!h) return false;
+  if (port === null) return p.list.some(e => e === h || e.indexOf(h + ':') === 0);
+  const pt = String(port || '');
+  if (!pt || pt === '443') return p.list.indexOf(h) >= 0 || p.list.indexOf(h + ':443') >= 0;
+  return p.list.indexOf(h + ':' + pt) >= 0;
+}
 function parseSetupFile(text) {
   let j;
   try { j = JSON.parse(String(text || '')); } catch (_) { return { ok: false, error: 'This is not a Safety Lab Aero setup file.' }; }
@@ -239,6 +269,12 @@ function parseSetupFile(text) {
   for (const k of ['backendUrl', 'aiEndpoint', 'webAppUrl']) {
     if (cfg[k] && /[?#]/.test(cfg[k])) return { ok: false, error: 'An address in the setup file carries extra parameters; it must be a plain https address.' };
     if (cfg[k] && !/^https:\/\//i.test(cfg[k])) return { ok: false, error: 'An address in the setup file does not start with https://. The desktop refuses anything else.' };
+  }
+  if (cfg.bridgeInternalHosts) {
+    const ih = parseInternalHosts(cfg.bridgeInternalHosts);
+    if (!ih.ok) return { ok: false, error: ih.error };
+    if (cfg.backend !== 'own') return { ok: false, error: 'Internal connector hosts only make sense with your organization\'s own server.' };
+    cfg.bridgeInternalHosts = ih.list.join(',');
   }
   if (cfg.backendPin) {
     const raw = cfg.backendPin.split(',').map(x => x.trim()).filter(Boolean);
@@ -272,7 +308,7 @@ function publicHostProblem(host) {
   if (/^\d+(\.\d+)*$/.test(h) || h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal') || h.endsWith('.localhost')) return 'not a public host';
   return '';
 }
-function checkSecret(kind, value, meta) {
+function checkSecret(kind, value, meta, opts) {
   const k = String(kind || '');
   if (!Object.prototype.hasOwnProperty.call(SECRET_KINDS, k)) return { ok: false, error: 'unknown secret kind' };
   let v;
@@ -297,7 +333,8 @@ function checkSecret(kind, value, meta) {
   if (k === 'jama' || (k === 'jama_token' && m.baseHost)) {
     const host = String(m.baseHost || '').toLowerCase();
     const prob = publicHostProblem(host);
-    if (prob) return { ok: false, error: 'the connector address must be a public host name (' + prob + ')' };
+    const internal = opts && opts.internalHosts ? internalHostListed(host, null, opts.internalHosts) : false;
+    if (prob && !internal) return { ok: false, error: 'the connector address must be a public host name (' + prob + ')' };
     m.baseHost = host;
   } else if (m.baseHost) {
     return { ok: false, error: 'unexpected secret detail: baseHost' };
@@ -366,4 +403,4 @@ function takeServerLicense(stored, fromServer, storedBlob, serverBlob) {
 }
 
 module.exports = { takeServerLicense, HOSTED, hostOf, isSafetyLabHost, backendHostFor, allowedHosts, egressAllowed, configProblem, overridesFor, loadVerifier, verifyLicenseBlob, parseDeepLink, autoUpdatePolicy, updateMatchesVerified, parseSetupFile, SETUP_FORMAT, normalizeFingerprint, normalizePins, pinDecision, hostnameOf,
-  SECRET_KINDS, SECRET_META_KEYS, publicHostProblem, checkSecret, AI_MAX_BODY_BYTES, aiBodyProblem, fileUrlInside, fileUrlIs, ipcSenderOk };
+  SECRET_KINDS, SECRET_META_KEYS, publicHostProblem, checkSecret, parseInternalHosts, internalHostListed, AI_MAX_BODY_BYTES, aiBodyProblem, fileUrlInside, fileUrlIs, ipcSenderOk };

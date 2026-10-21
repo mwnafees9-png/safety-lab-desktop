@@ -22,19 +22,27 @@
 // ============================================================================
 'use strict';
 const secrets = require('./secrets.js');
+const rules = require('./shell_rules.js');
 
 // Same read-only posture as the web relay: GET only, https only, public host,
 // port 443, and an ALM REST path. Phase 1 is read-only by decision.
-function targetProblem(rawUrl, allowedHost) {
+// 21 Oct 2026: internalHosts is the administrator's list from the setup file (shell_rules
+// parseInternalHosts / internalHostListed), passed in by main.js only when the backend is the
+// customer's own server. A listed host may be private and may use its listed port; https, the
+// /rest/ path, the saved-host match and the refusal of redirects all still apply.
+function targetProblem(rawUrl, allowedHost, internalHosts) {
   let u;
   try { u = new URL(String(rawUrl)); } catch (_) { return 'invalid target URL'; }
   if (u.protocol !== 'https:') return 'target must be https';
   const host = u.hostname.toLowerCase();
-  const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(host) || host.includes(':');
-  if (isIp || host === 'localhost' || host.endsWith('.local') || host.endsWith('.internal')) {
-    return 'target must be a public host';
+  const listed = !!internalHosts && rules.internalHostListed(host, u.port, internalHosts);
+  if (!listed) {
+    const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(host) || host.includes(':');
+    if (isIp || host === 'localhost' || host.endsWith('.local') || host.endsWith('.internal')) {
+      return 'target must be a public host' + (internalHosts ? ', or one your administrator approved for this server' : '');
+    }
+    if (u.port && u.port !== '443') return 'only port 443 is allowed';
   }
-  if (u.port && u.port !== '443') return 'only port 443 is allowed';
   if (u.pathname.indexOf('/rest/') === -1) return 'only ALM REST paths are allowed';
   if (!allowedHost) return 'no connector is configured on this computer';
   if (host !== String(allowedHost).toLowerCase()) {
@@ -45,9 +53,9 @@ function targetProblem(rawUrl, allowedHost) {
 
 // Returns { ok, status, data } | { ok:false, error }. The credential is read
 // here, used here, and never crosses back to the renderer.
-async function get(rawUrl) {
+async function get(rawUrl, opts) {
   const meta = secrets.metaFor('jama');
-  const problem = targetProblem(rawUrl, meta && meta.baseHost);
+  const problem = targetProblem(rawUrl, meta && meta.baseHost, opts && opts.internalHosts);
   if (problem) return { ok: false, error: problem };
 
   const cred = secrets.reveal('jama');
